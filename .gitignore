@@ -1,0 +1,17 @@
+/node_modules
+npm-debug.log
+
+/build
+
+# type script artifacts
+/typings
+
+# webstorm project files
+.idea
+
+# netbeans project files
+/nbproject
+
+# sublime text project / workspace files
+*.sublime-project
+*.sublime-workspace

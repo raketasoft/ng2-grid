@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>Angular 2 Component Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+    <!-- 1. Load libraries -->
+    <!-- IE required polyfills, in this exact order -->
+    <script src="lib/es6-shim/es6-shim.min.js"></script>
+    <script src="lib/systemjs/dist/system-polyfills.js"></script>
+    <script src="lib/angular2/es6/dev/src/testing/shims_for_IE.js"></script>
+    <script src="lib/angular2/bundles/angular2-polyfills.js"></script>
+    <script src="lib/systemjs/dist/system.src.js"></script>
+    <script>
+      System.config({
+        defaultJSExtensions: true
+      });
+    </script>
+    <script src="lib/rxjs/bundles/Rx.js"></script>
+    <script src="lib/angular2/bundles/angular2.dev.js"></script>
+    <!-- 2. Configure SystemJS -->
+    <script>
+      System.import('examples/index')
+            .then(null, console.error.bind(console));
+    </script>
+  </head>
+  <!-- 3. Display the application -->
+  <body>
+    <h1>Examples</h1>
+    <basic-example>Loading...</basic-example>
+  </body>
+</html>
