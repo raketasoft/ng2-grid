@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component, Input} from 'angular2/core';
 
 @Component({
   selector: 'ng-grid',
@@ -17,6 +17,8 @@ import {Component} from 'angular2/core';
     </table>`
 })
 export class Grid {
+  @Input() options: Object;
+
   width: string = '100%';
   height: string;
   data: Array<Object> = [];
@@ -24,23 +26,25 @@ export class Grid {
   sorting: boolean;
   paging: boolean;
 
-  constructor() {
-  }
-
   ngOnInit() {
-    this.data = [
-      {name: 'Otto Clay', age: 61, address: 'Ap #897-1459 Quam Avenue', country: 'China', isMarried: 1}
-    ];
-    this.fields = [
-      { title: "Name", name: "name", width: 150 },
-      { title: "Age", name: "age", width: 50 },
-      { title: "Address", name: "address", width: 200 },
-      { title: "Country", name: "country", width: 100 },
-      { title: "Married", name: "isMarried", width: 50  },
-    ]
+    this.initOptions();
   }
 
-  private renderCell(field: Object, row: Object) {
+  /**
+   * @returns void
+   */
+  private initOptions():void {
+    for (let option in this.options) {
+      this[option] = this.options[option];
+    }
+  }
+
+  /**
+   * @param {Object} field
+   * @param {Object} row
+   * @returns void
+   */
+  private renderCell(field: Object, row: Object):void {
     let value = row[field['name']];
     return value;
   }
