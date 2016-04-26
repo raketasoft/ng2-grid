@@ -18,7 +18,7 @@ gulp.task("clean", (cb) => {
  * Lint all custom TypeScript files.
  */
 gulp.task("tslint", () => {
-  return gulp.src([
+  return tsProject.src([
       "**/*.ts",
       "!node_modules/**/*.ts",
       "examples/**/*.ts"
@@ -31,7 +31,7 @@ gulp.task("tslint", () => {
  * Compile TypeScript sources and create sourcemaps in build directory.
  */
 gulp.task("compile", ["tslint"], () => {
-  let tsResult = gulp.src([
+  let tsResult = tsProject.src([
       "**/*.ts",
       "!node_modules/**/*.ts",
       "examples/**/*.ts"
@@ -48,7 +48,7 @@ gulp.task("compile", ["tslint"], () => {
  * Copy all resources that are not TypeScript files into build directory.
  */
 gulp.task("resources", () => {
-  return gulp.src([
+  return tsProject.src([
       "src/**/*",
       "!**/*.ts",
       "examples/**/*"
@@ -60,7 +60,7 @@ gulp.task("resources", () => {
  * Copy all required libraries into build directory.
  */
 gulp.task("libs", () => {
-  return gulp.src([
+  return tsProject.src([
       'es6-shim/es6-shim.min.js',
       'systemjs/dist/system-polyfills.js',
       'angular2/bundles/angular2-polyfills.js',
