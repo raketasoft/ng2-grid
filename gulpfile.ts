@@ -1,27 +1,26 @@
-"use strict";
+'use strict';
 
-const gulp = require("gulp");
-const del = require("del");
-const tsc = require("gulp-typescript");
-const sourcemaps = require("gulp-sourcemaps");
-const tsProject = tsc.createProject("tsconfig.json");
-const tslint = require("gulp-tslint");
+const gulp = require('gulp');
+const del = require('del');
+const ts = require('gulp-typescript');
+const sourcemaps = require('gulp-sourcemaps');
+const tslint = require('gulp-tslint');
+const tsProject = ts.createProject('tsconfig.json');
 
 /**
  * Remove build directory.
  */
-gulp.task("clean", (cb) => {
-  return del(["build"], cb);
+gulp.task('clean', (cb) => {
+  return del(['build'], cb);
 });
 
 /**
  * Lint all custom TypeScript files.
  */
-gulp.task("tslint", () => {
-  return tsProject.src([
-      "**/*.ts",
-      "!node_modules/**/*.ts",
-      "examples/**/*.ts"
+gulp.task('tslint', () => {
+  return gulp.src([
+      '**/*.ts',
+      '!node_modules/**/*'
     ])
     .pipe(tslint())
     .pipe(tslint.report('prose'));
@@ -30,73 +29,91 @@ gulp.task("tslint", () => {
 /**
  * Compile TypeScript sources and create sourcemaps in build directory.
  */
-gulp.task("compile", ["tslint"], () => {
+gulp.task('compile', ['tslint'], () => {
   let tsResult = tsProject.src([
-      "**/*.ts",
-      "!node_modules/**/*.ts",
-      "examples/**/*.ts"
+      '**/*.ts',
+      '!node_modules/**/*.ts'
     ])
     .pipe(sourcemaps.init())
-    .pipe(tsc(tsProject));
+    .pipe(ts(tsProject));
 
   return tsResult.js
-    .pipe(sourcemaps.write("."))
-    .pipe(gulp.dest("build"));
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('build'));
 });
 
 /**
- * Copy all resources that are not TypeScript files into build directory.
+ * Copy all resources from src that are not TypeScript files into build directory.
  */
-gulp.task("resources", () => {
-  return tsProject.src([
-      "src/**/*",
-      "!**/*.ts",
-      "examples/**/*"
+gulp.task('resources:src', () => {
+  return gulp.src([
+      'src/**/*.html',
+      'src/**/*.css'
     ])
-    .pipe(gulp.dest("build"));
+    .pipe(gulp.dest('build/src'));
 });
+
+/**
+ * Copy all resources from demo that are not TypeScript files into build directory.
+ */
+gulp.task('resources:demo', () => {
+  return gulp.src([
+      'demo/**/*.html',
+      'demo/**/*.css'
+    ])
+    .pipe(gulp.dest('build'));
+});
+
+/**
+ * Copy all resources into build directory.
+ */
+gulp.task('resources', ['resources:src', 'resources:demo']);
 
 /**
  * Copy all required libraries into build directory.
  */
-gulp.task("libs", () => {
-  return tsProject.src([
+gulp.task('libs', () => {
+  return gulp.src([
       'es6-shim/es6-shim.min.js',
       'systemjs/dist/system-polyfills.js',
+      'systemjs/dist/system.src.js',
       'angular2/bundles/angular2-polyfills.js',
       'angular2/es6/dev/src/testing/shims_for_IE.js',
-      'systemjs/dist/system.src.js',
-      'rxjs/bundles/Rx.js',
       'angular2/bundles/angular2.dev.js',
-    ], {cwd: "node_modules/**"}) /* Glob required here. */
-    .pipe(gulp.dest("build/lib"));
+      'rxjs/bundles/Rx.js'
+    ], {cwd: 'node_modules/**'}) /* Glob required here. */
+    .pipe(gulp.dest('build/lib'));
 });
 
 /**
  * Watch for changes in TypeScript, HTML and CSS files.
  */
-gulp.task("watch", function () {
+gulp.task('watch', function () {
   gulp.watch([
-      "**/*.ts",
-      "!node_modules/**/*.ts",
-      "src/**/*.ts",
-      "examples/**/*.ts"
+      '**/*.ts',
+      '!node_modules/**/*'
     ], ['compile']).on('change', function (e) {
-      console.log("TypeScript file " + e.path + " has been changed. Compiling.");
+      console.log('TypeScript file ' + e.path + ' has been changed. Compiling.');
     });
   gulp.watch([
-      "src/**/*.html",
-      "src/**/*.css",
-      "examples/**/*.html",
-      "examples/**/*.css"
+      '**/*.html',
+      '**/*.css',
+      '!node_modules/**/*'
     ], ['resources']).on('change', function (e) {
-      console.log("Resource file " + e.path + " has been changed. Updating.");
+      console.log('Resource file ' + e.path + ' has been changed. Updating.');
     });
 });
 
 /**
  * Build the project.
  */
-gulp.task("build", ["compile", "resources", "libs"], () => {
-  console.log("Building...");
+gulp.task('build', ['compile', 'resources', 'libs'], () => {
+  console.log('Building...');
+});
+
+/**
+ * Default task.
+ */
+gulp.task('default', () => {
+  console.log('Default task running...');
 });
