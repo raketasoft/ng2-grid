@@ -96,10 +96,15 @@ gulp.task('watch', function () {
       console.log('TypeScript file ' + e.path + ' has been changed. Compiling.');
     });
   gulp.watch([
-      '**/*.html',
-      '**/*.css',
-      '!node_modules/**/*'
-    ], ['resources']).on('change', function (e) {
+      'demo/**/*.html',
+      'demo/**/*.css',
+    ], ['resources:demo']).on('change', function (e) {
+      console.log('Resource file ' + e.path + ' has been changed. Updating.');
+    });
+  gulp.watch([
+      'src/**/*.html',
+      'src/**/*.css',
+    ], ['resources:src']).on('change', function (e) {
       console.log('Resource file ' + e.path + ' has been changed. Updating.');
     });
 });

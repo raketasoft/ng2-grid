@@ -1,0 +1,37 @@
+.ng-grid {
+}
+
+.ng-grid table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.ng-grid-header.scroll {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.ng-grid-header::-webkit-scrollbar {
+  visibility: hidden;
+}
+
+.ng-grid-header::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.ng-grid-header table th {
+  cursor: pointer;
+}
+
+.ng-grid-body table td {
+  border-top: 0;
+}
+
+.ng-grid-body.scroll {
+  overflow-x: auto;
+  overflow-y: scroll;
+}
+
+.ng-grid-footer {
+}

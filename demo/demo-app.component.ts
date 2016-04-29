@@ -16,15 +16,18 @@ export class DemoAppComponent {
   columnOptions: GridOptions;
 
   ngOnInit() {
-    this.basicOptions = new GridOptions({data: DEMO_DATA, height: '300px'});
+    this.basicOptions = new GridOptions({
+      data: DEMO_DATA,
+      height: '300px'
+    });
 
     this.columnOptions = new GridOptions({
       fields: [
-        { heading: "Name", name: "name", width: 150 },
-        { heading: "Age", name: "age", width: 50 },
-        { heading: "Address", name: "address", width: 200 },
-        { heading: "Country", name: "country.name", width: 100 },
-        { heading: "Married", name: "isMarried", width: 50 },
+        { heading: "Name", name: "name", width: "150px" },
+        { heading: "Age", name: "age", width: "50px" },
+        { heading: "Address", name: "address", width: "200px" },
+        { heading: "Country", name: "country.name", width: "100px" },
+        { heading: "Married", name: "isMarried", width: "50px" },
       ],
       data: DEMO_DATA,
       height: '300px'
