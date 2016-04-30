@@ -1,5 +1,6 @@
-import {Component, ElementRef, Input} from 'angular2/core';
+import {Component, Input} from 'angular2/core';
 import {GridOptions} from './grid-options';
+import * as _ from 'underscore';
 
 @Component({
   selector: 'ng-grid',

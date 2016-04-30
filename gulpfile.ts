@@ -80,7 +80,8 @@ gulp.task('libs', () => {
       'angular2/bundles/angular2-polyfills.js',
       'angular2/es6/dev/src/testing/shims_for_IE.js',
       'angular2/bundles/angular2.dev.js',
-      'rxjs/bundles/Rx.js'
+      'rxjs/bundles/Rx.js',
+      'underscore/underscore.js'
     ], {cwd: 'node_modules/**'}) /* Glob required here. */
     .pipe(gulp.dest('build/lib'));
 });
