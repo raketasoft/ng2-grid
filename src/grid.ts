@@ -39,6 +39,12 @@ import * as _ from 'underscore';
 export class Grid {
   @Input() options: GridOptions;
 
+  private _orderBy: string;
+  private _orderByType: string = Grid.ORDER_TYPE_ASC;
+
+  static ORDER_TYPE_ASC: string = 'asc';
+  static ORDER_TYPE_DESC: string = 'desc';
+
   ngOnInit() {
     if (this.options.fields.length == 0 && this.options.data.length > 0) {
       this.options.fields = new Array<any>();
@@ -50,7 +56,21 @@ export class Grid {
 
   sort(event) {
     let element = <HTMLElement>event.target;
-    console.log(element.getAttribute('data-id'));
+    let field = element.getAttribute('data-id');
+
+    this._orderByType = this._getSortOrder(field);
+    this._orderBy = field;
+
+    let data = _.chain(this.options.data).sortBy(this._orderBy).value();
+
+    this.options.data = this._orderByType == Grid.ORDER_TYPE_ASC ?
+      data : data.reverse();
+  }
+
+  private _getSortOrder(field: string): string {
+    return field != this._orderBy ? Grid.ORDER_TYPE_ASC :
+      (this._orderByType == Grid.ORDER_TYPE_ASC ?
+        Grid.ORDER_TYPE_DESC : Grid.ORDER_TYPE_DESC);
   }
 
   private _renderHeading(field: any): string {
