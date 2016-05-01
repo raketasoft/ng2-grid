@@ -9,6 +9,7 @@ Lightweight data grid component for Angular 2.
 Clone repository and then run:
 
 * `npm install -g gulp` to install gulp globally
+* `npm install -g typings` to install typings globally *(optional)*
 * `npm install` to install local dependencies
 
 ## Node Scripts
