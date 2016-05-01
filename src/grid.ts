@@ -11,9 +11,9 @@ import * as _ from 'underscore';
         <table [style.width]="options.width">
           <thead>
             <tr>
-              <th *ngFor="#field of options.fields"
+              <th *ngFor="let field of options.fields"
                   [style.width]="field.width" [attr.data-id]="field.name"
-                  (click)="sort($event)">
+                  (click)="_sortClick($event)">
                 {{_renderHeading(field)}}
               </th>
             </tr>
@@ -24,8 +24,8 @@ import * as _ from 'underscore';
           [class.scroll]="options.height" [style.height]="options.height">
         <table class="table" [style.width]="options.width">
           <tbody>
-            <tr *ngFor="#row of options.data">
-              <td *ngFor="#field of options.fields" [style.width]="field.width">
+            <tr *ngFor="let row of options.data">
+              <td *ngFor="let field of options.fields" [style.width]="field.width">
                 {{_renderCell(field, row)}}
               </td>
             </tr>
@@ -54,23 +54,28 @@ export class Grid {
     }
   }
 
-  sort(event) {
+  sort(field) {
+    this._orderBy = field;
+    console.log(this._orderByType);
+    console.log(this._orderBy);
+    this.options.data = this._orderByType == Grid.ORDER_TYPE_ASC ?
+      _.chain(this.options.data).sortBy(this._orderBy).value() :
+      _.chain(this.options.data).sortBy(this._orderBy).reverse().value();
+  }
+
+  private _sortClick(event) {
     let element = <HTMLElement>event.target;
     let field = element.getAttribute('data-id');
 
-    this._orderByType = this._getSortOrder(field);
-    this._orderBy = field;
+    this._orderByType = this._getSortOrderByType(field);
 
-    let data = _.chain(this.options.data).sortBy(this._orderBy).value();
-
-    this.options.data = this._orderByType == Grid.ORDER_TYPE_ASC ?
-      data : data.reverse();
+    this.sort(field);
   }
 
-  private _getSortOrder(field: string): string {
-    return field != this._orderBy ? Grid.ORDER_TYPE_ASC :
+  private _getSortOrderByType(field: string): string {
+    return field != this._orderBy ? this._orderByType :
       (this._orderByType == Grid.ORDER_TYPE_ASC ?
-        Grid.ORDER_TYPE_DESC : Grid.ORDER_TYPE_DESC);
+        Grid.ORDER_TYPE_DESC : Grid.ORDER_TYPE_ASC);
   }
 
   private _renderHeading(field: any): string {
@@ -79,7 +84,7 @@ export class Grid {
 
   private _renderCell(field: any, row: any): string {
     let value = this._readProperty(row, field.name);
-    
+
     return value;
   }
 
