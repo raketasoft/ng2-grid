@@ -1,6 +1,6 @@
 import {Component, Input} from 'angular2/core';
 import {GridOptions} from './grid-options';
-import * as _ from 'underscore';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'ng-grid',
@@ -56,11 +56,8 @@ export class Grid {
 
   sort(field) {
     this._orderBy = field;
-    console.log(this._orderByType);
-    console.log(this._orderBy);
-    this.options.data = this._orderByType == Grid.ORDER_TYPE_ASC ?
-      _.chain(this.options.data).sortBy(this._orderBy).value() :
-      _.chain(this.options.data).sortBy(this._orderBy).reverse().value();
+
+    this.options.data = _.orderBy(this.options.data, [this._orderBy], [this._orderByType]);
   }
 
   private _sortClick(event) {

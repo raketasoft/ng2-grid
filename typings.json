@@ -2,8 +2,11 @@
   "ambientDependencies": {
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160317120654",
     "jasmine": "registry:dt/jasmine#2.2.0+20160412134438",
+    "lodash": "registry:dt/lodash#3.10.0+20160330154726",
     "node": "registry:dt/node#4.0.0+20160423143914",
-    "systemjs": "registry:dt/systemjs#0.18.4+20160417155658",
-    "underscore": "registry:dt/underscore#1.7.0+20160412141459"
+    "systemjs": "registry:dt/systemjs#0.18.4+20160417155658"
+  },
+  "dependencies": {
+    "lodash": "registry:npm/lodash#4.0.0+20160416211519"
   }
 }
