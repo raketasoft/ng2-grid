@@ -25,6 +25,29 @@
   cursor: pointer;
   border: 1px solid #ccc;
   padding: 10px;
+  text-align: left;
+}
+
+.ng-grid-header-sort {
+}
+
+.ng-grid-header-sort:before {
+    content: " ";
+    display: block;
+    float: right;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.ng-grid-header-sort-asc:before {
+    border-width: 0 5px 5px;
+    border-color: transparent transparent #666;
+}
+
+.ng-grid-header-sort-desc:before {
+    border-width: 5px 5px 0;
+    border-color: #666 transparent transparent;
 }
 
 .ng-grid-body table td {

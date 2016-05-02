@@ -6,13 +6,16 @@ import * as _ from 'lodash';
   selector: 'ng-grid',
   template: `
     <div class="ng-grid">
-      <div class="ng-grid-header" [style.width]="options.width" \n\
+      <div class="ng-grid-header" [style.width]="options.width"
           [class.scroll]="options.height">
         <table [style.width]="options.width">
           <thead>
             <tr>
               <th *ngFor="let field of options.fields"
                   [style.width]="field.width" [attr.data-id]="field.name"
+                  [class.ng-grid-header-sort]="_isOrderedByField(field)"
+                  [class.ng-grid-header-sort-asc]="_isOrderedByField(field, 'asc')"
+                  [class.ng-grid-header-sort-desc]="_isOrderedByField(field, 'desc')"
                   (click)="_sortClick($event)">
                 {{_renderHeading(field)}}
               </th>
@@ -20,7 +23,7 @@ import * as _ from 'lodash';
           </thead>
         </table>
       </div>
-      <div class="ng-grid-body" [style.width]="options.width" \n\
+      <div class="ng-grid-body" [style.width]="options.width"
           [class.scroll]="options.height" [style.height]="options.height">
         <table class="table" [style.width]="options.width">
           <tbody>
@@ -64,12 +67,21 @@ export class Grid {
     let element = <HTMLElement>event.target;
     let field = element.getAttribute('data-id');
 
-    this._orderByType = this._getSortOrderByType(field);
+    this._orderByType = this._getOrderByType(field);
 
     this.sort(field);
   }
 
-  private _getSortOrderByType(field: string): string {
+  private _isOrderedByField(field: any, orderByType?: string) {
+    let isOrderedByField = field.name == this._orderBy;
+    if (_.isUndefined(orderByType)) {
+      return isOrderedByField;
+    }
+
+    return isOrderedByField && this._orderByType == orderByType;
+  }
+
+  private _getOrderByType(field: string): string {
     return field != this._orderBy ? this._orderByType :
       (this._orderByType == Grid.ORDER_TYPE_ASC ?
         Grid.ORDER_TYPE_DESC : Grid.ORDER_TYPE_ASC);
