@@ -28,6 +28,10 @@
   text-align: left;
 }
 
+.ng-grid-header table th.ng-grid-header-sort-disable {
+  cursor: auto;
+}
+
 .ng-grid-header-sort {
 }
 

@@ -16,6 +16,7 @@ import * as _ from 'lodash';
                   [class.ng-grid-header-sort]="_isOrderedByField(field)"
                   [class.ng-grid-header-sort-asc]="_isOrderedByField(field, 'asc')"
                   [class.ng-grid-header-sort-desc]="_isOrderedByField(field, 'desc')"
+                  [class.ng-grid-header-sort-disable]="!_isSortingAllowed(field)"
                   (click)="_sortClick($event)">
                 {{_renderHeading(field)}}
               </th>
@@ -57,19 +58,26 @@ export class Grid {
     }
   }
 
-  sort(field) {
-    this._orderBy = field;
+  sort(fieldName: string) {
+    let field: any = _.find(this.options.fields, {'name': fieldName});
 
-    this.options.data = _.orderBy(this.options.data, [this._orderBy], [this._orderByType]);
+    if (this._isSortingAllowed(field)) {
+      this._orderByType = this._getOrderByType(field.name);
+      this._orderBy = field.name;
+
+      this.options.data = _.orderBy(this.options.data, [this._orderBy], [this._orderByType]);
+    }
+  }
+
+  private _isSortingAllowed(field: any) {
+    return _.isUndefined(field.sorting) || field.sorting;
   }
 
   private _sortClick(event) {
-    let element = <HTMLElement>event.target;
-    let field = element.getAttribute('data-id');
+    let element: HTMLElement = <HTMLElement>event.target;
+    let fieldName: string = element.getAttribute('data-id');
 
-    this._orderByType = this._getOrderByType(field);
-
-    this.sort(field);
+    this.sort(fieldName);
   }
 
   private _isOrderedByField(field: any, orderByType?: string): boolean {
@@ -81,8 +89,8 @@ export class Grid {
     return isOrderedByField && this._orderByType == orderByType;
   }
 
-  private _getOrderByType(field: string): string {
-    return field != this._orderBy ? this._orderByType :
+  private _getOrderByType(fieldName: string): string {
+    return fieldName != this._orderBy ? this._orderByType :
       (this._orderByType == Grid.ORDER_TYPE_ASC ?
         Grid.ORDER_TYPE_DESC : Grid.ORDER_TYPE_ASC);
   }

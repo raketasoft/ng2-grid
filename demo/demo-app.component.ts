@@ -27,7 +27,7 @@ export class DemoAppComponent {
         { heading: "Age", name: "age", width: "50px" },
         { heading: "Address", name: "address", width: "200px" },
         { heading: "Country", name: "country.name", width: "100px" },
-        { heading: "Married", name: "isMarried", width: "50px" },
+        { heading: "Married", name: "isMarried", width: "50px", sorting: false },
       ],
       data: DEMO_DATA,
       height: '300px'
