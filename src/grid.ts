@@ -72,7 +72,7 @@ export class Grid {
     this.sort(field);
   }
 
-  private _isOrderedByField(field: any, orderByType?: string) {
+  private _isOrderedByField(field: any, orderByType?: string): boolean {
     let isOrderedByField = field.name == this._orderBy;
     if (_.isUndefined(orderByType)) {
       return isOrderedByField;
@@ -92,25 +92,6 @@ export class Grid {
   }
 
   private _renderCell(field: any, row: any): string {
-    let value = this._readProperty(row, field.name);
-
-    return value;
-  }
-
-  private _readProperty(object: any, property: string): any {
-    if (typeof object === 'undefined') {
-      return false;
-    }
-
-    var _index = property.indexOf('.');
-
-    if(_index > -1) {
-      return this._readProperty(
-        object[property.substring(0, _index)],
-        property.substr(_index + 1)
-      );
-    }
-
-    return object[property];
+    return <string>_.get(row, field.name);
   }
 }
