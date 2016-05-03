@@ -73,7 +73,7 @@ export class Grid {
   }
 
   private _isSortingAllowed(field: GridColumn) {
-    return this.options.sorting && field.isSortingAllowed();
+    return this.options.sorting && field.sorting;
   }
 
   private _sortClick(event) {

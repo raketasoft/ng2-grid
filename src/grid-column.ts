@@ -21,8 +21,4 @@ export class GridColumn {
   renderCell(data: any): string {
     return <string>_.get(data, this.name);
   }
-
-  isSortingAllowed(): boolean {
-    return _.isUndefined(this.sorting) || this.sorting;
-  }
 }
