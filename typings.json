@@ -5,8 +5,5 @@
     "lodash": "registry:dt/lodash#3.10.0+20160330154726",
     "node": "registry:dt/node#4.0.0+20160423143914",
     "systemjs": "registry:dt/systemjs#0.18.4+20160417155658"
-  },
-  "dependencies": {
-    "lodash": "registry:npm/lodash#4.0.0+20160416211519"
   }
 }
