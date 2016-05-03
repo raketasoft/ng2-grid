@@ -28,14 +28,14 @@
   text-align: left;
 }
 
-.ng-grid-header table th.ng-grid-header-sort-disable {
+.ng-grid-header table th.ng-grid-heading.sort-disable {
   cursor: auto;
 }
 
-.ng-grid-header-sort {
+.ng-grid-heading.sort {
 }
 
-.ng-grid-header-sort:before {
+.ng-grid-heading.sort:before {
     content: " ";
     display: block;
     float: right;
@@ -44,12 +44,12 @@
     border-style: solid;
 }
 
-.ng-grid-header-sort-asc:before {
+.ng-grid-heading.sort-asc:before {
     border-width: 0 5px 5px;
     border-color: transparent transparent #666;
 }
 
-.ng-grid-header-sort-desc:before {
+.ng-grid-heading.sort-desc:before {
     border-width: 5px 5px 0;
     border-color: #666 transparent transparent;
 }

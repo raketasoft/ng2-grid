@@ -12,12 +12,12 @@ import * as _ from 'lodash';
         <table [style.width]="options.width">
           <thead>
             <tr>
-              <th *ngFor="let field of options.fields"
+              <th *ngFor="let field of options.fields" class="ng-grid-heading"
                   [style.width]="field.width" [attr.data-id]="field.name"
-                  [class.ng-grid-header-sort]="_isOrderedByField(field)"
-                  [class.ng-grid-header-sort-asc]="_isOrderedByField(field, 'asc')"
-                  [class.ng-grid-header-sort-desc]="_isOrderedByField(field, 'desc')"
-                  [class.ng-grid-header-sort-disable]="!_isSortingAllowed(field)"
+                  [class.sort]="_isOrderedByField(field)"
+                  [class.sort-asc]="_isOrderedByField(field, 'asc')"
+                  [class.sort-desc]="_isOrderedByField(field, 'desc')"
+                  [class.sort-disable]="!_isSortingAllowed(field)"
                   (click)="_sortClick($event)">
                 {{field.renderHeading(field)}}
               </th>
