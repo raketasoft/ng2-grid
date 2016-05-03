@@ -1,13 +1,16 @@
+import {GridColumn} from './grid-column';
+import * as _ from 'lodash';
+
 export class GridOptions {
-  width: string = '100%';
-  height: string;
-  sorting: boolean;
-  paging: boolean;
   data: Array<any> = [];
-  fields: Array<any> = [];
+  fields: Array<GridColumn> = [];
+  height: string;
+  paging: boolean;
+  sorting: boolean = true;
+  width: string = '100%';
 
   constructor(options?: any) {
-    if (typeof options !== 'undefined') {
+    if (!_.isUndefined(options)) {
       for (let option in options) {
         this[option] = options[option];
       }

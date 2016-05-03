@@ -1,4 +1,5 @@
 import {Component, Input} from 'angular2/core';
+import {GridColumn} from './grid-column';
 import {GridOptions} from './grid-options';
 import * as _ from 'lodash';
 
@@ -18,7 +19,7 @@ import * as _ from 'lodash';
                   [class.ng-grid-header-sort-desc]="_isOrderedByField(field, 'desc')"
                   [class.ng-grid-header-sort-disable]="!_isSortingAllowed(field)"
                   (click)="_sortClick($event)">
-                {{_renderHeading(field)}}
+                {{field.renderHeading(field)}}
               </th>
             </tr>
           </thead>
@@ -30,7 +31,7 @@ import * as _ from 'lodash';
           <tbody>
             <tr *ngFor="let row of options.data">
               <td *ngFor="let field of options.fields" [style.width]="field.width">
-                {{_renderCell(field, row)}}
+                {{field.renderCell(row)}}
               </td>
             </tr>
           </tbody>
@@ -51,15 +52,17 @@ export class Grid {
 
   ngOnInit() {
     if (this.options.fields.length == 0 && this.options.data.length > 0) {
-      this.options.fields = new Array<any>();
       for (let column in this.options.data[0]) {
-        this.options.fields.push({name: column});
+        this.options.fields.push(new GridColumn({name: column}));
       }
     }
+
   }
 
   sort(fieldName: string) {
-    let field: any = _.find(this.options.fields, {'name': fieldName});
+    let field: any = _.find(this.options.fields, function (item) {
+      return item.name == fieldName;
+    });
 
     if (this._isSortingAllowed(field)) {
       this._orderByType = this._getOrderByType(field.name);
@@ -69,8 +72,8 @@ export class Grid {
     }
   }
 
-  private _isSortingAllowed(field: any) {
-    return _.isUndefined(field.sorting) || field.sorting;
+  private _isSortingAllowed(field: GridColumn) {
+    return this.options.sorting && field.isSortingAllowed();
   }
 
   private _sortClick(event) {
@@ -80,7 +83,7 @@ export class Grid {
     this.sort(fieldName);
   }
 
-  private _isOrderedByField(field: any, orderByType?: string): boolean {
+  private _isOrderedByField(field: GridColumn, orderByType?: string): boolean {
     let isOrderedByField = field.name == this._orderBy;
     if (_.isUndefined(orderByType)) {
       return isOrderedByField;
@@ -93,13 +96,5 @@ export class Grid {
     return fieldName != this._orderBy ? this._orderByType :
       (this._orderByType == Grid.ORDER_TYPE_ASC ?
         Grid.ORDER_TYPE_DESC : Grid.ORDER_TYPE_ASC);
-  }
-
-  private _renderHeading(field: any): string {
-    return field.heading ? field.heading : field.name;
-  }
-
-  private _renderCell(field: any, row: any): string {
-    return <string>_.get(row, field.name);
   }
 }

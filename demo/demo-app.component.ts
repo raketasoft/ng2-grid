@@ -1,5 +1,5 @@
 import {Component} from 'angular2/core';
-import {Grid, GridOptions} from '../ng2-grid';
+import {Grid, GridColumn, GridOptions} from '../ng2-grid';
 import DEMO_DATA from './demo-data';
 
 @Component({
@@ -23,11 +23,11 @@ export class DemoAppComponent {
 
     this.columnOptions = new GridOptions({
       fields: [
-        { heading: "Name", name: "name", width: "150px" },
-        { heading: "Age", name: "age", width: "50px" },
-        { heading: "Address", name: "address", width: "200px" },
-        { heading: "Country", name: "country.name", width: "100px" },
-        { heading: "Married", name: "isMarried", width: "50px", sorting: false },
+        new GridColumn({ heading: "Name", name: "name", width: "150px" }),
+        new GridColumn({ heading: "Age", name: "age", width: "50px" }),
+        new GridColumn({ heading: "Address", name: "address", width: "200px" }),
+        new GridColumn({ heading: "Country", name: "country.name", width: "100px" }),
+        new GridColumn({ heading: "Married", name: "isMarried", width: "50px", sorting: false }),
       ],
       data: DEMO_DATA,
       height: '300px'
