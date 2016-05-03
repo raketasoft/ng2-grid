@@ -52,15 +52,17 @@ export class Grid {
 
   ngOnInit() {
     if (this.options.fields.length == 0 && this.options.data.length > 0) {
-      for (let column in this.options.data[0]) {
-        this.options.fields.push(new GridColumn({name: column}));
+      let row: any = this.options.data[0];
+      for (let key in row) {
+        this.options.fields.push(new GridColumn({
+          name: this._getColumnName(key, row)
+        }));
       }
     }
-
   }
 
   sort(fieldName: string) {
-    let field: any = _.find(this.options.fields, function (item) {
+    let field: GridColumn = _.find(this.options.fields, function (item) {
       return item.name == fieldName;
     });
 
@@ -97,4 +99,24 @@ export class Grid {
       (this._orderByType == Grid.ORDER_TYPE_ASC ?
         Grid.ORDER_TYPE_DESC : Grid.ORDER_TYPE_ASC);
   }
+
+  private _getColumnName(key: string, row: any): string {
+    if (_.isObject(row[key])) {
+      return key.concat('.', this._getNestedKey(row[key]))
+    }
+
+    return key;
+  }
+
+  private _getNestedKey(object: any): string {
+    let firstKey: string = _.keys(object)[0];
+    let firstKeyValue: any = object[firstKey];
+
+    if (_.isObject(firstKeyValue)) {
+      firstKey.concat('.', this._getNestedKey(firstKeyValue));
+    }
+
+    return firstKey;
+  }
+
 }
