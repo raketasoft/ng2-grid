@@ -23,10 +23,12 @@ import * as _ from 'lodash';
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody *ngIf="options.searching">
             <tr>
               <td *ngFor="let field of options.fields">
-                <input type="text" [attr.name]="field.name" (keyup.enter)="_searchInputOnEnter($event)" />
+                <input type="text" *ngIf="field.searching"
+                  [attr.name]="field.name"
+                  (keyup.enter)="_searchInputOnEnter($event)" />
               </td>
             </tr>
           </tbody>
@@ -88,16 +90,10 @@ export class Grid {
   }
 
   sort(fieldName: string) {
-    let field: GridColumn = _.find(this.options.fields, function(item) {
-      return item.name == fieldName;
-    });
+    this._orderByType = this._getOrderByType(fieldName);
+    this._orderBy = fieldName;
 
-    if (this._isSortingAllowed(field)) {
-      this._orderByType = this._getOrderByType(field.name);
-      this._orderBy = field.name;
-
-      this.options.data = _.orderBy(this.data, [this._orderBy], [this._orderByType]);
-    }
+    this.options.data = _.orderBy(this.data, [this._orderBy], [this._orderByType]);
   }
 
   private _isSortingAllowed(field: GridColumn) {
@@ -107,8 +103,16 @@ export class Grid {
   private _headingOnClick(event) {
     let element: HTMLElement = <HTMLElement>event.target;
     let fieldName: string = element.getAttribute('data-id');
+    let field: GridColumn = _.find(this.options.fields, function(item) {
+      return item.name == fieldName;
+    });
 
-    this.sort(fieldName);
+    if (this._isSortingAllowed(field)) {
+      this.sort(fieldName);
+    } else {
+      console.log('Sorting by "' + field.name + '" is not allowed.');
+    }
+
   }
 
   private _isOrderedByField(field: GridColumn, orderByType?: string): boolean {

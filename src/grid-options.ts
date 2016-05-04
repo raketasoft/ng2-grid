@@ -6,6 +6,7 @@ export class GridOptions {
   fields: Array<GridColumn> = [];
   height: string;
   paging: boolean;
+  searching: boolean = true;
   sorting: boolean = true;
   width: string = '100%';
 
