@@ -19,6 +19,6 @@ export class GridColumn {
   }
 
   renderCell(data: any): string {
-    return <string>_.get(data, this.name);
+    return _.get(data, this.name).toString();
   }
 }

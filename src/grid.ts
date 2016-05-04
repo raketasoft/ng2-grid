@@ -18,15 +18,22 @@ import * as _ from 'lodash';
                   [class.sort-asc]="_isOrderedByField(field, 'asc')"
                   [class.sort-desc]="_isOrderedByField(field, 'desc')"
                   [class.sort-disable]="!_isSortingAllowed(field)"
-                  (click)="_sortClick($event)">
+                  (click)="_headingOnClick($event)">
                 {{field.renderHeading(field)}}
               </th>
             </tr>
           </thead>
+          <tbody>
+            <tr>
+              <td *ngFor="let field of options.fields">
+                <input type="text" [attr.name]="field.name" (keyup.enter)="_searchInputOnEnter($event)" />
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <div class="ng-grid-body" [style.width]="options.width"
-          [class.scroll]="options.height" [style.height]="options.height">
+          [class.scroll]="options.height" [style.max-height]="options.height">
         <table class="table" [style.width]="options.width">
           <tbody>
             <tr *ngFor="let row of options.data">
@@ -44,6 +51,8 @@ import * as _ from 'lodash';
 export class Grid {
   @Input() options: GridOptions;
 
+  data: Array<any> = [];
+
   private _orderBy: string;
   private _orderByType: string = Grid.ORDER_TYPE_ASC;
 
@@ -59,10 +68,27 @@ export class Grid {
         }));
       }
     }
+    this.data = this.options.data;
+  }
+
+  private _searchInputOnEnter(event) {
+    let element: HTMLInputElement = <HTMLInputElement>event.target;
+    let fieldName: string = element.getAttribute('name');
+    let keyword: string = element.value;
+
+    this.search(fieldName, keyword);
+  }
+
+  search(fieldName: string, keyword: string) {
+    this.options.data = _.filter(this.data, function(item) {
+      let value: string = _.get(item, fieldName).toString();
+
+      return value.match(new RegExp(keyword, 'i'));
+    });
   }
 
   sort(fieldName: string) {
-    let field: GridColumn = _.find(this.options.fields, function (item) {
+    let field: GridColumn = _.find(this.options.fields, function(item) {
       return item.name == fieldName;
     });
 
@@ -70,7 +96,7 @@ export class Grid {
       this._orderByType = this._getOrderByType(field.name);
       this._orderBy = field.name;
 
-      this.options.data = _.orderBy(this.options.data, [this._orderBy], [this._orderByType]);
+      this.options.data = _.orderBy(this.data, [this._orderBy], [this._orderByType]);
     }
   }
 
@@ -78,7 +104,7 @@ export class Grid {
     return this.options.sorting && field.sorting;
   }
 
-  private _sortClick(event) {
+  private _headingOnClick(event) {
     let element: HTMLElement = <HTMLElement>event.target;
     let fieldName: string = element.getAttribute('data-id');
 

@@ -8,6 +8,12 @@
   border-spacing: 0;
 }
 
+.ng-grid table th,
+.ng-grid table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
 .ng-grid-header.scroll {
   overflow-x: hidden;
   overflow-y: scroll;
@@ -21,10 +27,13 @@
   background: #f1f1f1;
 }
 
+.ng-grid-header input {
+  width: 100%;
+  padding: 5px;
+}
+
 .ng-grid-header table th {
   cursor: pointer;
-  border: 1px solid #ccc;
-  padding: 10px;
   text-align: left;
 }
 
@@ -55,8 +64,6 @@
 }
 
 .ng-grid-body table td {
-  border: 1px solid #ccc;
-  padding: 10px;
 }
 
 .ng-grid-body table tr:first-child td {
