@@ -48,7 +48,7 @@ import * as _ from 'lodash';
           [class.scroll]="options.height" [style.max-height]="options.height">
         <table class="table" [style.width]="options.width">
           <tbody>
-            <tr *ngFor="let row of data">
+            <tr *ngFor="let row of _pageData">
               <td *ngFor="let column of options.columns" [style.width]="column.width">
                 {{column.renderCell(row)}}
               </td>
@@ -56,7 +56,31 @@ import * as _ from 'lodash';
           </tbody>
         </table>
       </div>
-      <div class="ng-grid-footer">
+      <div class="ng-grid-footer clearfix">
+        <div class="ng-grid-pager" *ngIf="options.paging">
+          <span>Pages:</span>
+          <a href="#" *ngIf="_pageIndex > 1" (click)="toPage(1)">First</a>
+          <a href="#" *ngIf="_pageIndex > 1"
+            (click)="toPage(_pageIndex - 1)">Prev</a>
+          <template ngFor let-page [ngForOf]="_pages">
+            <a href="#" *ngIf="page != _pageIndex"
+              (click)="toPage(page)">{{page}}</a>
+            <span *ngIf="page == _pageIndex">{{page}}</span>
+          </template>
+          <a href="#" *ngIf="_pageIndex < getTotalPages()"
+            (click)="toPage(_pageIndex + 1)">Next</a>
+          <a href="#" *ngIf="_pageIndex < getTotalPages()"
+            (click)="toPage(getTotalPages())">Last</a>
+          <span>{{_pageIndex}} of {{getTotalPages()}}</span>
+        </div>
+        <div class="ng-grid-pager-size" *ngIf="options.paging">
+          Results per page:
+          <select (change)="_onPageSizeChange($event)">
+            <option>20</option>
+            <option>50</option>
+            <option>100</option>
+          </select>
+        </div>
       </div>
     </div>`
 })
@@ -65,7 +89,11 @@ export class Grid {
 
   data: Array<any> = [];
 
-  private _filters: Array<string> = [];
+  private _filters: Object = new Object();
+  private _pages: Array<number> = [];
+  private _pageData: Array<any> = [];
+  private _pageIndex: number = 1;
+  private _pageSize: number;
   private _sortColumn: string;
   private _sortType: string = Grid.SORT_TYPE_ASC;
 
@@ -77,6 +105,89 @@ export class Grid {
       this._setDefaultColumnOptions();
     }
     this.data = this.options.data;
+
+    if (this.options.paging) {
+      this._pageSize = this.options.pageSize;
+      this.renderPage();
+    }
+  }
+
+  getPageIndex() {
+    return this._pageIndex;
+  }
+
+  getTotalPages(): number {
+    return Math.round(this.getTotalResults() / this._pageSize);
+  }
+
+  getTotalResults(): number {
+    return this.data.length;
+  }
+
+  getPageSize(): number {
+    return this._pageSize;
+  }
+
+  render() {
+    this.filter();
+    this.sort();
+
+    if (this.options.paging) {
+      this.renderPage();
+    }
+  }
+
+  renderPage() {
+    this._slice();
+    this._paginate();
+  }
+
+  toPage(page: number) {
+    if (this.options.paging) {
+      this._pageIndex = page;
+      this.renderPage();
+    }
+  }
+
+  changePageSize(pageSize: number) {
+    this._pageIndex = 1;
+    this._pageSize = pageSize;
+    this.renderPage();
+  }
+
+  private _onPageSizeChange(event: MouseEvent) {
+    let element: HTMLSelectElement = <HTMLSelectElement>event.target;
+    let pageSize: number = Number(element.options.item(element.selectedIndex).innerHTML);
+
+    this.changePageSize(pageSize);
+  }
+
+  private _slice() {
+    let start: number = (this._pageIndex-1) * this._pageSize
+    let end: number = start + this._pageSize;
+
+    this._pageData = _.slice(this.data, start, end);
+  }
+
+  private _paginate() {
+    let pageButtonCount: number = Math.min(this.options.pageButtonCount, this.getTotalPages());
+    let offsetLeft: number = Math.floor(pageButtonCount / 2);
+    let offsetRight: number = Math.ceil(pageButtonCount / 2) - 1;
+    let startIndex: number = this._pageIndex - offsetLeft;
+    let endIndex: number = this._pageIndex + offsetRight;
+
+    if (startIndex < 1) {
+      startIndex = 1;
+      endIndex = pageButtonCount;
+    } else if (endIndex > this.getTotalPages()) {
+      endIndex = this.getTotalPages();
+      startIndex = endIndex - pageButtonCount + 1;
+    }
+
+    this._pages = [];
+    for (let i = startIndex; i <= endIndex; i++) {
+      this._pages.push(i);
+    }
   }
 
   /**
@@ -112,7 +223,10 @@ export class Grid {
       return match;
     });
 
-    this.sort();
+    // reset to first page when data is filtered
+    if (this.options.paging) {
+      this._pageIndex = 1;
+    }
   }
 
   /**
@@ -139,7 +253,7 @@ export class Grid {
   private _onFilterInputEnter(event: MouseEvent) {
     this._onFilterInputBlur(event);
 
-    this.filter();
+    this.render();
   }
 
   /**
@@ -182,6 +296,10 @@ export class Grid {
     if (this._isSortingAllowed(column)) {
       this.setSort(columnName, this._getSortType(column));
       this.sort();
+
+      if (this.options.paging) {
+        this._slice();
+      }
     } else {
       console.log('Sorting by "' + column.name + '" is not allowed.');
     }

@@ -13,7 +13,9 @@ export class GridOptions {
   data: Array<any> = [];
   heading: boolean = true;
   height: string;
-  paging: boolean;
+  pageSize: number = 20;
+  pageButtonCount: number = 5;
+  paging: boolean = true;
   filtering: boolean = true;
   sorting: boolean = true;
   width: string = '100%';

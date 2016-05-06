@@ -1,6 +1,4 @@
 .ng-grid {
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
 }
 
 .ng-grid table {
@@ -13,6 +11,10 @@
 .ng-grid table td {
   border: 1px solid #ccc;
   padding: 10px;
+}
+
+.ng-grid-header {
+  border-top: 1px solid #ccc;
 }
 
 .ng-grid-header.scroll {
@@ -69,6 +71,10 @@
     border-color: #666 transparent transparent;
 }
 
+.ng-grid-body {
+  border-bottom: 1px solid #ccc;
+}
+
 .ng-grid-body table td {
 }
 
@@ -86,4 +92,35 @@
 }
 
 .ng-grid-footer {
+  margin-top: 10px;
+}
+
+.ng-grid-pager a,
+.ng-grid-pager span,
+.ng-grid-pager-size a,
+.ng-grid-pager-size span,
+.ng-grid-pager-size select {
+  margin: 0 5px;
+}
+
+.ng-grid-pager {
+  float: left;
+}
+
+.ng-grid-pager *:first-child {
+  margin-left: 0;
+}
+
+.ng-grid-pager-size {
+  float: right;
+}
+
+.ng-grid-pager-size *:last-child {
+  margin-right: 0;
+}
+
+.clearfix:after {
+    content:" ";
+    display:block;
+    clear:both;
 }
