@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 export class GridOptions {
   columns: Array<GridColumn> = [];
   data: Array<any> = [];
+  heading: boolean = true;
   height: string;
   paging: boolean;
   filtering: boolean = true;

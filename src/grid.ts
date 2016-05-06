@@ -19,7 +19,7 @@ import * as _ from 'lodash';
       <div class="ng-grid-header" [style.width]="options.width"
           [class.scroll]="options.height">
         <table [style.width]="options.width">
-          <thead>
+          <thead *ngIf="options.heading">
             <tr>
               <th *ngFor="let column of options.columns" class="ng-grid-heading"
                   [style.width]="column.width" [attr.data-id]="column.name"

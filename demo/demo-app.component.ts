@@ -18,8 +18,7 @@ export class DemoAppComponent {
   ngOnInit() {
     this.basicOptions = new GridOptions({
       data: DEMO_DATA,
-      height: '300px',
-      filtering: false
+      height: '300px'
     });
 
     this.columnOptions = new GridOptions({
@@ -28,7 +27,7 @@ export class DemoAppComponent {
         new GridColumn({ heading: "Age", name: "age", width: "50px" }),
         new GridColumn({ heading: "Address", name: "address", width: "200px" }),
         new GridColumn({ heading: "Country", name: "country.name", width: "100px" }),
-        new GridColumn({ heading: "Married", name: "isMarried", width: "50px", sorting: false, searching: false }),
+        new GridColumn({ heading: "Married", name: "isMarried", width: "50px", sorting: false, filtering: false }),
       ],
       data: DEMO_DATA,
       height: '300px'
