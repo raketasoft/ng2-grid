@@ -18,17 +18,18 @@ import * as _ from 'lodash';
                   [class.sort-asc]="_isOrderedByField(field, 'asc')"
                   [class.sort-desc]="_isOrderedByField(field, 'desc')"
                   [class.sort-disable]="!_isSortingAllowed(field)"
-                  (click)="_headingOnClick($event)">
+                  (click)="_onHeadingClick($event)">
                 {{field.renderHeading(field)}}
               </th>
             </tr>
           </thead>
-          <tbody *ngIf="options.searching">
+          <tbody *ngIf="options.filtering">
             <tr>
               <td *ngFor="let field of options.fields">
-                <input type="text" *ngIf="field.searching"
+                <input type="text" *ngIf="field.filtering"
                   [attr.name]="field.name"
-                  (keyup.enter)="_searchInputOnEnter($event)" />
+                  (keyup.enter)="_onFilterInputEnter($event)"
+                  (blur)="_onFilterInputBlur($event)" />
               </td>
             </tr>
           </tbody>
@@ -55,6 +56,7 @@ export class Grid {
 
   data: Array<any> = [];
 
+  private _filters: Array<string> = [];
   private _orderBy: string;
   private _orderByType: string = Grid.ORDER_TYPE_ASC;
 
@@ -73,34 +75,60 @@ export class Grid {
     this.data = this.options.data;
   }
 
-  private _searchInputOnEnter(event) {
+  setFilter(fieldName: string, keyword: string) {
+    if (!_.isEmpty(keyword)) {
+      this._filters[fieldName] = keyword;
+    } else if (!_.isEmpty(this._filters[fieldName])) {
+      delete this._filters[fieldName];
+    }
+  }
+
+  filter() {
+    var self = this;
+
+    this.options.data = _.filter(this.data, function(item) {
+      var match: boolean = true;
+      for (let filter in self._filters) {
+        let value: string = _.get(item, filter).toString();
+
+        match = match &&
+          (value.match(new RegExp(self._filters[filter], 'i')) !== null);
+      }
+
+      return match;
+    });
+
+    this.sort();
+  }
+
+
+  private _onFilterInputBlur(event) {
     let element: HTMLInputElement = <HTMLInputElement>event.target;
     let fieldName: string = element.getAttribute('name');
-    let keyword: string = element.value;
+    let keyword: string = element.value.trim();
 
-    this.search(fieldName, keyword);
+    this.setFilter(fieldName, keyword);
   }
 
-  search(fieldName: string, keyword: string) {
-    this.options.data = _.filter(this.data, function(item) {
-      let value: string = _.get(item, fieldName).toString();
+  private _onFilterInputEnter(event) {
+    this._onFilterInputBlur(event);
 
-      return value.match(new RegExp(keyword, 'i'));
-    });
+    this.filter();
   }
 
-  sort(fieldName: string) {
-    this._orderByType = this._getOrderByType(fieldName);
-    this._orderBy = fieldName;
-
-    this.options.data = _.orderBy(this.data, [this._orderBy], [this._orderByType]);
+  setSort(sortField: string, sortType?:string) {
+    if (!_.isUndefined(sortType)) {
+      this._orderByType = sortType;
+    }
+    this._orderBy = sortField;
   }
 
-  private _isSortingAllowed(field: GridColumn) {
-    return this.options.sorting && field.sorting;
+  sort() {
+    this.options.data = _.orderBy(this.options.data, [this._orderBy],
+      [this._orderByType]);
   }
 
-  private _headingOnClick(event) {
+  private _onHeadingClick(event) {
     let element: HTMLElement = <HTMLElement>event.target;
     let fieldName: string = element.getAttribute('data-id');
     let field: GridColumn = _.find(this.options.fields, function(item) {
@@ -108,11 +136,15 @@ export class Grid {
     });
 
     if (this._isSortingAllowed(field)) {
-      this.sort(fieldName);
+      this.setSort(fieldName, this._getOrderByType(fieldName));
+      this.sort();
     } else {
       console.log('Sorting by "' + field.name + '" is not allowed.');
     }
+  }
 
+  private _isSortingAllowed(field: GridColumn) {
+    return this.options.sorting && field.sorting;
   }
 
   private _isOrderedByField(field: GridColumn, orderByType?: string): boolean {
@@ -148,5 +180,4 @@ export class Grid {
 
     return firstKey;
   }
-
 }

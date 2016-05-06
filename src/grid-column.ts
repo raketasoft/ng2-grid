@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 export class GridColumn {
   heading: string;
   name: string;
-  searching: boolean = true;
+  filtering: boolean = true;
   sorting: boolean = true;
   width: string;
 
