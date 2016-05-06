@@ -4,6 +4,10 @@ Lightweight data grid component for Angular 2.
 
 ## Features
 
+* Sorting
+* Filtering
+* Paging
+
 ## Installation
 
 Clone repository and then run:
@@ -22,6 +26,7 @@ watch for changes
 ## TBD
 
 * Integrate unit tests with Jasmine and Karma
+* Integrate Sass for style sheets
 
 ## License
 

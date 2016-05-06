@@ -19,11 +19,11 @@ export class DemoAppComponent {
     this.basicOptions = new GridOptions({
       data: DEMO_DATA,
       height: '300px',
-      searching: false
+      filtering: false
     });
 
     this.columnOptions = new GridOptions({
-      fields: [
+      columns: [
         new GridColumn({ heading: "Name", name: "name", width: "150px" }),
         new GridColumn({ heading: "Age", name: "age", width: "50px" }),
         new GridColumn({ heading: "Address", name: "address", width: "200px" }),
