@@ -57,11 +57,10 @@ import * as _ from 'lodash';
         </table>
       </div>
       <div class="ng-grid-footer clearfix">
-        <div class="ng-grid-pager" *ngIf="options.paging">
+        <div class="ng-grid-pager {{options.pageElementPosition}}" *ngIf="options.paging">
           <span>Pages:</span>
           <a href="#" *ngIf="_pageIndex > 1" (click)="toPage(1)">First</a>
-          <a href="#" *ngIf="_pageIndex > 1"
-            (click)="toPage(_pageIndex - 1)">Prev</a>
+          <a href="#" *ngIf="_pageIndex > 1" (click)="toPage(_pageIndex - 1)">Prev</a>
           <template ngFor let-page [ngForOf]="_pages">
             <a href="#" *ngIf="page != _pageIndex"
               (click)="toPage(page)">{{page}}</a>
@@ -73,12 +72,14 @@ import * as _ from 'lodash';
             (click)="toPage(getTotalPages())">Last</a>
           <span>{{_pageIndex}} of {{getTotalPages()}}</span>
         </div>
-        <div class="ng-grid-pager-size" *ngIf="options.paging">
-          Results per page:
-          <select (change)="_onPageSizeChange($event)">
-            <option>20</option>
-            <option>50</option>
-            <option>100</option>
+        <div class="ng-grid-pager-size {{options.pageSizeElementPosition}}"
+          *ngIf="_pageSizeOptionsEnabled()">
+          <span>Page size:</span>
+          <select [(ngModel)]="_pageSize" (change)="_onPageSizeChange($event)">
+            <option *ngFor="let value of options.pageSizeOptions"
+              [ngValue]="value">
+              {{value}}
+            </option>
           </select>
         </div>
       </div>
@@ -108,7 +109,7 @@ export class Grid {
 
     if (this.options.paging) {
       this._pageSize = this.options.pageSize;
-      this.renderPage();
+      this._renderPage();
     }
   }
 
@@ -117,7 +118,7 @@ export class Grid {
   }
 
   getTotalPages(): number {
-    return Math.round(this.getTotalResults() / this._pageSize);
+    return Math.floor(this.getTotalResults() / this._pageSize);
   }
 
   getTotalResults(): number {
@@ -128,31 +129,35 @@ export class Grid {
     return this._pageSize;
   }
 
+  private _pageSizeOptionsEnabled() {
+    return this.options.paging && !_.isEmpty(this.options.pageSizeOptions);
+  }
+
   render() {
     this.filter();
     this.sort();
 
     if (this.options.paging) {
-      this.renderPage();
+      this._renderPage();
     }
-  }
-
-  renderPage() {
-    this._slice();
-    this._paginate();
   }
 
   toPage(page: number) {
     if (this.options.paging) {
       this._pageIndex = page;
-      this.renderPage();
+      this._renderPage();
     }
   }
 
   changePageSize(pageSize: number) {
     this._pageIndex = 1;
     this._pageSize = pageSize;
-    this.renderPage();
+    this._renderPage();
+  }
+
+  private _renderPage() {
+    this._slice();
+    this._paginate();
   }
 
   private _onPageSizeChange(event: MouseEvent) {

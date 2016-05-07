@@ -104,18 +104,24 @@
 }
 
 .ng-grid-pager {
-  float: left;
-}
-
-.ng-grid-pager *:first-child {
-  margin-left: 0;
 }
 
 .ng-grid-pager-size {
-  float: right;
 }
 
-.ng-grid-pager-size *:last-child {
+.ng-grid-pager.left,
+.ng-grid-pager.left *:first-child
+.ng-grid-pager-size.left,
+.ng-grid-pager-size.left *:first-child {
+  float: left;
+  margin-left: 0;
+}
+
+.ng-grid-pager.right,
+.ng-grid-pager.right *:last-child,
+.ng-grid-pager-size.right,
+.ng-grid-pager-size.right *:last-child {
+  float: right;
   margin-right: 0;
 }
 
