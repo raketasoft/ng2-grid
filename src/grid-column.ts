@@ -1,4 +1,5 @@
-import * as _ from 'lodash';
+  import {Object} from './object';
+  import * as _ from 'lodash';
 
 /**
  * Grid column class.
@@ -8,25 +9,12 @@ import * as _ from 'lodash';
  * @author Branimir Borisov <branimir@raketasoft.com>
  * @since 1.0.0-alpha
  */
-export class GridColumn {
+export class GridColumn extends Object {
   heading: string;
   name: string;
   filtering: boolean = true;
   sorting: boolean = true;
   width: string;
-
-  /**
-   * Class constructor.
-   *
-   * @param {any} options Optional, if given options would be assigned as properties
-   */
-  constructor(options?: any) {
-    if (!_.isUndefined(options)) {
-      for (let option in options) {
-        this[option] = options[option];
-      }
-    }
-  }
 
   /**
    * Render grid heading for this column.

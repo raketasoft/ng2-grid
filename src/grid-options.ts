@@ -1,3 +1,4 @@
+import {Object} from './object';
 import {GridColumn} from './grid-column';
 import * as _ from 'lodash';
 
@@ -8,9 +9,9 @@ import * as _ from 'lodash';
  * @author Branimir Borisov <branimir@raketasoft.com>
  * @since 1.0.0-alpha
  */
-export class GridOptions {
-  columns: Array<GridColumn> = [];
-  data: Array<any> = [];
+export class GridOptions extends Object {
+  columns: Array<GridColumn>;
+  data: Array<any>;
   heading: boolean = true;
   height: string;
   paging: boolean = true;
@@ -23,16 +24,14 @@ export class GridOptions {
   sorting: boolean = true;
   width: string = '100%';
 
-  /**
-   * Class constructor.
-   *
-   * @param {any} options Optional, if given options would be assigned as properties
-   */
-  constructor(options?: any) {
-    if (!_.isUndefined(options)) {
-      for (let option in options) {
-        this[option] = options[option];
-      }
+  constructor(params?: any) {
+    super(params);
+
+    if (_.isUndefined(this.columns)) {
+      this.columns = [];
+    }
+    if (_.isUndefined(this.data)) {
+      this.data = [];
     }
   }
 }

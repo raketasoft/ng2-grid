@@ -118,7 +118,7 @@ export class Grid {
   }
 
   getTotalPages(): number {
-    return Math.floor(this.getTotalResults() / this._pageSize);
+    return Math.ceil(this.getTotalResults() / this._pageSize);
   }
 
   getTotalResults(): number {
