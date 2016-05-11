@@ -1,5 +1,5 @@
-import {Component} from 'angular2/core';
-import {Grid, GridColumn, GridOptions, GridDataProvider} from '../ng2-grid';
+import { Component } from '@angular/core';
+import { Grid, GridColumn, GridOptions, GridDataProvider } from '../ng2-grid';
 import DATA from './data';
 
 @Component({

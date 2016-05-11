@@ -75,12 +75,16 @@ gulp.task('resources', ['resources:src', 'resources:demo']);
 gulp.task('libs', () => {
   return gulp.src([
       'es6-shim/es6-shim.min.js',
-      'systemjs/dist/system-polyfills.js',
+      'zone.js/dist/zone.js',
+      'reflect-metadata/Reflect.js',
       'systemjs/dist/system.src.js',
-      'angular2/bundles/angular2-polyfills.js',
-      'angular2/es6/dev/src/testing/shims_for_IE.js',
-      'angular2/bundles/angular2.dev.js',
-      'rxjs/bundles/Rx.js',
+      'rxjs/**/*.js',
+      'angular2-in-memory-web-api/core.js',
+      '@angular/common/**/*.js',
+      '@angular/compiler/**/*.js',
+      '@angular/core/**/*.js',
+      '@angular/platform-browser-dynamic/**/*.js',
+      '@angular/platform-browser/**/*.js',
       'lodash/lodash.js'
     ], {cwd: 'node_modules/**'}) /* Glob required here. */
     .pipe(gulp.dest('build/lib'));

@@ -5,27 +5,17 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="src/assets/ng2-grid.css">
     <!-- 1. Load libraries -->
-    <!-- IE required polyfills, in this exact order -->
+    <!-- Polyfill(s) for older browsers -->
     <script src="lib/es6-shim/es6-shim.min.js"></script>
-    <script src="lib/systemjs/dist/system-polyfills.js"></script>
-    <script src="lib/angular2/es6/dev/src/testing/shims_for_IE.js"></script>
-    <script src="lib/angular2/bundles/angular2-polyfills.js"></script>
+
+    <script src="lib/zone.js/dist/zone.js"></script>
+    <script src="lib/reflect-metadata/Reflect.js"></script>
     <script src="lib/systemjs/dist/system.src.js"></script>
-    <script>
-      System.config({
-        defaultJSExtensions: true,
-        paths: {
-            lodash: 'lib/lodash/lodash.js'
-        }
-      });
-    </script>
-    <script src="lib/rxjs/bundles/Rx.js"></script>
-    <script src="lib/angular2/bundles/angular2.dev.js"></script>
-    <script src="lib/lodash/lodash.js"></script>
+
     <!-- 2. Configure SystemJS -->
+    <script src="systemjs.config.js"></script>
     <script>
-      System.import('demo/main')
-            .then(null, console.error.bind(console));
+      System.import('demo').catch(function(err){ console.error(err);  });
     </script>
   </head>
   <!-- 3. Display the application -->
