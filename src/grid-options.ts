@@ -1,6 +1,6 @@
-import {Loadable} from './loadable';
-import {GridColumn} from './grid-column';
-import {GridDataProvider} from './grid-data-provider';
+import { Loadable } from './loadable';
+import { GridColumn } from './grid-column';
+import { GridDataProvider } from './grid-data-provider';
 import * as _ from 'lodash';
 
 /**

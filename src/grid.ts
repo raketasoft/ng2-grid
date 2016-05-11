@@ -1,8 +1,8 @@
-import {Component, Input} from '@angular/core';
-import {GridColumn} from './grid-column';
-import {GridOptions} from './grid-options';
-import {GridDataProvider} from './grid-data-provider';
-import {GridSort} from './grid-sort';
+import { Component, Input } from '@angular/core';
+import { GridColumn } from './grid-column';
+import { GridOptions } from './grid-options';
+import { GridDataProvider } from './grid-data-provider';
+import { GridSort } from './grid-sort';
 import * as _ from 'lodash';
 
 /**

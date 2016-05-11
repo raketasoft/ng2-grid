@@ -1,5 +1,5 @@
-import {Loadable} from './loadable';
-import {GridSort} from './grid-sort';
+import { Loadable } from './loadable';
+import { GridSort } from './grid-sort';
 import * as _ from 'lodash';
 
 /**

@@ -1,4 +1,4 @@
-  import {Loadable} from './loadable';
+  import { Loadable } from './loadable';
   import * as _ from 'lodash';
 
 /**
