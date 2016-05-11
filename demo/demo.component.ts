@@ -1,9 +1,9 @@
 import {Component} from 'angular2/core';
 import {Grid, GridColumn, GridOptions, GridDataProvider} from '../ng2-grid';
-import DEMO_DATA from './demo-data';
+import DATA from './data';
 
 @Component({
-  selector: 'demo-app',
+  selector: 'demo',
   template: `
     <h2>Basic Example</h2>
     <ng-grid [options]="basicOptions">Loading...</ng-grid>
@@ -13,7 +13,7 @@ import DEMO_DATA from './demo-data';
     <ng-grid [options]="remoteDataOptions">Loading...</ng-grid>`,
   directives: [Grid]
 })
-export class DemoAppComponent {
+export class DemoComponent {
   basicOptions: GridOptions;
   columnOptions: GridOptions;
   remoteDataOptions: GridOptions;
@@ -21,11 +21,11 @@ export class DemoAppComponent {
   ngOnInit() {
 
     this.basicOptions = new GridOptions({
-      dataProvider: new GridDataProvider({ data: DEMO_DATA }),
+      dataProvider: new GridDataProvider({ data: DATA }),
       height: '300px'
     });
 
-    var columnDataProvider: GridDataProvider = new GridDataProvider({ data: DEMO_DATA });
+    var columnDataProvider: GridDataProvider = new GridDataProvider({ data: DATA });
     columnDataProvider.setSort('name', 'asc');
     this.columnOptions = new GridOptions({
       columns: [
@@ -44,7 +44,7 @@ export class DemoAppComponent {
     this.remoteDataOptions = new GridOptions({
       dataProvider: new GridDataProvider({
         useRemoteData: true,
-        url: "http://localhost:8000/demo/demo-data.json"
+        url: "http://localhost:8000/demo/data.json"
       }),
       height: '300px'
     });
