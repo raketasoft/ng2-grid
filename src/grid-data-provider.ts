@@ -12,7 +12,10 @@ import * as _ from 'lodash';
 export class GridDataProvider extends Loadable {
   data: Array<any>;
   pageSize: number;
-  useRemoteData: boolean;
+  url: string;
+  pageParam: string;
+  pageSizeParam: string;
+  sortParam: string;
 
   private _filterData: Array<any>;
   private _filters: Object = new Object();
@@ -21,7 +24,9 @@ export class GridDataProvider extends Loadable {
   private _sortType: string = GridSort.TYPE_ASC;
 
   static DEFAULT_PAGE_SIZE_VALUE: number = 20;
-  static DEFAULT_USE_REMOTE_DATA_VALUE: boolean = false;
+  static DEFAULT_PAGE_PARAM_VALUE: string = 'page';
+  static DEFAULT_PAGE_SIZE_PARAM_VALUE: string = 'pageSize';
+  static DEFAULT_SORT_PARAM_VALUE: string = 'sortBy';
 
   /**
    * Class constructor.
@@ -35,9 +40,6 @@ export class GridDataProvider extends Loadable {
     if (_.isUndefined(this.pageSize)) {
       this.pageSize = GridDataProvider.DEFAULT_PAGE_SIZE_VALUE;
     }
-    if (_.isUndefined(this.useRemoteData)) {
-      this.useRemoteData = GridDataProvider.DEFAULT_USE_REMOTE_DATA_VALUE;
-    }
     this._filterData = this.data;
   }
 
@@ -48,7 +50,7 @@ export class GridDataProvider extends Loadable {
    * @returns {Array<any>}
    */
   getData(page?: number): Array<any> {
-    if (!this.useRemoteData) {
+    if (_.isUndefined(this.url)) {
       this._filter();
       this._sort();
       this._slice(page);
@@ -74,7 +76,7 @@ export class GridDataProvider extends Loadable {
    * @returns {number}
    */
   getTotalCount(): number {
-    if (!this.useRemoteData) {
+    if (_.isUndefined(this.url)) {
       return this._filterData.length;
     }
   }

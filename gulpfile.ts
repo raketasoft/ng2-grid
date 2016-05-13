@@ -81,10 +81,17 @@ gulp.task('libs', () => {
       'rxjs/**/*.js',
       'angular2-in-memory-web-api/core.js',
       '@angular/common/**/*.js',
+      '@angular/common/**/*.js.map',
       '@angular/compiler/**/*.js',
+      '@angular/compiler/**/*.js.map',
       '@angular/core/**/*.js',
+      '@angular/core/**/*.js.map',
+      '@angular/http/**/*.js',
+      '@angular/http/**/*.js.map',
       '@angular/platform-browser-dynamic/**/*.js',
+      '@angular/platform-browser-dynamic/**/*.js.map',
       '@angular/platform-browser/**/*.js',
+      '@angular/platform-browser/**/*.js.map',
       'lodash/lodash.js'
     ], {cwd: 'node_modules/**'}) /* Glob required here. */
     .pipe(gulp.dest('build/lib'));

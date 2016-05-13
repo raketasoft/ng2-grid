@@ -1,6 +1,4 @@
 import { Loadable } from './loadable';
-import { GridColumn } from './grid-column';
-import { GridDataProvider } from './grid-data-provider';
 import * as _ from 'lodash';
 
 /**
@@ -11,21 +9,26 @@ import * as _ from 'lodash';
  * @since 1.0.0-alpha
  */
 export class GridOptions extends Loadable {
-  columns: Array<GridColumn>;
-  dataProvider: GridDataProvider;
+  columns: Array<any>;
+  data: Array<any>;
   defaultPageSize: number;
+  defaultSortColumn: string;
+  defaultSortType: string;
   heading: boolean;
   height: string;
   pageButtonCount: number;
   pageElementPosition: string;
+  pageParam: string;
   pageSizeOptions: Array<number>
   pageSizeElementPosition: string;
+  pageSizeParam: string;
   paging: boolean;
   filtering: boolean;
+  sortParam: string;
   sorting: boolean;
+  url: string;
   width: string;
 
-  static DEFAULT_PAGE_SIZE_VALUE: number = 20;
   static DEFAULT_HEADING_VALUE: boolean = true;
   static DEFAULT_PAGE_BUTTON_COUNT_VALUE: number = 5;
   static DEFAULT_PAGE_ELEMENT_POSITION_VALUE: string = 'left';
@@ -42,15 +45,6 @@ export class GridOptions extends Loadable {
    */
   constructor(params?: any) {
     super(params);
-    if (_.isUndefined(this.columns)) {
-      this.columns = [];
-    }
-    if (_.isUndefined(this.dataProvider)) {
-      this.dataProvider = new GridDataProvider();
-    }
-    if (_.isUndefined(this.defaultPageSize)) {
-      this.defaultPageSize = GridOptions.DEFAULT_PAGE_SIZE_VALUE;
-    }
     if (_.isUndefined(this.heading)) {
       this.heading = GridOptions.DEFAULT_HEADING_VALUE;
     }
@@ -78,6 +72,5 @@ export class GridOptions extends Loadable {
     if (_.isUndefined(this.width)) {
       this.width = GridOptions.DEFAULT_WIDTH_VALUE;
     }
-    this.dataProvider.pageSize = this.defaultPageSize;
   }
 }

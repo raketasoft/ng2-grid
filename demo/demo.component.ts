@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Grid, GridColumn, GridOptions, GridDataProvider } from '../ng2-grid';
-import DATA from './data';
+import { Grid, GridOptions } from '../ng2-grid';
+import DEMO_DATA from './data';
 
 @Component({
   selector: 'demo',
@@ -20,32 +20,25 @@ export class DemoComponent {
 
   ngOnInit() {
 
-    this.basicOptions = new GridOptions({
-      dataProvider: new GridDataProvider({ data: DATA }),
-      height: '300px'
-    });
+    this.basicOptions = new GridOptions({data: DEMO_DATA, height: '300px'});
 
-    var columnDataProvider: GridDataProvider = new GridDataProvider({ data: DATA });
-    columnDataProvider.setSort('name', 'asc');
     this.columnOptions = new GridOptions({
+      data: DEMO_DATA,
       columns: [
-        new GridColumn({ heading: "Name", name: "name", width: "150px" }),
-        new GridColumn({ heading: "Age", name: "age", width: "50px" }),
-        new GridColumn({ heading: "Address", name: "address", width: "200px" }),
-        new GridColumn({ heading: "Country", name: "country.name", width: "100px" }),
-        new GridColumn({ heading: "Married", name: "isMarried", width: "50px",
-          sorting: false, filtering: false }),
+        {heading: "Name", name: "name", width: "150px"},
+        {heading: "Age", name: "age", width: "50px"},
+        {heading: "Address", name: "address", width: "200px"},
+        {heading: "Country", name: "country.name", width: "100px"},
+        {heading: "Married", name: "isMarried", width: "50px", sorting: false, filtering: false}
       ],
-      dataProvider: columnDataProvider,
       defaultPageSize: 50,
+      defaultSortColumn: 'name',
+      defaultSortType: 'desc',
       height: '300px'
     });
 
     this.remoteDataOptions = new GridOptions({
-      dataProvider: new GridDataProvider({
-        useRemoteData: true,
-        url: "http://localhost:8000/demo/data.json"
-      }),
+      url: "http://localhost:8000/demo/data.json",
       height: '300px'
     });
   }

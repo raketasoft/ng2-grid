@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { GridColumn } from './grid-column';
 import { GridOptions } from './grid-options';
+import { GridColumn } from './grid-column';
 import { GridDataProvider } from './grid-data-provider';
 import { GridSort } from './grid-sort';
 import * as _ from 'lodash';
@@ -22,7 +22,7 @@ import * as _ from 'lodash';
         <table [style.width]="options.width">
           <thead *ngIf="options.heading">
             <tr>
-              <th *ngFor="let column of options.columns" class="ng-grid-heading"
+              <th *ngFor="let column of _columns" class="ng-grid-heading"
                   [style.width]="column.width" [attr.data-id]="column.name"
                   [class.sort]="_isSortedBy(column)"
                   [class.sort-asc]="_isSortedBy(column, 'asc')"
@@ -35,7 +35,7 @@ import * as _ from 'lodash';
           </thead>
           <tbody *ngIf="options.filtering">
             <tr>
-              <td *ngFor="let column of options.columns">
+              <td *ngFor="let column of _columns">
                 <input type="text" *ngIf="column.filtering"
                   [attr.name]="column.name"
                   (keyup.enter)="_onFilterInputEnter($event)"
@@ -50,7 +50,7 @@ import * as _ from 'lodash';
         <table class="table" [style.width]="options.width">
           <tbody>
             <tr *ngFor="let row of _data">
-              <td *ngFor="let column of options.columns" [style.width]="column.width">
+              <td *ngFor="let column of _columns" [style.width]="column.width">
                 {{column.renderCell(row)}}
               </td>
             </tr>
@@ -93,6 +93,7 @@ import * as _ from 'lodash';
 export class Grid {
   @Input() options: GridOptions;
 
+  private _columns: Array<GridColumn> = [];
   private _dataProvider: GridDataProvider;
   private _data: Array<any>;
   private _pageIndex: number = 1;
@@ -102,10 +103,11 @@ export class Grid {
    * Init properties and render data after component initialization.
    */
   ngOnInit() {
-    this._dataProvider = this.options.dataProvider;
-    if (_.isEmpty(this.options.columns) && !_.isEmpty(this._dataProvider.data)) {
-      this._setDefaultColumnOptions();
+    if (_.isUndefined(this.options)) {
+      this.options = new GridOptions();
     }
+    this._initColumns();
+    this._initDataProvider();
     this._render();
   }
 
@@ -177,6 +179,45 @@ export class Grid {
   sort(sortColumn: string, sortType?: string) {
     this._dataProvider.setSort(sortColumn, sortType);
     this._render();
+  }
+
+  /**
+   * Initialize data provider based on grid options.
+   */
+  private _initDataProvider() {
+    this._dataProvider = new GridDataProvider({
+      data: this.options.data,
+      pageParam: this.options.pageParam,
+      pageSizeParam: this.options.pageSizeParam,
+      pageSize: this.options.defaultPageSize,
+      sortParam: this.options.sortParam,
+      url: this.options.url
+    });
+
+    if (!_.isUndefined(this.options.defaultSortColumn)) {
+      this._dataProvider.setSort(this.options.defaultSortColumn,
+        this.options.defaultSortType);
+    }
+  }
+
+  /**
+   * Initialize grid columns based on column options.
+   * If no column options are given set default options from provided data.
+   */
+  private _initColumns() {
+    if (!_.isEmpty(this.options.columns)) {
+      for (let value of this.options.columns) {
+        this._columns.push(new GridColumn(value));
+      }
+    } else if (!_.isEmpty(this.options.data)) {
+      let row: any = this.options.data[0];
+      for (let key in row) {
+        this._columns.push(new GridColumn({
+          name: this._getColumnName(key, row),
+          heading: key
+        }));
+      }
+    }
   }
 
   /**
@@ -291,7 +332,7 @@ export class Grid {
   private _onHeadingClick(event: MouseEvent) {
     let element: HTMLElement = <HTMLElement>event.target;
     let columnName: string = element.getAttribute('data-id');
-    let column: GridColumn = _.find(this.options.columns, function(item) {
+    let column: GridColumn = _.find(this._columns, function(item) {
       return item.name == columnName;
     });
 
@@ -342,20 +383,6 @@ export class Grid {
    */
   private _isSortingAllowed(column: GridColumn): boolean {
     return this.options.sorting && column.sorting;
-  }
-
-  /**
-   * Set default column options from provided data.
-   * Data keys are used as headings and values are pulled from nested objects.
-   */
-  private _setDefaultColumnOptions() {
-    let row: any = this._dataProvider.data[0];
-    for (let key in row) {
-      this.options.columns.push(new GridColumn({
-        name: this._getColumnName(key, row),
-        heading: key
-      }));
-    }
   }
 
   /**
