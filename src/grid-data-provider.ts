@@ -1,6 +1,9 @@
+import { Http, Response } from '@angular/http';
 import { Loadable } from './loadable';
 import { GridSort } from './grid-sort';
+import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
+import 'rxjs/Rx';
 
 /**
  * Data provider for grid component.
@@ -17,7 +20,7 @@ export class GridDataProvider extends Loadable {
   pageSizeParam: string;
   sortParam: string;
 
-  private _filterData: Array<any>;
+  private _filterData: any[];
   private _filters: Object = new Object();
   private _pageData: Array<any>;
   private _sortColumn: string;
@@ -32,7 +35,7 @@ export class GridDataProvider extends Loadable {
    * Class constructor.
    * Set default values for properties if not specified in params.
    */
-  constructor(params?: any) {
+  constructor(private _http: Http, params?: any) {
     super(params);
     if (_.isUndefined(this.data)) {
       this.data = [];
@@ -50,15 +53,21 @@ export class GridDataProvider extends Loadable {
    * @returns {Array<any>}
    */
   getData(page?: number): Array<any> {
-    if (_.isUndefined(this.url)) {
-      this._filter();
-      this._sort();
-      this._slice(page);
-    } else {
-      this._fetch(page);
-    }
+    this._filter();
+    this._sort();
+    this._slice(page);
 
     return this._pageData;
+  }
+
+  /**
+   * Return response object from remote data service.
+   *
+   * @param {number} page
+   * @returns {Observable<Response>}
+   */
+  getRemoteData(page?: number): Observable<Response> {
+    return this._fetch(page);
   }
 
   /**
@@ -67,7 +76,8 @@ export class GridDataProvider extends Loadable {
    * @returns {number}
    */
   getCount(): number {
-    return this._pageData.length;
+    //return this._pageData.length;
+    return 0;
   }
 
   /**
@@ -127,8 +137,10 @@ export class GridDataProvider extends Loadable {
    * If page is not specified all data would be returned.
    *
    * @param {number} page
+   * @returns {Observable<Response>}
    */
-  private _fetch(page?: number) {
+  private _fetch(page?: number): Observable<Response> {
+    return this._http.get(this.url);
   }
 
   /**
@@ -138,14 +150,17 @@ export class GridDataProvider extends Loadable {
    * @param {number} page
    */
   private _slice(page?: number) {
+    var data = [];
     if (!_.isUndefined(page)) {
       let start: number = (page - 1) * this.pageSize
       let end: number = start + this.pageSize;
 
-      this._pageData = _.slice(this._filterData, start, end);
+      data = _.slice(this._filterData, start, end);
     } else {
-      this._pageData = this._filterData;
+      data = this._filterData;
     }
+
+    this._pageData = data;
   }
 
   /**

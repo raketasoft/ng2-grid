@@ -1,9 +1,12 @@
 import { Component, Input } from '@angular/core';
+import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
 import { GridOptions } from './grid-options';
 import { GridColumn } from './grid-column';
 import { GridDataProvider } from './grid-data-provider';
 import { GridSort } from './grid-sort';
+import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
+import 'rxjs/Rx';
 
 /**
  * Data grid component class.
@@ -88,7 +91,8 @@ import * as _ from 'lodash';
           </select>
         </div>
       </div>
-    </div>`
+    </div>`,
+    'providers': [HTTP_PROVIDERS]
 })
 export class Grid {
   @Input() options: GridOptions;
@@ -96,8 +100,16 @@ export class Grid {
   private _columns: Array<GridColumn> = [];
   private _dataProvider: GridDataProvider;
   private _data: Array<any>;
+  private _http: Http;
   private _pageIndex: number = 1;
   private _pages: Array<number>;
+
+  /**
+   * Class constructor.
+   */
+  constructor(http: Http) {
+    this._http = http;
+  }
 
   /**
    * Init properties and render data after component initialization.
@@ -105,6 +117,9 @@ export class Grid {
   ngOnInit() {
     if (_.isUndefined(this.options)) {
       this.options = new GridOptions();
+    }
+    if (!_.isUndefined(this.options.httpService)) {
+      this._http = this.options.httpService;
     }
     this._initColumns();
     this._initDataProvider();
@@ -185,7 +200,7 @@ export class Grid {
    * Initialize data provider based on grid options.
    */
   private _initDataProvider() {
-    this._dataProvider = new GridDataProvider({
+    this._dataProvider = new GridDataProvider(this._http, {
       data: this.options.data,
       pageParam: this.options.pageParam,
       pageSizeParam: this.options.pageSizeParam,
@@ -210,25 +225,45 @@ export class Grid {
         this._columns.push(new GridColumn(value));
       }
     } else if (!_.isEmpty(this.options.data)) {
-      let row: any = this.options.data[0];
-      for (let key in row) {
-        this._columns.push(new GridColumn({
-          name: this._getColumnName(key, row),
-          heading: key
-        }));
-      }
+      this._setColumnsFromData(this.options.data);
+    }
+  }
+
+  /**
+   * @param {Array<any>} data
+   */
+  private _setColumnsFromData(data: Array<any>) {
+    let firstRow: any = data[0];
+    for (let key in firstRow) {
+      this._columns.push(new GridColumn({
+        name: this._getColumnName(key, firstRow),
+        heading: key
+      }));
     }
   }
 
   /**
    * Render grid data.
    */
-  _render() {
-    if (this.options.paging) {
+  private _render() {
+    if (_.isUndefined(this.options.url)) {
       this._data = this._dataProvider.getData(this._pageIndex);
-      this._paginate();
+      if (this.options.paging) {
+        this._paginate();
+      }
     } else {
-      this._data = this._dataProvider.getData();
+      this._dataProvider.getRemoteData(this._pageIndex).subscribe(
+        (result: Response) => {
+          this._data = result.json();
+          if (!_.isEmpty(this._data) && _.isEmpty(this._columns)) {
+            this._setColumnsFromData(this._data);
+          }
+          if (this.options.paging) {
+            this._paginate();
+          }
+        },
+        (error: any) => console.log(error)
+      )
     }
   }
 

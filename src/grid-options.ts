@@ -1,3 +1,4 @@
+import { Http } from '@angular/http';
 import { Loadable } from './loadable';
 import * as _ from 'lodash';
 
@@ -16,6 +17,7 @@ export class GridOptions extends Loadable {
   defaultSortType: string;
   heading: boolean;
   height: string;
+  httpService: Http;
   pageButtonCount: number;
   pageElementPosition: string;
   pageParam: string;
