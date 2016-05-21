@@ -1,4 +1,4 @@
-import { Http, Response } from '@angular/http';
+import { Http, Response, URLSearchParams } from '@angular/http';
 import { Loadable } from './loadable';
 import { GridSort } from './grid-sort';
 import { Observable } from 'rxjs/Observable';
@@ -14,22 +14,23 @@ import 'rxjs/Rx';
  */
 export class GridDataProvider extends Loadable {
   data: Array<any>;
-  pageSize: number;
-  url: string;
   pageParam: string;
+  pageSize: number;
   pageSizeParam: string;
+  page: number = 1;
   sortParam: string;
+  url: string;
 
   private _filterData: any[];
   private _filters: Object = new Object();
   private _pageData: Array<any>;
   private _sortColumn: string;
   private _sortType: string = GridSort.TYPE_ASC;
+  private _totalCount: number;
 
-  static DEFAULT_PAGE_SIZE_VALUE: number = 20;
   static DEFAULT_PAGE_PARAM_VALUE: string = 'page';
   static DEFAULT_PAGE_SIZE_PARAM_VALUE: string = 'pageSize';
-  static DEFAULT_SORT_PARAM_VALUE: string = 'sortBy';
+  static DEFAULT_SORT_PARAM_VALUE: string = 'orderBy';
 
   /**
    * Class constructor.
@@ -40,8 +41,14 @@ export class GridDataProvider extends Loadable {
     if (_.isUndefined(this.data)) {
       this.data = [];
     }
-    if (_.isUndefined(this.pageSize)) {
-      this.pageSize = GridDataProvider.DEFAULT_PAGE_SIZE_VALUE;
+    if (_.isUndefined(this.pageParam)) {
+      this.pageParam = GridDataProvider.DEFAULT_PAGE_PARAM_VALUE;
+    }
+    if (_.isUndefined(this.pageSizeParam)) {
+      this.pageSizeParam = GridDataProvider.DEFAULT_PAGE_SIZE_PARAM_VALUE;
+    }
+    if (_.isUndefined(this.sortParam)) {
+      this.sortParam = GridDataProvider.DEFAULT_SORT_PARAM_VALUE;
     }
     this._filterData = this.data;
   }
@@ -52,22 +59,14 @@ export class GridDataProvider extends Loadable {
    *
    * @returns {Array<any>}
    */
-  getData(page?: number): Array<any> {
-    this._filter();
-    this._sort();
-    this._slice(page);
+  getData(): Array<any> {
+    if (_.isUndefined(this.url)) {
+      this._filter();
+      this._sort();
+      this._slice();
+    }
 
     return this._pageData;
-  }
-
-  /**
-   * Return response object from remote data service.
-   *
-   * @param {number} page
-   * @returns {Observable<Response>}
-   */
-  getRemoteData(page?: number): Observable<Response> {
-    return this._fetch(page);
   }
 
   /**
@@ -76,8 +75,7 @@ export class GridDataProvider extends Loadable {
    * @returns {number}
    */
   getCount(): number {
-    //return this._pageData.length;
-    return 0;
+    return this._pageData.length;
   }
 
   /**
@@ -87,8 +85,10 @@ export class GridDataProvider extends Loadable {
    */
   getTotalCount(): number {
     if (_.isUndefined(this.url)) {
-      return this._filterData.length;
+      this._totalCount = this._filterData.length;
     }
+
+    return this._totalCount;
   }
 
   /**
@@ -139,20 +139,47 @@ export class GridDataProvider extends Loadable {
    * @param {number} page
    * @returns {Observable<Response>}
    */
-  private _fetch(page?: number): Observable<Response> {
-    return this._http.get(this.url);
+  fetch(): Observable<Response> {
+    let params:URLSearchParams = new URLSearchParams();
+
+    params.set(this.pageParam, this.page.toString());
+
+    if (!_.isUndefined(this.pageSize)) {
+      params.set(this.pageSizeParam, this.pageSize.toString());
+    }
+
+    if (!_.isUndefined(this._sortColumn)) {
+      let sortByValue: string = (this._sortType == GridSort.TYPE_ASC ? '' : '-')
+        + this._sortColumn;
+      params.set(this.sortParam, sortByValue);
+    }
+
+    for (let key in this._filters) {
+      params.set(key, this._filters[key]);
+    }
+
+    let response:Observable<Response> = this._http.get(this.url, {search: params});
+
+    response.subscribe(
+        (res: Response) => {
+          this._totalCount = Number(res.headers.get('X-Pagination-Total-Count'));
+          this._pageData = res.json();
+        },
+        (err: any) => console.log(err)
+      )
+
+    return response;
   }
 
   /**
    * Slice filtered static data to specific page.
-   * If page is not specified all filtered data would be returned.
+   * If pageSize is not specified all filtered data would be returned.
    *
-   * @param {number} page
    */
-  private _slice(page?: number) {
+  private _slice() {
     var data = [];
-    if (!_.isUndefined(page)) {
-      let start: number = (page - 1) * this.pageSize
+    if (!_.isUndefined(this.pageSize)) {
+      let start: number = (this.page - 1) * this.pageSize
       let end: number = start + this.pageSize;
 
       data = _.slice(this._filterData, start, end);

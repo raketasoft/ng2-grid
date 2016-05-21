@@ -224,8 +224,6 @@ export class Grid {
       for (let value of this.options.columns) {
         this._columns.push(new GridColumn(value));
       }
-    } else if (!_.isEmpty(this.options.data)) {
-      this._setColumnsFromData(this.options.data);
     }
   }
 
@@ -246,24 +244,25 @@ export class Grid {
    * Render grid data.
    */
   private _render() {
+    this._dataProvider.page = this._pageIndex;
+
     if (_.isUndefined(this.options.url)) {
-      this._data = this._dataProvider.getData(this._pageIndex);
-      if (this.options.paging) {
-        this._paginate();
-      }
+      this._renderGrid();
     } else {
-      this._dataProvider.getRemoteData(this._pageIndex).subscribe(
-        (result: Response) => {
-          this._data = result.json();
-          if (!_.isEmpty(this._data) && _.isEmpty(this._columns)) {
-            this._setColumnsFromData(this._data);
-          }
-          if (this.options.paging) {
-            this._paginate();
-          }
-        },
-        (error: any) => console.log(error)
+      this._dataProvider.fetch().subscribe(
+        (res: Response) => this._renderGrid(),
+        (err: any) => console.log(err)
       )
+    }
+  }
+
+  private _renderGrid() {
+    this._data = this._dataProvider.getData();
+    if (!_.isEmpty(this._data) && _.isEmpty(this._columns)) {
+      this._setColumnsFromData(this._data);
+    }
+    if (this.options.paging) {
+      this._paginate();
     }
   }
 

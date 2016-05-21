@@ -38,7 +38,7 @@ export class DemoComponent {
     });
 
     this.remoteDataOptions = new GridOptions({
-      url: "http://localhost:8000/demo/data.json",
+      url: "http://localhost:3000/",
       height: '300px'
     });
   }
