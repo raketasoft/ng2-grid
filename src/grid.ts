@@ -123,7 +123,7 @@ export class Grid {
     }
     this._initColumns();
     this._initDataProvider();
-    this._render();
+    this.render();
   }
 
   /**
@@ -151,7 +151,7 @@ export class Grid {
    */
   toPage(page: number) {
     this._pageIndex = page;
-    this._render();
+    this.render();
   }
 
   /**
@@ -162,7 +162,7 @@ export class Grid {
   changePageSize(pageSize: number) {
     this._dataProvider.pageSize = pageSize;
     this._pageIndex = 1;
-    this._render();
+    this.render();
   }
 
   /**
@@ -181,7 +181,7 @@ export class Grid {
    */
   filter() {
     this._pageIndex = 1;
-    this._render();
+    this.render();
   }
 
   /**
@@ -193,7 +193,7 @@ export class Grid {
    */
   sort(sortColumn: string, sortType?: string) {
     this._dataProvider.setSort(sortColumn, sortType);
-    this._render();
+    this.render();
   }
 
   /**
@@ -228,6 +228,8 @@ export class Grid {
   }
 
   /**
+   * Set grid columns from data.
+   *
    * @param {Array<any>} data
    */
   private _setColumnsFromData(data: Array<any>) {
@@ -241,22 +243,25 @@ export class Grid {
   }
 
   /**
-   * Render grid data.
+   * Render grid.
    */
-  private _render() {
+  render() {
     this._dataProvider.page = this._pageIndex;
 
     if (_.isUndefined(this.options.url)) {
-      this._renderGrid();
+      this._refresh();
     } else {
       this._dataProvider.fetch().subscribe(
-        (res: Response) => this._renderGrid(),
+        (res: Response) => this._refresh(),
         (err: any) => console.log(err)
       )
     }
   }
 
-  private _renderGrid() {
+  /**
+   * Refresh grid and pagination with provider data.
+   */
+  private _refresh() {
     this._data = this._dataProvider.getData();
     if (!_.isEmpty(this._data) && _.isEmpty(this._columns)) {
       this._setColumnsFromData(this._data);

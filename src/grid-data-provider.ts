@@ -133,8 +133,7 @@ export class GridDataProvider extends Loadable {
   }
 
   /**
-   * Fetch data from remote service for given page.
-   * If page is not specified all data would be returned.
+   * Fetch data from remote service for current page.
    *
    * @param {number} page
    * @returns {Observable<Response>}
@@ -158,15 +157,18 @@ export class GridDataProvider extends Loadable {
       params.set(key, this._filters[key]);
     }
 
-    let response:Observable<Response> = this._http.get(this.url, {search: params});
+    let response:Observable<Response> = this._http
+        .get(this.url, {search: params})
+        .share();
 
-    response.subscribe(
+    response
+      .subscribe(
         (res: Response) => {
           this._totalCount = Number(res.headers.get('X-Pagination-Total-Count'));
           this._pageData = res.json();
         },
         (err: any) => console.log(err)
-      )
+      );
 
     return response;
   }
@@ -174,7 +176,6 @@ export class GridDataProvider extends Loadable {
   /**
    * Slice filtered static data to specific page.
    * If pageSize is not specified all filtered data would be returned.
-   *
    */
   private _slice() {
     var data = [];
