@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Grid, GridOptions } from '../ng2-grid';
 import DEMO_DATA from './data';
 
@@ -6,20 +6,22 @@ import DEMO_DATA from './data';
   selector: 'demo',
   template: `
     <h2>Basic Example</h2>
-    <ng-grid [options]="basicOptions">Loading...</ng-grid>
+    <ng-grid #basicGrid [options]="basicOptions"></ng-grid>
     <h2>Column Definition Example</h2>
-    <ng-grid [options]="columnOptions">Loading...</ng-grid>
+    <ng-grid #columnGrid [options]="columnOptions"></ng-grid>
     <h2>Remote Data Example</h2>
-    <ng-grid [options]="remoteDataOptions">Loading...</ng-grid>`,
+    <ng-grid #remoteDataGrid [options]="remoteDataOptions"></ng-grid>`,
   directives: [Grid]
 })
 export class DemoComponent {
   basicOptions: GridOptions;
   columnOptions: GridOptions;
   remoteDataOptions: GridOptions;
+  @ViewChild('basicGrid') basicGrid: Grid;
+
+  constructor(private _changeDetectionRef : ChangeDetectorRef) { }
 
   ngOnInit() {
-
     this.basicOptions = new GridOptions({
       data: DEMO_DATA,
       height: '300px'
@@ -44,5 +46,11 @@ export class DemoComponent {
       url: "http://localhost:3000/",
       height: '300px'
     });
+  }
+
+  ngAfterViewInit() {
+    this.basicGrid.sort('name');
+
+    this._changeDetectionRef.detectChanges();
   }
 }
