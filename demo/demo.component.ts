@@ -39,7 +39,8 @@ export class DemoComponent {
       defaultPageSize: 50,
       defaultSortColumn: 'name',
       defaultSortType: 'desc',
-      height: '300px'
+      height: '300px',
+      selection: true
     });
 
     this.remoteDataOptions = new GridOptions({

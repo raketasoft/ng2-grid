@@ -30,26 +30,27 @@
   background: #f1f1f1;
 }
 
-.ng-grid-header input {
-  width: 100%;
-  padding: 5px;
-}
-
-.ng-grid-header table th {
-  cursor: pointer;
-  text-align: left;
-}
-
 .ng-grid-header table tr:first-child th,
 .ng-grid-header table tr:first-child td {
   border-top: 0;
 }
 
-.ng-grid-header table th.ng-grid-heading.sort-disable {
-  cursor: auto;
+.ng-grid-heading {
+  cursor: pointer;
+  text-align: left;
 }
 
 .ng-grid-heading.sort {
+}
+
+.ng-grid-heading.sort-disable {
+  cursor: auto;
+}
+
+.ng-grid-heading.selection {
+  cursor: auto;
+  width: 20px;
+  text-align: center;
 }
 
 .ng-grid-heading.sort:before {
@@ -71,6 +72,14 @@
     border-color: #666 transparent transparent;
 }
 
+.ng-grid-filter {
+}
+
+.ng-grid-filter input {
+  width: 100%;
+  padding: 5px;
+}
+
 .ng-grid-body {
   border-bottom: 1px solid #ccc;
 }
@@ -89,6 +98,14 @@
 .ng-grid-body.scroll {
   overflow-x: auto;
   overflow-y: scroll;
+}
+
+.ng-grid-column {
+}
+
+.ng-grid-column.selection {
+  width: 20px;
+  text-align: center;
 }
 
 .ng-grid-footer {

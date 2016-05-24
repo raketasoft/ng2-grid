@@ -25,6 +25,10 @@ import 'rxjs/Rx';
         <table [style.width]="options.width">
           <thead *ngIf="options.heading">
             <tr>
+              <th *ngIf="options.selection" class="ng-grid-heading selection">
+                <input #selectAll type="checkbox"
+                    (click)="_onSelectAllCheckboxClick(selectAll.checked)">
+              </th>
               <th *ngFor="let column of _columns" class="ng-grid-heading"
                   [style.width]="column.width" [attr.data-id]="column.name"
                   [class.sort]="_isSortedBy(column)"
@@ -38,7 +42,8 @@ import 'rxjs/Rx';
           </thead>
           <tbody *ngIf="options.filtering">
             <tr>
-              <td *ngFor="let column of _columns">
+              <td *ngIf="options.selection" class="ng-grid-filter selection"></td>
+              <td *ngFor="let column of _columns" class="ng-grid-filter">
                 <input type="text" *ngIf="column.filtering"
                   [attr.name]="column.name"
                   (keyup.enter)="_onFilterInputEnter($event)"
@@ -53,7 +58,13 @@ import 'rxjs/Rx';
         <table class="table" [style.width]="options.width">
           <tbody>
             <tr *ngFor="let row of _data">
-              <td *ngFor="let column of _columns" [style.width]="column.width">
+              <td *ngIf="options.selection" class="ng-grid-column selection">
+                <input type="checkbox"
+                    [(ngModel)]="row.selected"
+                    (click)="_onSelectItemCheckboxClick(row)">
+              </td>
+              <td *ngFor="let column of _columns" class="ng-grid-column"
+                  [style.width]="column.width">
                 {{column.renderCell(row)}}
               </td>
             </tr>
@@ -124,6 +135,32 @@ export class Grid {
     this._initColumns();
     this._initDataProvider();
     this.render();
+  }
+
+  /**
+   * Return data displayed current grid page.
+   *
+   * @returns {Array<any>}
+   */
+  getData(): Array<any> {
+    return this._data;
+  }
+
+  /**
+   * Return a list of selected grid items.
+   *
+   * @returns {Array<any>}
+   */
+  getSelectedItems(): Array<any> {
+    var selectedItems: Array<any> = [];
+
+    for (let row of this._data) {
+      if (row.selected) {
+        selectedItems.push(row);
+      }
+    }
+
+    return selectedItems;
   }
 
   /**
@@ -198,6 +235,29 @@ export class Grid {
   sort(sortColumn: string, sortType?: string) {
     this._dataProvider.setSort(sortColumn, sortType);
     this.render();
+  }
+
+  /**
+   * Handle select/deselect all grid rows.
+   *
+   * @param {boolean} selected
+   */
+  private _onSelectAllCheckboxClick(selected: boolean) {
+    for (let row of this._data) {
+      row.selected = selected;
+    }
+  }
+
+  /**
+   * Handle select/deselect a single grid row.
+   *
+   * @param {any} row Data row
+   */
+  private _onSelectItemCheckboxClick(item: any) {
+    if (_.isUndefined(item.selected)) {
+      item.selected = false;
+    }
+    item.selected = !item.selected;
   }
 
   /**

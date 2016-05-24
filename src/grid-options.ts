@@ -27,6 +27,7 @@ export class GridOptions extends Loadable {
   pageSizeParam: string;
   paging: boolean;
   filtering: boolean;
+  selection: boolean;
   sortParam: string;
   sorting: boolean;
   url: string;
@@ -40,6 +41,7 @@ export class GridOptions extends Loadable {
   static DEFAULT_PAGE_SIZE_VALUE: number = 20;
   static DEFAULT_PAGING_VALUE: boolean = true;
   static DEFAULT_FILTERING_VALUE: boolean = true;
+  static DEFAULT_SELECTION_VALUE: boolean = false;
   static DEFAULT_SORTING_VALUE: boolean = true;
   static DEFAULT_WIDTH_VALUE: string = '100%';
 
@@ -72,6 +74,9 @@ export class GridOptions extends Loadable {
     }
     if (_.isUndefined(this.filtering)) {
       this.filtering = GridOptions.DEFAULT_FILTERING_VALUE;
+    }
+    if (_.isUndefined(this.selection)) {
+      this.selection = GridOptions.DEFAULT_SELECTION_VALUE;
     }
     if (_.isUndefined(this.sorting)) {
       this.sorting = GridOptions.DEFAULT_SORTING_VALUE;
