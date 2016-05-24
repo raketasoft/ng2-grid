@@ -15,8 +15,8 @@ import 'rxjs/Rx';
 export class GridDataProvider extends Loadable {
   data: Array<any>;
   pageParam: string;
-  pageSize: number;
   pageSizeParam: string;
+  pageSize: any;
   page: number = 1;
   sortParam: string;
   url: string;
@@ -30,6 +30,7 @@ export class GridDataProvider extends Loadable {
 
   static DEFAULT_PAGE_PARAM_VALUE: string = 'page';
   static DEFAULT_PAGE_SIZE_PARAM_VALUE: string = 'pageSize';
+  static DEFAULT_PAGE_SIZE_VALUE: number = 20;
   static DEFAULT_SORT_PARAM_VALUE: string = 'orderBy';
 
   /**
@@ -46,6 +47,9 @@ export class GridDataProvider extends Loadable {
     }
     if (_.isUndefined(this.pageSizeParam)) {
       this.pageSizeParam = GridDataProvider.DEFAULT_PAGE_SIZE_PARAM_VALUE;
+    }
+    if (_.isUndefined(this.pageSize)) {
+      this.pageSize = GridDataProvider.DEFAULT_PAGE_SIZE_VALUE;
     }
     if (_.isUndefined(this.sortParam)) {
       this.sortParam = GridDataProvider.DEFAULT_SORT_PARAM_VALUE;
@@ -139,25 +143,9 @@ export class GridDataProvider extends Loadable {
    * @returns {Observable<Response>}
    */
   fetch(): Observable<Response> {
-    let params:URLSearchParams = new URLSearchParams();
+    var params: URLSearchParams = this._buildRequestParams();
 
-    params.set(this.pageParam, this.page.toString());
-
-    if (!_.isUndefined(this.pageSize)) {
-      params.set(this.pageSizeParam, this.pageSize.toString());
-    }
-
-    if (!_.isUndefined(this._sortColumn)) {
-      let sortByValue: string = (this._sortType == GridSort.TYPE_ASC ? '' : '-')
-        + this._sortColumn;
-      params.set(this.sortParam, sortByValue);
-    }
-
-    for (let key in this._filters) {
-      params.set(key, this._filters[key]);
-    }
-
-    let response:Observable<Response> = this._http
+    var response:Observable<Response> = this._http
         .get(this.url, {search: params})
         .share();
 
@@ -174,12 +162,39 @@ export class GridDataProvider extends Loadable {
   }
 
   /**
+   * Build request params.
+   *
+   * @returns {URLSearchParams}
+   */
+  private _buildRequestParams(): URLSearchParams {
+    var params: URLSearchParams = new URLSearchParams();
+
+    params.set(this.pageParam, this.page.toString());
+
+    if (this.pageSize != false) {
+      params.set(this.pageSizeParam, this.pageSize.toString());
+    }
+
+    if (!_.isUndefined(this._sortColumn)) {
+      let sortByValue: string = (this._sortType == GridSort.TYPE_ASC ? '' : '-')
+        + this._sortColumn;
+      params.set(this.sortParam, sortByValue);
+    }
+
+    for (let key in this._filters) {
+      params.set(key, this._filters[key]);
+    }
+
+    return params;
+  }
+
+  /**
    * Slice filtered static data to specific page.
    * If pageSize is not specified all filtered data would be returned.
    */
   private _slice() {
     var data = [];
-    if (!_.isUndefined(this.pageSize)) {
+    if (this.pageSize != false) {
       let start: number = (this.page - 1) * this.pageSize
       let end: number = start + this.pageSize;
 

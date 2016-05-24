@@ -20,7 +20,10 @@ export class DemoComponent {
 
   ngOnInit() {
 
-    this.basicOptions = new GridOptions({data: DEMO_DATA, height: '300px'});
+    this.basicOptions = new GridOptions({
+      data: DEMO_DATA,
+      height: '300px'
+    });
 
     this.columnOptions = new GridOptions({
       data: DEMO_DATA,

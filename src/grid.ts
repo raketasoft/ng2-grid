@@ -81,7 +81,7 @@ import 'rxjs/Rx';
           <span>{{_pageIndex}} of {{getTotalPages()}}</span>
         </div>
         <div class="ng-grid-pager-size {{options.pageSizeElementPosition}}"
-          *ngIf="_pageSizeOptionsEnabled()">
+          *ngIf="_isPageSizeOptionsEnabled()">
           <span>Page size:</span>
           <select [(ngModel)]="_dataProvider.pageSize"
             (change)="_onPageSizeDropDownChange($event)">
@@ -141,6 +141,10 @@ export class Grid {
    * @returns {number}
    */
   getTotalPages(): number {
+    if (this._dataProvider.pageSize == false) {
+      return 1;
+    }
+
     return Math.ceil(this._dataProvider.getTotalCount() / this._dataProvider.pageSize);
   }
 
@@ -317,8 +321,9 @@ export class Grid {
    *
    * @returns {boolean}
    */
-  private _pageSizeOptionsEnabled(): boolean {
-    return this.options.paging && !_.isEmpty(this.options.pageSizeOptions);
+  private _isPageSizeOptionsEnabled(): boolean {
+    return this.options.paging && (!_.isEmpty(this.options.pageSizeOptions)
+      || this.options.pageSizeOptions != false);
   }
 
   /**
