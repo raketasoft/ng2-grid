@@ -13,6 +13,7 @@ import 'rxjs/Rx';
  * @since 1.0.0-alpha
  */
 export class GridDataProvider extends Loadable {
+  additionalRequestParams: any;
   data: Array<any>;
   pageParam: string;
   pageSizeParam: string;
@@ -183,6 +184,10 @@ export class GridDataProvider extends Loadable {
 
     for (let key in this._filters) {
       params.set(key, this._filters[key]);
+    }
+
+    for (let key in this.additionalRequestParams) {
+      params.set(key, this.additionalRequestParams[key]);
     }
 
     return params;

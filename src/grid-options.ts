@@ -10,6 +10,7 @@ import * as _ from 'lodash';
  * @since 1.0.0-alpha
  */
 export class GridOptions extends Loadable {
+  additionalRequestParams: any;
   columns: Array<any>;
   data: Array<any>;
   defaultPageSize: any;

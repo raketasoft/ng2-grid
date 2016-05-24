@@ -205,6 +205,7 @@ export class Grid {
    */
   private _initDataProvider() {
     this._dataProvider = new GridDataProvider(this._http, {
+      additionalRequestParams: this.options.additionalRequestParams,
       data: this.options.data,
       pageParam: this.options.pageParam,
       pageSizeParam: this.options.pageSizeParam,

@@ -44,7 +44,10 @@ export class DemoComponent {
 
     this.remoteDataOptions = new GridOptions({
       url: "http://localhost:3000/",
-      height: '300px'
+      additionalRequestParams: {
+        'expand': 'company,interests'
+      },
+      height: '300px',
     });
   }
 
