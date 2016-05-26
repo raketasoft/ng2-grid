@@ -1,4 +1,4 @@
- import * as _ from 'lodash';
+import * as _ from 'lodash';
 
 /**
  * Loadable is a base class that implements loading properties via constructor.
@@ -13,13 +13,13 @@ export class Loadable {
    * @param {any} params Optional, if given params would be assigned as properties
    */
   constructor(private _params?: any) {
-    this._loadProperties();
+    this.loadProperties();
   }
 
   /**
    * Load param values to object properties.
    */
-  protected _loadProperties() {
+  protected loadProperties() {
     if (!_.isEmpty(this._params)) {
       for (let param in this._params) {
         this[param] = this._params[param];

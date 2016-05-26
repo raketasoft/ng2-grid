@@ -27,15 +27,15 @@ import 'rxjs/Rx';
             <tr>
               <th *ngIf="options.selection" class="ng-grid-heading selection">
                 <input #selectAll type="checkbox"
-                    (click)="_onSelectAllCheckboxClick(selectAll.checked)">
+                    (click)="onSelectAllCheckboxClick(selectAll.checked)">
               </th>
-              <th *ngFor="let column of _columns" class="ng-grid-heading"
+              <th *ngFor="let column of columns" class="ng-grid-heading"
                   [style.width]="column.width" [attr.data-id]="column.name"
-                  [class.sort]="_isSortedBy(column)"
-                  [class.sort-asc]="_isSortedBy(column, 'asc')"
-                  [class.sort-desc]="_isSortedBy(column, 'desc')"
-                  [class.sort-disable]="!_isSortingAllowed(column)"
-                  (click)="_onHeadingClick($event)">
+                  [class.sort]="isSortedBy(column)"
+                  [class.sort-asc]="isSortedBy(column, 'asc')"
+                  [class.sort-desc]="isSortedBy(column, 'desc')"
+                  [class.sort-disable]="!isSortingAllowed(column)"
+                  (click)="onHeadingClick($event)">
                 {{column.renderHeading()}}
               </th>
             </tr>
@@ -43,11 +43,11 @@ import 'rxjs/Rx';
           <tbody *ngIf="options.filtering">
             <tr>
               <td *ngIf="options.selection" class="ng-grid-filter selection"></td>
-              <td *ngFor="let column of _columns" class="ng-grid-filter">
+              <td *ngFor="let column of columns" class="ng-grid-filter">
                 <input type="text" *ngIf="column.filtering"
                   [attr.name]="column.name"
-                  (keyup.enter)="_onFilterInputEnter($event)"
-                  (blur)="_onFilterInputBlur($event)" />
+                  (keyup.enter)="onFilterInputEnter($event)"
+                  (blur)="onFilterInputBlur($event)" />
               </td>
             </tr>
           </tbody>
@@ -57,13 +57,13 @@ import 'rxjs/Rx';
           [class.scroll]="options.height" [style.max-height]="options.height">
         <table class="table" [style.width]="options.width">
           <tbody>
-            <tr *ngFor="let row of _data">
+            <tr *ngFor="let row of data">
               <td *ngIf="options.selection" class="ng-grid-column selection">
                 <input type="checkbox"
                     [(ngModel)]="row.selected"
-                    (click)="_onSelectItemCheckboxClick(row)">
+                    (click)="onSelectItemCheckboxClick(row)">
               </td>
-              <td *ngFor="let column of _columns" class="ng-grid-column"
+              <td *ngFor="let column of columns" class="ng-grid-column"
                   [style.width]="column.width">
                 {{column.renderCell(row)}}
               </td>
@@ -74,28 +74,28 @@ import 'rxjs/Rx';
       <div class="ng-grid-footer clearfix">
         <div class="ng-grid-pager {{options.pageElementPosition}}" *ngIf="options.paging">
           <span>Pages:</span>
-          <a href="#" *ngIf="_pageIndex > 1" [attr.data-page]="1"
-            (click)="_onPageButtonClick($event)">First</a>
-          <a href="#" *ngIf="_pageIndex > 1" [attr.data-page]="getPageIndex() - 1"
-            (click)="_onPageButtonClick($event)">Prev</a>
-          <template ngFor let-page [ngForOf]="_pages">
-            <a href="#" *ngIf="page != _pageIndex" [attr.data-page]="page"
-              (click)="_onPageButtonClick($event)">{{page}}</a>
-            <span *ngIf="page == _pageIndex">{{page}}</span>
+          <a href="#" *ngIf="pageIndex > 1" [attr.data-page]="1"
+            (click)="onPageButtonClick($event)">First</a>
+          <a href="#" *ngIf="pageIndex > 1" [attr.data-page]="getPageIndex() - 1"
+            (click)="onPageButtonClick($event)">Prev</a>
+          <template ngFor let-page [ngForOf]="pages">
+            <a href="#" *ngIf="page != pageIndex" [attr.data-page]="page"
+              (click)="onPageButtonClick($event)">{{page}}</a>
+            <span *ngIf="page == pageIndex">{{page}}</span>
           </template>
-          <a href="#" *ngIf="_pageIndex < getTotalPages()"
+          <a href="#" *ngIf="pageIndex < getTotalPages()"
             [attr.data-page]="getPageIndex() + 1"
-            (click)="_onPageButtonClick($event)">Next</a>
-          <a href="#" *ngIf="_pageIndex < getTotalPages()"
+            (click)="onPageButtonClick($event)">Next</a>
+          <a href="#" *ngIf="pageIndex < getTotalPages()"
             [attr.data-page]="getTotalPages()"
-            (click)="_onPageButtonClick($event)">Last</a>
-          <span>{{_pageIndex}} of {{getTotalPages()}}</span>
+            (click)="onPageButtonClick($event)">Last</a>
+          <span>{{pageIndex}} of {{getTotalPages()}}</span>
         </div>
         <div class="ng-grid-pager-size {{options.pageSizeElementPosition}}"
-          *ngIf="_isPageSizeOptionsEnabled()">
+          *ngIf="isPageSizeOptionsEnabled()">
           <span>Page size:</span>
-          <select [(ngModel)]="_dataProvider.pageSize"
-            (change)="_onPageSizeDropDownChange($event)">
+          <select [(ngModel)]="dataProvider.pageSize"
+            (change)="onPageSizeDropDownChange($event)">
             <option *ngFor="let value of options.pageSizeOptions" [ngValue]="value">
               {{value}}
             </option>
@@ -108,18 +108,18 @@ import 'rxjs/Rx';
 export class Grid {
   @Input() options: GridOptions;
 
-  private _columns: Array<GridColumn> = [];
-  private _dataProvider: GridDataProvider;
-  private _data: Array<any>;
-  private _http: Http;
-  private _pageIndex: number = 1;
-  private _pages: Array<number>;
+  private columns: Array<GridColumn> = [];
+  private dataProvider: GridDataProvider;
+  private data: Array<any>;
+  private http: Http;
+  private pageIndex: number = 1;
+  private pages: Array<number>;
 
   /**
    * Class constructor.
    */
   constructor(http: Http) {
-    this._http = http;
+    this.http = http;
   }
 
   /**
@@ -130,10 +130,10 @@ export class Grid {
       this.options = new GridOptions();
     }
     if (!_.isUndefined(this.options.httpService)) {
-      this._http = this.options.httpService;
+      this.http = this.options.httpService;
     }
-    this._initColumns();
-    this._initDataProvider();
+    this.initColumns();
+    this.initDataProvider();
     this.render();
   }
 
@@ -143,7 +143,7 @@ export class Grid {
    * @returns {Array<any>}
    */
   getData(): Array<any> {
-    return this._data;
+    return this.data;
   }
 
   /**
@@ -154,7 +154,7 @@ export class Grid {
   getSelectedItems(): Array<any> {
     var selectedItems: Array<any> = [];
 
-    for (let row of this._data) {
+    for (let row of this.data) {
       if (row.selected) {
         selectedItems.push(row);
       }
@@ -169,7 +169,7 @@ export class Grid {
    * @returns {number}
    */
   getPageIndex(): number {
-    return this._pageIndex;
+    return this.pageIndex;
   }
 
   /**
@@ -178,11 +178,11 @@ export class Grid {
    * @returns {number}
    */
   getTotalPages(): number {
-    if (this._dataProvider.pageSize == false) {
+    if (this.dataProvider.pageSize == false) {
       return 1;
     }
 
-    return Math.ceil(this._dataProvider.getTotalCount() / this._dataProvider.pageSize);
+    return Math.ceil(this.dataProvider.getTotalCount() / this.dataProvider.pageSize);
   }
 
   /**
@@ -191,7 +191,7 @@ export class Grid {
    * @param {number} page
    */
   toPage(page: number) {
-    this._pageIndex = page;
+    this.pageIndex = page;
     this.render();
   }
 
@@ -201,8 +201,8 @@ export class Grid {
    * @param {number} pageSize
    */
   changePageSize(pageSize: number) {
-    this._dataProvider.pageSize = pageSize;
-    this._pageIndex = 1;
+    this.dataProvider.pageSize = pageSize;
+    this.pageIndex = 1;
     this.render();
   }
 
@@ -213,7 +213,7 @@ export class Grid {
    * @param {string} value Keyword to be used as filter for the column
    */
   addFilter(columnName: string, value: string) {
-    this._dataProvider.setFilter(columnName, value);
+    this.dataProvider.setFilter(columnName, value);
   }
 
   /**
@@ -221,7 +221,7 @@ export class Grid {
    * that have been added previously using {{addFilter}} method.
    */
   filter() {
-    this._pageIndex = 1;
+    this.pageIndex = 1;
     this.render();
   }
 
@@ -233,8 +233,37 @@ export class Grid {
    * @param {string} sortType Optional, values are 'asc' or 'desc'
    */
   sort(sortColumn: string, sortType?: string) {
-    this._dataProvider.setSort(sortColumn, sortType);
+    this.dataProvider.setSort(sortColumn, sortType);
     this.render();
+  }
+
+  /**
+   * Render grid.
+   */
+  render() {
+    this.dataProvider.page = this.pageIndex;
+
+    if (_.isUndefined(this.options.url)) {
+      this.refresh();
+    } else {
+      this.dataProvider.fetch().subscribe(
+        (res: Response) => this.refresh(),
+        (err: any) => console.log(err)
+      )
+    }
+  }
+
+  /**
+   * Refresh grid and pagination with provider data.
+   */
+  private refresh() {
+    this.data = this.dataProvider.getData();
+    if (!_.isEmpty(this.data) && _.isEmpty(this.columns)) {
+      this.setColumnsFromData(this.data);
+    }
+    if (this.options.paging) {
+      this.paginate();
+    }
   }
 
   /**
@@ -242,8 +271,8 @@ export class Grid {
    *
    * @param {boolean} selected
    */
-  private _onSelectAllCheckboxClick(selected: boolean) {
-    for (let row of this._data) {
+  private onSelectAllCheckboxClick(selected: boolean) {
+    for (let row of this.data) {
       row.selected = selected;
     }
   }
@@ -253,7 +282,7 @@ export class Grid {
    *
    * @param {any} row Data row
    */
-  private _onSelectItemCheckboxClick(item: any) {
+  private onSelectItemCheckboxClick(item: any) {
     if (_.isUndefined(item.selected)) {
       item.selected = false;
     }
@@ -263,8 +292,8 @@ export class Grid {
   /**
    * Initialize data provider based on grid options.
    */
-  private _initDataProvider() {
-    this._dataProvider = new GridDataProvider(this._http, {
+  private initDataProvider() {
+    this.dataProvider = new GridDataProvider(this.http, {
       additionalRequestParams: this.options.additionalRequestParams,
       data: this.options.data,
       pageParam: this.options.pageParam,
@@ -275,7 +304,7 @@ export class Grid {
     });
 
     if (!_.isUndefined(this.options.defaultSortColumn)) {
-      this._dataProvider.setSort(this.options.defaultSortColumn,
+      this.dataProvider.setSort(this.options.defaultSortColumn,
         this.options.defaultSortType);
     }
   }
@@ -284,10 +313,10 @@ export class Grid {
    * Initialize grid columns based on column options.
    * If no column options are given set default options from provided data.
    */
-  private _initColumns() {
+  private initColumns() {
     if (!_.isEmpty(this.options.columns)) {
       for (let value of this.options.columns) {
-        this._columns.push(new GridColumn(value));
+        this.columns.push(new GridColumn(value));
       }
     }
   }
@@ -297,42 +326,13 @@ export class Grid {
    *
    * @param {Array<any>} data
    */
-  private _setColumnsFromData(data: Array<any>) {
+  private setColumnsFromData(data: Array<any>) {
     let firstRow: any = data[0];
     for (let key in firstRow) {
-      this._columns.push(new GridColumn({
-        name: this._getColumnName(key, firstRow),
+      this.columns.push(new GridColumn({
+        name: this.getColumnName(key, firstRow),
         heading: key
       }));
-    }
-  }
-
-  /**
-   * Render grid.
-   */
-  render() {
-    this._dataProvider.page = this._pageIndex;
-
-    if (_.isUndefined(this.options.url)) {
-      this._refresh();
-    } else {
-      this._dataProvider.fetch().subscribe(
-        (res: Response) => this._refresh(),
-        (err: any) => console.log(err)
-      )
-    }
-  }
-
-  /**
-   * Refresh grid and pagination with provider data.
-   */
-  private _refresh() {
-    this._data = this._dataProvider.getData();
-    if (!_.isEmpty(this._data) && _.isEmpty(this._columns)) {
-      this._setColumnsFromData(this._data);
-    }
-    if (this.options.paging) {
-      this._paginate();
     }
   }
 
@@ -340,13 +340,13 @@ export class Grid {
    * Build a list of the pages that should be display in the grid, based on
    * current page index and max button count.
    */
-  private _paginate() {
+  private paginate() {
     let pageButtonCount: number = Math.min(this.options.pageButtonCount,
       this.getTotalPages());
     let offsetLeft: number = Math.floor(pageButtonCount / 2);
     let offsetRight: number = Math.ceil(pageButtonCount / 2) - 1;
-    let startIndex: number = this._pageIndex - offsetLeft;
-    let endIndex: number = this._pageIndex + offsetRight;
+    let startIndex: number = this.pageIndex - offsetLeft;
+    let endIndex: number = this.pageIndex + offsetRight;
 
     if (startIndex < 1) {
       startIndex = 1;
@@ -356,9 +356,9 @@ export class Grid {
       startIndex = endIndex - pageButtonCount + 1;
     }
 
-    this._pages = [];
+    this.pages = [];
     for (let i = startIndex; i <= endIndex; i++) {
-      this._pages.push(i);
+      this.pages.push(i);
     }
   }
 
@@ -368,7 +368,7 @@ export class Grid {
    *
    * @param {MouseEvent} event
    */
-  private _onPageButtonClick(event: MouseEvent) {
+  private onPageButtonClick(event: MouseEvent) {
     event.preventDefault();
 
     let element: HTMLSelectElement = <HTMLSelectElement>event.target;
@@ -382,7 +382,7 @@ export class Grid {
    *
    * @returns {boolean}
    */
-  private _isPageSizeOptionsEnabled(): boolean {
+  private isPageSizeOptionsEnabled(): boolean {
     return this.options.paging && (!_.isEmpty(this.options.pageSizeOptions)
       || this.options.pageSizeOptions != false);
   }
@@ -394,7 +394,7 @@ export class Grid {
    *
    * @param {MouseEvent} event
    */
-  private _onPageSizeDropDownChange(event: MouseEvent) {
+  private onPageSizeDropDownChange(event: MouseEvent) {
     let element: HTMLSelectElement = <HTMLSelectElement>event.target;
     let pageSize: number = Number(element.options.item(element.selectedIndex).innerHTML);
 
@@ -407,7 +407,7 @@ export class Grid {
    *
    * @param {MouseEvent} event
    */
-  private _onFilterInputBlur(event) {
+  private onFilterInputBlur(event) {
     let element: HTMLInputElement = <HTMLInputElement>event.target;
     let columnName: string = element.getAttribute('name');
     let keyword: string = element.value.trim();
@@ -422,8 +422,8 @@ export class Grid {
    *
    * @param {MouseEvent} event
    */
-  private _onFilterInputEnter(event: MouseEvent) {
-    this._onFilterInputBlur(event);
+  private onFilterInputEnter(event: MouseEvent) {
+    this.onFilterInputBlur(event);
 
     this.filter();
   }
@@ -434,15 +434,15 @@ export class Grid {
    *
    * @param {MouseEvent} event
    */
-  private _onHeadingClick(event: MouseEvent) {
+  private onHeadingClick(event: MouseEvent) {
     let element: HTMLElement = <HTMLElement>event.target;
     let columnName: string = element.getAttribute('data-id');
-    let column: GridColumn = _.find(this._columns, function(item) {
+    let column: GridColumn = _.find(this.columns, function(item) {
       return item.name == columnName;
     });
 
-    if (this._isSortingAllowed(column)) {
-      this.sort(columnName, this._getSortType(column));
+    if (this.isSortingAllowed(column)) {
+      this.sort(columnName, this.getSortType(column));
     } else {
       console.log('Sorting by "' + column.name + '" is not allowed.');
     }
@@ -456,13 +456,13 @@ export class Grid {
    * current sort type value
    * @returns {boolean}
    */
-  private _isSortedBy(column: GridColumn, sortType?: string): boolean {
-    let isOrderedByField = column.name == this._dataProvider.getSortColumn();
+  private isSortedBy(column: GridColumn, sortType?: string): boolean {
+    let isOrderedByField = column.name == this.dataProvider.getSortColumn();
     if (_.isUndefined(sortType)) {
       return isOrderedByField;
     }
 
-    return isOrderedByField && this._dataProvider.getSortType() == sortType;
+    return isOrderedByField && this.dataProvider.getSortType() == sortType;
   }
 
   /**
@@ -473,10 +473,10 @@ export class Grid {
    * @param {GridColumn} column
    * @returns {string}
    */
-  private _getSortType(column: GridColumn): string {
-    return column.name != this._dataProvider.getSortColumn() ?
-      this._dataProvider.getSortType() :
-        (this._dataProvider.getSortType() == GridSort.TYPE_ASC ?
+  private getSortType(column: GridColumn): string {
+    return column.name != this.dataProvider.getSortColumn() ?
+      this.dataProvider.getSortType() :
+        (this.dataProvider.getSortType() == GridSort.TYPE_ASC ?
           GridSort.TYPE_DESC : GridSort.TYPE_ASC);
   }
 
@@ -486,7 +486,7 @@ export class Grid {
    * @param {GridColumn} column
    * @returns {boolean}
    */
-  private _isSortingAllowed(column: GridColumn): boolean {
+  private isSortingAllowed(column: GridColumn): boolean {
     return this.options.sorting && column.sorting;
   }
 
@@ -497,9 +497,9 @@ export class Grid {
    * @param {any} row Data item, could be primitive data type or an object
    * @returns {string}
    */
-  private _getColumnName(key: string, row: any): string {
+  private getColumnName(key: string, row: any): string {
     if (_.isObject(row[key])) {
-      return key.concat('.', this._getNestedKey(row[key]))
+      return key.concat('.', this.getNestedKey(row[key]))
     }
 
     return key;
@@ -512,15 +512,15 @@ export class Grid {
    * @returns {string}
    * @example
    * var object: any = {country: { name: { officialName: "People's Republic of China", name: "China" }, id: 6 }}
-   * var nestedKey: string = this._getNestedKey(object);
+   * var nestedKey: string = this.getNestedKey(object);
    * console.log(nestedKey); // will output 'country.name.officialName'
    */
-  private _getNestedKey(object: any): string {
+  private getNestedKey(object: any): string {
     let firstKey: string = _.keys(object)[0];
     let firstKeyValue: any = object[firstKey];
 
     if (_.isObject(firstKeyValue)) {
-      firstKey.concat('.', this._getNestedKey(firstKeyValue));
+      firstKey.concat('.', this.getNestedKey(firstKeyValue));
     }
 
     return firstKey;

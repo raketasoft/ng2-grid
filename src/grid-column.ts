@@ -1,5 +1,5 @@
-  import { Loadable } from './loadable';
-  import * as _ from 'lodash';
+import { Loadable } from './loadable';
+import * as _ from 'lodash';
 
 /**
  * Grid column class.

@@ -22,12 +22,12 @@ export class GridDataProvider extends Loadable {
   sortParam: string;
   url: string;
 
-  private _filterData: any[];
-  private _filters: Object = new Object();
-  private _pageData: Array<any>;
-  private _sortColumn: string;
-  private _sortType: string = GridSort.TYPE_ASC;
-  private _totalCount: number;
+  private filterData: any[];
+  private filters: Object = new Object();
+  private pageData: Array<any>;
+  private sortColumn: string;
+  private sortType: string = GridSort.TYPE_ASC;
+  private totalCount: number;
 
   static DEFAULT_PAGE_PARAM_VALUE: string = 'page';
   static DEFAULT_PAGE_SIZE_PARAM_VALUE: string = 'pageSize';
@@ -55,7 +55,7 @@ export class GridDataProvider extends Loadable {
     if (_.isUndefined(this.sortParam)) {
       this.sortParam = GridDataProvider.DEFAULT_SORT_PARAM_VALUE;
     }
-    this._filterData = this.data;
+    this.filterData = this.data;
   }
 
   /**
@@ -66,12 +66,12 @@ export class GridDataProvider extends Loadable {
    */
   getData(): Array<any> {
     if (_.isUndefined(this.url)) {
-      this._filter();
-      this._sort();
-      this._slice();
+      this.filter();
+      this.sort();
+      this.slice();
     }
 
-    return this._pageData;
+    return this.pageData;
   }
 
   /**
@@ -80,7 +80,7 @@ export class GridDataProvider extends Loadable {
    * @returns {number}
    */
   getCount(): number {
-    return this._pageData.length;
+    return this.pageData.length;
   }
 
   /**
@@ -90,10 +90,10 @@ export class GridDataProvider extends Loadable {
    */
   getTotalCount(): number {
     if (_.isUndefined(this.url)) {
-      this._totalCount = this._filterData.length;
+      this.totalCount = this.filterData.length;
     }
 
-    return this._totalCount;
+    return this.totalCount;
   }
 
   /**
@@ -104,9 +104,9 @@ export class GridDataProvider extends Loadable {
    */
   setFilter(columnName: string, value: string) {
     if (!_.isEmpty(value)) {
-      this._filters[columnName] = value;
-    } else if (!_.isEmpty(this._filters[columnName])) {
-      delete this._filters[columnName];
+      this.filters[columnName] = value;
+    } else if (!_.isEmpty(this.filters[columnName])) {
+      delete this.filters[columnName];
     }
   }
 
@@ -118,23 +118,23 @@ export class GridDataProvider extends Loadable {
    */
   setSort(sortColumn: string, sortType?: string) {
     if (!_.isUndefined(sortType)) {
-      this._sortType = sortType;
+      this.sortType = sortType;
     }
-    this._sortColumn = sortColumn;
+    this.sortColumn = sortColumn;
   }
 
   /**
-   * Getter for {{_sortColumn}} property.
+   * Getter for {{sortColumn}} property.
    */
   getSortColumn(): string {
-    return this._sortColumn;
+    return this.sortColumn;
   }
 
   /**
-   * Getter for {{_sortType}} property.
+   * Getter for {{sortType}} property.
    */
   getSortType(): string {
-    return this._sortType;
+    return this.sortType;
   }
 
   /**
@@ -144,7 +144,7 @@ export class GridDataProvider extends Loadable {
    * @returns {Observable<Response>}
    */
   fetch(): Observable<Response> {
-    var params: URLSearchParams = this._buildRequestParams();
+    var params: URLSearchParams = this.buildRequestParams();
 
     var response:Observable<Response> = this._http
         .get(this.url, {search: params})
@@ -153,8 +153,8 @@ export class GridDataProvider extends Loadable {
     response
       .subscribe(
         (res: Response) => {
-          this._totalCount = Number(res.headers.get('X-Pagination-Total-Count'));
-          this._pageData = res.json();
+          this.totalCount = Number(res.headers.get('X-Pagination-Total-Count'));
+          this.pageData = res.json();
         },
         (err: any) => console.log(err)
       );
@@ -167,7 +167,7 @@ export class GridDataProvider extends Loadable {
    *
    * @returns {URLSearchParams}
    */
-  private _buildRequestParams(): URLSearchParams {
+  private buildRequestParams(): URLSearchParams {
     var params: URLSearchParams = new URLSearchParams();
 
     params.set(this.pageParam, this.page.toString());
@@ -176,14 +176,14 @@ export class GridDataProvider extends Loadable {
       params.set(this.pageSizeParam, this.pageSize.toString());
     }
 
-    if (!_.isUndefined(this._sortColumn)) {
-      let sortByValue: string = (this._sortType == GridSort.TYPE_ASC ? '' : '-')
-        + this._sortColumn;
+    if (!_.isUndefined(this.sortColumn)) {
+      let sortByValue: string = (this.sortType == GridSort.TYPE_ASC ? '' : '-')
+        + this.sortColumn;
       params.set(this.sortParam, sortByValue);
     }
 
-    for (let key in this._filters) {
-      params.set(key, this._filters[key]);
+    for (let key in this.filters) {
+      params.set(key, this.filters[key]);
     }
 
     for (let key in this.additionalRequestParams) {
@@ -197,33 +197,33 @@ export class GridDataProvider extends Loadable {
    * Slice filtered static data to specific page.
    * If pageSize is not specified all filtered data would be returned.
    */
-  private _slice() {
+  private slice() {
     var data = [];
     if (this.pageSize != false) {
       let start: number = (this.page - 1) * this.pageSize
       let end: number = start + this.pageSize;
 
-      data = _.slice(this._filterData, start, end);
+      data = _.slice(this.filterData, start, end);
     } else {
-      data = this._filterData;
+      data = this.filterData;
     }
 
-    this._pageData = data;
+    this.pageData = data;
   }
 
   /**
    * Filter provided static data.
    */
-  private _filter() {
+  private filter() {
     var self = this;
 
-    this._filterData = _.filter(this.data, function(item) {
+    this.filterData = _.filter(this.data, function(item) {
       var match: boolean = true;
-      for (let filter in self._filters) {
+      for (let filter in self.filters) {
         let value: string = _.get(item, filter).toString();
 
         match = match &&
-          (value.match(new RegExp(self._filters[filter], 'i')) !== null);
+          (value.match(new RegExp(self.filters[filter], 'i')) !== null);
       }
 
       return match;
@@ -233,9 +233,9 @@ export class GridDataProvider extends Loadable {
   /**
    * Sort provided static data.
    */
-  private _sort() {
-    if (!_.isUndefined(this._sortColumn)) {
-      this._filterData = _.orderBy(this._filterData, [this._sortColumn], [this._sortType]);
+  private sort() {
+    if (!_.isUndefined(this.sortColumn)) {
+      this.filterData = _.orderBy(this.filterData, [this.sortColumn], [this.sortType]);
     }
   }
 }
