@@ -1,5 +1,5 @@
 import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { Grid, GridOptions } from '../ng2-grid';
+import { Grid, GridOptions } from '../raketasoft-ng2-grid';
 import DEMO_DATA from './data';
 
 @Component({
