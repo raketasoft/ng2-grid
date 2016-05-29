@@ -152,11 +152,11 @@ export class GridDataProvider extends Loadable {
 
     response
       .subscribe(
-        (response: Response) => {
-          this.totalCount = Number(response.headers.get('X-Pagination-Total-Count'));
-          this.pageData = response.json();
+        (res: Response) => {
+          this.totalCount = Number(res.headers.get('X-Pagination-Total-Count'));
+          this.pageData = res.json();
         },
-        (error: any) => console.log(error)
+        (err: any) => console.log(err)
       );
 
     return response;

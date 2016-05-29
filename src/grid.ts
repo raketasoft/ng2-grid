@@ -246,11 +246,11 @@ export class Grid {
       this.refresh();
     } else {
       this.dataProvider.fetch().subscribe(
-        (response: Response) => {
+        (res: Response) => {
           this.refresh();
         },
-        (error: any) => {
-          console.log(error);
+        (err: any) => {
+          console.log(err);
         }
       );
     }
