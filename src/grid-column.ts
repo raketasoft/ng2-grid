@@ -10,14 +10,14 @@ import * as _ from 'lodash';
  * @since 1.0.0-alpha
  */
 export class GridColumn extends Loadable {
+  static DEFAULT_FILTERING_VALUE: boolean = true;
+  static DEFAULT_SORTING_VALUE: boolean = true;
+
   heading: string;
   name: string;
   filtering: boolean;
   sorting: boolean;
   width: string;
-
-  static DEFAULT_FILTERING_VALUE: boolean = true;
-  static DEFAULT_SORTING_VALUE: boolean = true;
 
   /**
    * Class constructor.

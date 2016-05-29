@@ -1,11 +1,13 @@
-/node_modules
-npm-debug.log
-/tmp
-
-*.js
-!systemjs.config.js
-*.js.map
-*.d.ts
+*.ts
+!*.d.ts
+/demo
+.npmignore
+bs-config.json
+gulpfile.*
+systemjs.config.js
+tsconfig.json
+tslint.json
+typings.json
 
 # type script artifacts
 /typings

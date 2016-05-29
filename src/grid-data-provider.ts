@@ -13,6 +13,11 @@ import 'rxjs/Rx';
  * @since 1.0.0-alpha
  */
 export class GridDataProvider extends Loadable {
+  static DEFAULT_PAGE_PARAM_VALUE: string = 'page';
+  static DEFAULT_PAGE_SIZE_PARAM_VALUE: string = 'pageSize';
+  static DEFAULT_PAGE_SIZE_VALUE: number = 20;
+  static DEFAULT_SORT_PARAM_VALUE: string = 'orderBy';
+
   additionalRequestParams: any;
   data: Array<any>;
   pageParam: string;
@@ -28,11 +33,6 @@ export class GridDataProvider extends Loadable {
   private sortColumn: string;
   private sortType: string = GridSort.TYPE_ASC;
   private totalCount: number;
-
-  static DEFAULT_PAGE_PARAM_VALUE: string = 'page';
-  static DEFAULT_PAGE_SIZE_PARAM_VALUE: string = 'pageSize';
-  static DEFAULT_PAGE_SIZE_VALUE: number = 20;
-  static DEFAULT_SORT_PARAM_VALUE: string = 'orderBy';
 
   /**
    * Class constructor.
@@ -146,17 +146,17 @@ export class GridDataProvider extends Loadable {
   fetch(): Observable<Response> {
     var params: URLSearchParams = this.buildRequestParams();
 
-    var response:Observable<Response> = this._http
+    var response: Observable<Response> = this._http
         .get(this.url, {search: params})
         .share();
 
     response
       .subscribe(
-        (res: Response) => {
-          this.totalCount = Number(res.headers.get('X-Pagination-Total-Count'));
-          this.pageData = res.json();
+        (response: Response) => {
+          this.totalCount = Number(response.headers.get('X-Pagination-Total-Count'));
+          this.pageData = response.json();
         },
-        (err: any) => console.log(err)
+        (error: any) => console.log(error)
       );
 
     return response;
@@ -167,17 +167,17 @@ export class GridDataProvider extends Loadable {
    *
    * @returns {URLSearchParams}
    */
-  private buildRequestParams(): URLSearchParams {
+  protected buildRequestParams(): URLSearchParams {
     var params: URLSearchParams = new URLSearchParams();
 
     params.set(this.pageParam, this.page.toString());
 
-    if (this.pageSize != false) {
+    if (this.pageSize !== false) {
       params.set(this.pageSizeParam, this.pageSize.toString());
     }
 
     if (!_.isUndefined(this.sortColumn)) {
-      let sortByValue: string = (this.sortType == GridSort.TYPE_ASC ? '' : '-')
+      let sortByValue: string = (this.sortType === GridSort.TYPE_ASC ? '' : '-')
         + this.sortColumn;
       params.set(this.sortParam, sortByValue);
     }
@@ -197,10 +197,10 @@ export class GridDataProvider extends Loadable {
    * Slice filtered static data to specific page.
    * If pageSize is not specified all filtered data would be returned.
    */
-  private slice() {
-    var data = [];
-    if (this.pageSize != false) {
-      let start: number = (this.page - 1) * this.pageSize
+  protected slice() {
+    var data: Array<any> = [];
+    if (this.pageSize !== false) {
+      let start: number = (this.page - 1) * this.pageSize;
       let end: number = start + this.pageSize;
 
       data = _.slice(this.filterData, start, end);
@@ -214,16 +214,16 @@ export class GridDataProvider extends Loadable {
   /**
    * Filter provided static data.
    */
-  private filter() {
-    var self = this;
+  protected filter() {
+    var self: GridDataProvider = this;
 
-    this.filterData = _.filter(this.data, function(item) {
+    this.filterData = _.filter(this.data, function(item: any) {
       var match: boolean = true;
       for (let filter in self.filters) {
         let value: string = _.get(item, filter).toString();
 
         match = match &&
-          (value.match(new RegExp(self.filters[filter], 'i')) !== null);
+          !_.isEmpty(value.match(new RegExp(self.filters[filter], 'i')));
       }
 
       return match;
@@ -233,11 +233,9 @@ export class GridDataProvider extends Loadable {
   /**
    * Sort provided static data.
    */
-  private sort() {
+  protected sort() {
     if (!_.isUndefined(this.sortColumn)) {
       this.filterData = _.orderBy(this.filterData, [this.sortColumn], [this.sortType]);
     }
   }
 }
-
-

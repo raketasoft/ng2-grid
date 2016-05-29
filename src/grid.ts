@@ -4,7 +4,6 @@ import { GridOptions } from './grid-options';
 import { GridColumn } from './grid-column';
 import { GridDataProvider } from './grid-data-provider';
 import { GridSort } from './grid-sort';
-import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
 
@@ -178,7 +177,7 @@ export class Grid {
    * @returns {number}
    */
   getTotalPages(): number {
-    if (this.dataProvider.pageSize == false) {
+    if (this.dataProvider.pageSize === false) {
       return 1;
     }
 
@@ -247,16 +246,20 @@ export class Grid {
       this.refresh();
     } else {
       this.dataProvider.fetch().subscribe(
-        (res: Response) => this.refresh(),
-        (err: any) => console.log(err)
-      )
+        (response: Response) => {
+          this.refresh();
+        },
+        (error: any) => {
+          console.log(error);
+        }
+      );
     }
   }
 
   /**
    * Refresh grid and pagination with provider data.
    */
-  private refresh() {
+  protected refresh() {
     this.data = this.dataProvider.getData();
     if (!_.isEmpty(this.data) && _.isEmpty(this.columns)) {
       this.setColumnsFromData(this.data);
@@ -271,7 +274,7 @@ export class Grid {
    *
    * @param {boolean} selected
    */
-  private onSelectAllCheckboxClick(selected: boolean) {
+  protected onSelectAllCheckboxClick(selected: boolean) {
     for (let row of this.data) {
       row.selected = selected;
     }
@@ -282,7 +285,7 @@ export class Grid {
    *
    * @param {any} row Data row
    */
-  private onSelectItemCheckboxClick(item: any) {
+  protected onSelectItemCheckboxClick(item: any) {
     if (_.isUndefined(item.selected)) {
       item.selected = false;
     }
@@ -292,7 +295,7 @@ export class Grid {
   /**
    * Initialize data provider based on grid options.
    */
-  private initDataProvider() {
+  protected initDataProvider() {
     this.dataProvider = new GridDataProvider(this.http, {
       additionalRequestParams: this.options.additionalRequestParams,
       data: this.options.data,
@@ -304,8 +307,10 @@ export class Grid {
     });
 
     if (!_.isUndefined(this.options.defaultSortColumn)) {
-      this.dataProvider.setSort(this.options.defaultSortColumn,
-        this.options.defaultSortType);
+      this.dataProvider.setSort(
+        this.options.defaultSortColumn,
+        this.options.defaultSortType
+      );
     }
   }
 
@@ -313,7 +318,7 @@ export class Grid {
    * Initialize grid columns based on column options.
    * If no column options are given set default options from provided data.
    */
-  private initColumns() {
+  protected initColumns() {
     if (!_.isEmpty(this.options.columns)) {
       for (let value of this.options.columns) {
         this.columns.push(new GridColumn(value));
@@ -326,7 +331,7 @@ export class Grid {
    *
    * @param {Array<any>} data
    */
-  private setColumnsFromData(data: Array<any>) {
+  protected setColumnsFromData(data: Array<any>) {
     let firstRow: any = data[0];
     for (let key in firstRow) {
       this.columns.push(new GridColumn({
@@ -340,9 +345,11 @@ export class Grid {
    * Build a list of the pages that should be display in the grid, based on
    * current page index and max button count.
    */
-  private paginate() {
-    let pageButtonCount: number = Math.min(this.options.pageButtonCount,
-      this.getTotalPages());
+  protected paginate() {
+    let pageButtonCount: number = Math.min(
+      this.options.pageButtonCount,
+      this.getTotalPages()
+    );
     let offsetLeft: number = Math.floor(pageButtonCount / 2);
     let offsetRight: number = Math.ceil(pageButtonCount / 2) - 1;
     let startIndex: number = this.pageIndex - offsetLeft;
@@ -357,7 +364,7 @@ export class Grid {
     }
 
     this.pages = [];
-    for (let i = startIndex; i <= endIndex; i++) {
+    for (let i: number = startIndex; i <= endIndex; i++) {
       this.pages.push(i);
     }
   }
@@ -368,10 +375,10 @@ export class Grid {
    *
    * @param {MouseEvent} event
    */
-  private onPageButtonClick(event: MouseEvent) {
+  protected onPageButtonClick(event: MouseEvent) {
     event.preventDefault();
 
-    let element: HTMLSelectElement = <HTMLSelectElement>event.target;
+    let element: HTMLSelectElement = event.target as HTMLSelectElement;
     let page: number = Number(element.getAttribute('data-page'));
 
     this.toPage(page);
@@ -382,9 +389,9 @@ export class Grid {
    *
    * @returns {boolean}
    */
-  private isPageSizeOptionsEnabled(): boolean {
+  protected isPageSizeOptionsEnabled(): boolean {
     return this.options.paging && (!_.isEmpty(this.options.pageSizeOptions)
-      || this.options.pageSizeOptions != false);
+      || this.options.pageSizeOptions !== false);
   }
 
   /**
@@ -394,8 +401,8 @@ export class Grid {
    *
    * @param {MouseEvent} event
    */
-  private onPageSizeDropDownChange(event: MouseEvent) {
-    let element: HTMLSelectElement = <HTMLSelectElement>event.target;
+  protected onPageSizeDropDownChange(event: MouseEvent) {
+    let element: HTMLSelectElement = event.target as HTMLSelectElement;
     let pageSize: number = Number(element.options.item(element.selectedIndex).innerHTML);
 
     this.changePageSize(pageSize);
@@ -407,8 +414,8 @@ export class Grid {
    *
    * @param {MouseEvent} event
    */
-  private onFilterInputBlur(event) {
-    let element: HTMLInputElement = <HTMLInputElement>event.target;
+  protected onFilterInputBlur(event: MouseEvent) {
+    let element: HTMLInputElement = event.target as HTMLInputElement;
     let columnName: string = element.getAttribute('name');
     let keyword: string = element.value.trim();
 
@@ -422,7 +429,7 @@ export class Grid {
    *
    * @param {MouseEvent} event
    */
-  private onFilterInputEnter(event: MouseEvent) {
+  protected onFilterInputEnter(event: MouseEvent) {
     this.onFilterInputBlur(event);
 
     this.filter();
@@ -434,11 +441,11 @@ export class Grid {
    *
    * @param {MouseEvent} event
    */
-  private onHeadingClick(event: MouseEvent) {
-    let element: HTMLElement = <HTMLElement>event.target;
+  protected onHeadingClick(event: MouseEvent) {
+    let element: HTMLElement = event.target as HTMLElement;
     let columnName: string = element.getAttribute('data-id');
-    let column: GridColumn = _.find(this.columns, function(item) {
-      return item.name == columnName;
+    let column: GridColumn = _.find(this.columns, function(item: any) {
+      return item.name === columnName;
     });
 
     if (this.isSortingAllowed(column)) {
@@ -456,13 +463,15 @@ export class Grid {
    * current sort type value
    * @returns {boolean}
    */
-  private isSortedBy(column: GridColumn, sortType?: string): boolean {
-    let isOrderedByField = column.name == this.dataProvider.getSortColumn();
+  protected isSortedBy(column: GridColumn, sortType?: string): boolean {
+    let isOrderedByField: boolean =
+        column.name === this.dataProvider.getSortColumn();
+
     if (_.isUndefined(sortType)) {
       return isOrderedByField;
     }
 
-    return isOrderedByField && this.dataProvider.getSortType() == sortType;
+    return isOrderedByField && this.dataProvider.getSortType() === sortType;
   }
 
   /**
@@ -473,10 +482,10 @@ export class Grid {
    * @param {GridColumn} column
    * @returns {string}
    */
-  private getSortType(column: GridColumn): string {
-    return column.name != this.dataProvider.getSortColumn() ?
+  protected getSortType(column: GridColumn): string {
+    return column.name !== this.dataProvider.getSortColumn() ?
       this.dataProvider.getSortType() :
-        (this.dataProvider.getSortType() == GridSort.TYPE_ASC ?
+        (this.dataProvider.getSortType() === GridSort.TYPE_ASC ?
           GridSort.TYPE_DESC : GridSort.TYPE_ASC);
   }
 
@@ -486,7 +495,7 @@ export class Grid {
    * @param {GridColumn} column
    * @returns {boolean}
    */
-  private isSortingAllowed(column: GridColumn): boolean {
+  protected isSortingAllowed(column: GridColumn): boolean {
     return this.options.sorting && column.sorting;
   }
 
@@ -497,9 +506,9 @@ export class Grid {
    * @param {any} row Data item, could be primitive data type or an object
    * @returns {string}
    */
-  private getColumnName(key: string, row: any): string {
+  protected getColumnName(key: string, row: any): string {
     if (_.isObject(row[key])) {
-      return key.concat('.', this.getNestedKey(row[key]))
+      return key.concat('.', this.getNestedKey(row[key]));
     }
 
     return key;

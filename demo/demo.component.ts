@@ -1,5 +1,11 @@
-import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { Grid, GridOptions } from '../raketasoft-ng2-grid';
+import {
+  Component,
+  ViewChild,
+  ChangeDetectorRef,
+  OnInit,
+  AfterViewInit
+} from '@angular/core';
+import { Grid, GridOptions } from '../index';
 import DEMO_DATA from './data';
 
 @Component({
@@ -13,13 +19,13 @@ import DEMO_DATA from './data';
     <ng-grid #remoteDataGrid [options]="remoteDataOptions"></ng-grid>`,
   directives: [Grid]
 })
-export class DemoComponent {
+export class DemoComponent implements OnInit, AfterViewInit {
   basicOptions: GridOptions;
   columnOptions: GridOptions;
   remoteDataOptions: GridOptions;
   @ViewChild('basicGrid') basicGrid: Grid;
 
-  constructor(private _changeDetectionRef : ChangeDetectorRef) { }
+  constructor(private changeDetectionRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.basicOptions = new GridOptions({
@@ -30,11 +36,11 @@ export class DemoComponent {
     this.columnOptions = new GridOptions({
       data: DEMO_DATA,
       columns: [
-        {heading: "Name", name: "name", width: "150px"},
-        {heading: "Age", name: "age", width: "50px"},
-        {heading: "Address", name: "address", width: "200px"},
-        {heading: "Country", name: "country.name", width: "100px"},
-        {heading: "Married", name: "isMarried", width: "50px", sorting: false, filtering: false}
+        {heading: 'Name', name: 'name', width: '150px'},
+        {heading: 'Age', name: 'age', width: '50px'},
+        {heading: 'Address', name: 'address', width: '200px'},
+        {heading: 'Country', name: 'country.name', width: '100px'},
+        {heading: 'Married', name: 'isMarried', width: '50px', sorting: false, filtering: false}
       ],
       defaultPageSize: 50,
       defaultSortColumn: 'name',
@@ -44,7 +50,7 @@ export class DemoComponent {
     });
 
     this.remoteDataOptions = new GridOptions({
-      url: "http://localhost:3000/",
+      url: 'http://localhost:3000/',
       additionalRequestParams: {
         'expand': 'company,interests'
       },
@@ -55,6 +61,6 @@ export class DemoComponent {
   ngAfterViewInit() {
     this.basicGrid.sort('name');
 
-    this._changeDetectionRef.detectChanges();
+    this.changeDetectionRef.detectChanges();
   }
 }
