@@ -17,92 +17,10 @@ import 'rxjs/Rx';
  */
 @Component({
   selector: 'ng-grid',
-  template: `
-    <div class="ng-grid">
-      <div class="ng-grid-header" [style.width]="options.width"
-          [class.scroll]="options.height">
-        <table [style.width]="options.width">
-          <thead *ngIf="options.heading">
-            <tr>
-              <th *ngIf="options.selection" class="ng-grid-heading selection">
-                <input #selectAll type="checkbox"
-                    (click)="onSelectAllCheckboxClick(selectAll.checked)">
-              </th>
-              <th *ngFor="let column of columns" class="ng-grid-heading"
-                  [style.width]="column.width" [attr.data-id]="column.name"
-                  [class.sort]="isSortedBy(column)"
-                  [class.sort-asc]="isSortedBy(column, 'asc')"
-                  [class.sort-desc]="isSortedBy(column, 'desc')"
-                  [class.sort-disable]="!isSortingAllowed(column)"
-                  (click)="onHeadingClick($event)">
-                {{column.renderHeading()}}
-              </th>
-            </tr>
-          </thead>
-          <tbody *ngIf="options.filtering">
-            <tr>
-              <td *ngIf="options.selection" class="ng-grid-filter selection"></td>
-              <td *ngFor="let column of columns" class="ng-grid-filter">
-                <input type="text" *ngIf="column.filtering"
-                  [attr.name]="column.name"
-                  (keyup.enter)="onFilterInputEnter($event)"
-                  (blur)="onFilterInputBlur($event)" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="ng-grid-body" [style.width]="options.width"
-          [class.scroll]="options.height" [style.max-height]="options.height">
-        <table class="table" [style.width]="options.width">
-          <tbody>
-            <tr *ngFor="let row of data">
-              <td *ngIf="options.selection" class="ng-grid-column selection">
-                <input type="checkbox"
-                    [(ngModel)]="row.selected"
-                    (click)="onSelectItemCheckboxClick(row)">
-              </td>
-              <td *ngFor="let column of columns" class="ng-grid-column"
-                  [style.width]="column.width">
-                {{column.renderCell(row)}}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="ng-grid-footer clearfix">
-        <div class="ng-grid-pager {{options.pageElementPosition}}" *ngIf="options.paging">
-          <span>Pages:</span>
-          <a href="#" *ngIf="pageIndex > 1" [attr.data-page]="1"
-            (click)="onPageButtonClick($event)">First</a>
-          <a href="#" *ngIf="pageIndex > 1" [attr.data-page]="getPageIndex() - 1"
-            (click)="onPageButtonClick($event)">Prev</a>
-          <template ngFor let-page [ngForOf]="pages">
-            <a href="#" *ngIf="page != pageIndex" [attr.data-page]="page"
-              (click)="onPageButtonClick($event)">{{page}}</a>
-            <span *ngIf="page == pageIndex">{{page}}</span>
-          </template>
-          <a href="#" *ngIf="pageIndex < getTotalPages()"
-            [attr.data-page]="getPageIndex() + 1"
-            (click)="onPageButtonClick($event)">Next</a>
-          <a href="#" *ngIf="pageIndex < getTotalPages()"
-            [attr.data-page]="getTotalPages()"
-            (click)="onPageButtonClick($event)">Last</a>
-          <span>{{pageIndex}} of {{getTotalPages()}}</span>
-        </div>
-        <div class="ng-grid-pager-size {{options.pageSizeElementPosition}}"
-          *ngIf="isPageSizeOptionsEnabled()">
-          <span>Page size:</span>
-          <select [(ngModel)]="dataProvider.pageSize"
-            (change)="onPageSizeDropDownChange($event)">
-            <option *ngFor="let value of options.pageSizeOptions" [ngValue]="value">
-              {{value}}
-            </option>
-          </select>
-        </div>
-      </div>
-    </div>`,
-    'providers': [HTTP_PROVIDERS]
+  moduleId: module.id,
+  templateUrl: './grid.html',
+  styleUrls: ['./assets/ng2-grid.css'],
+  providers: [HTTP_PROVIDERS]
 })
 export class Grid {
   @Input() options: GridOptions;
