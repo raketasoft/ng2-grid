@@ -3,26 +3,26 @@
 
 ### Features
 
-* **grid** Autoload CSS styles
-* **docs** Add CHANGELOG.md
-* **docs** Update README.md instructions
-* **build** Update TypeScript configuration
+* **grid:** Autoload CSS styles
+* **docs:** Add CHANGELOG.md
+* **docs:** Update README.md instructions
+* **build:** Update TypeScript configuration
 
 ### Bug Fixes
 
-* **grid-column** Fix issue with rendering empty values
-* **grid** Move HTML template to separate file
+* **grid-column:** Fix issue with rendering empty values
+* **grid:** Move HTML template to separate file
 
 <a name="1.0.0-alpha.2"></a>
 # 1.0.0-alpha.2 (2016-05-30)
 
 ### Features
 
-* **build** Update component seed, setup module for publishing
+* **build:** Update component seed, setup module for publishing
 
 ### Bug Fixes
 
-* **docs** Update README.md instructions
+* **docs:** Update README.md instructions
 
 
 <a name="1.0.0-alpha.1"></a>
@@ -30,4 +30,4 @@
 
 ### Bug Fixes
 
-* **package** Fix package name
+* **package:** Fix package name
