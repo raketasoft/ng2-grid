@@ -13,7 +13,12 @@ Lightweight data grid component for Angular 2.
 ## Installation
 
 1. `npm install raketasoft-ng2-grid --save`
-2. Include `node_modules/raketasoft-ng2-grid/src/assets/ng2-grid.css` into your project
+2. `npm install lodash --save`
+
+## Demo
+
+Configuration examples could be found under the demo application:
+[Demo](https://github.com/raketasoft/ng2-grid/tree/master/demo)
 
 ## License
 
