@@ -49,6 +49,6 @@ export class GridColumn extends Loadable {
    * @returns {string}
    */
   renderCell(data: any): string {
-    return _.get(data, this.name).toString();
+    return _.get(data, this.name) as string;
   }
 }
