@@ -17,6 +17,7 @@ export class GridDataProvider extends Loadable {
   static DEFAULT_PAGE_SIZE_PARAM_VALUE: string = 'pageSize';
   static DEFAULT_PAGE_SIZE_VALUE: number = 20;
   static DEFAULT_SORT_PARAM_VALUE: string = 'orderBy';
+  static DEFAULT_TOTAL_COUNT_HEADER_PARAM_VALUE = 'X-Pagination-Total-Count';
 
   additionalRequestParams: any;
   data: Array<any>;
@@ -38,7 +39,7 @@ export class GridDataProvider extends Loadable {
    * Class constructor.
    * Set default values for properties if not specified in params.
    */
-  constructor(private _http: Http, params?: any) {
+  constructor(private http: Http, params?: any) {
     super(params);
     if (_.isUndefined(this.data)) {
       this.data = [];
@@ -146,14 +147,16 @@ export class GridDataProvider extends Loadable {
   fetch(): Observable<Response> {
     var params: URLSearchParams = this.buildRequestParams();
 
-    var response: Observable<Response> = this._http
+    var response: Observable<Response> = this.http
         .get(this.url, {search: params})
         .share();
 
     response
       .subscribe(
         (res: Response) => {
-          this.totalCount = Number(res.headers.get('X-Pagination-Total-Count'));
+          this.totalCount = Number(res.headers.get(
+            GridDataProvider.DEFAULT_TOTAL_COUNT_HEADER_PARAM_VALUE
+          ));
           this.pageData = res.json();
         },
         (err: any) => console.log(err)

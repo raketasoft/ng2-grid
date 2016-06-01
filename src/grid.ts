@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
 import { GridOptions } from './grid-options';
 import { GridColumn } from './grid-column';
@@ -22,7 +22,17 @@ import 'rxjs/Rx';
   styleUrls: ['./assets/ng2-grid.css'],
   providers: [HTTP_PROVIDERS]
 })
-export class Grid {
+export class Grid implements OnInit {
+  static DATA_PROVIDER_PARAMS = [
+    'additionalRequestParams',
+    'data',
+    'pageParam',
+    'pageSizeParam',
+    'pageSize',
+    'sortParam',
+    'url'
+  ];
+
   @Input() options: GridOptions;
 
   private columns: Array<GridColumn> = [];
@@ -55,7 +65,21 @@ export class Grid {
   }
 
   /**
-   * Return data displayed current grid page.
+   * Set specific grid value option.
+   *
+   * @param {string} option
+   * @param {any} value
+   */
+  setOption(option: string, value: any) {
+    this.options[option] = value;
+
+    if (Grid.DATA_PROVIDER_PARAMS.indexOf(option)) {
+      this.dataProvider[option] = value;
+    }
+  }
+
+  /**
+   * Return data displayed on current grid page.
    *
    * @returns {Array<any>}
    */
@@ -87,6 +111,15 @@ export class Grid {
    */
   getPageIndex(): number {
     return this.pageIndex;
+  }
+
+  /**
+   * Return current page size.
+   *
+   * @returns {number}
+   */
+  getPageSize(): number {
+    return this.dataProvider.pageSize;
   }
 
   /**
@@ -214,15 +247,12 @@ export class Grid {
    * Initialize data provider based on grid options.
    */
   protected initDataProvider() {
-    this.dataProvider = new GridDataProvider(this.http, {
-      additionalRequestParams: this.options.additionalRequestParams,
-      data: this.options.data,
-      pageParam: this.options.pageParam,
-      pageSizeParam: this.options.pageSizeParam,
-      pageSize: this.options.defaultPageSize,
-      sortParam: this.options.sortParam,
-      url: this.options.url
-    });
+    let params: any = {};
+    for (let param of Grid.DATA_PROVIDER_PARAMS) {
+      params[param] = this.options[param];
+    }
+
+    this.dataProvider = new GridDataProvider(this.http, params);
 
     if (!_.isUndefined(this.options.defaultSortColumn)) {
       this.dataProvider.setSort(

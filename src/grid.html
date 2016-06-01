@@ -34,7 +34,7 @@
   </div>
   <div class="ng-grid-body" [style.width]="options.width"
       [class.scroll]="options.height" [style.max-height]="options.height">
-    <table class="table" [style.width]="options.width">
+    <table [style.width]="options.width">
       <tbody>
         <tr *ngFor="let row of data">
           <td *ngIf="options.selection" class="ng-grid-column selection">
