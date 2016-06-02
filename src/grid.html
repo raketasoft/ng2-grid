@@ -43,8 +43,8 @@
                 (click)="onSelectItemCheckboxClick(row)">
           </td>
           <td *ngFor="let column of columns" class="ng-grid-column"
-              [style.width]="column.width">
-            {{column.renderCell(row)}}
+              [style.width]="column.width"
+              [innerHtml]="column.renderCell(row)">
           </td>
         </tr>
       </tbody>

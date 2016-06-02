@@ -23,16 +23,6 @@ import 'rxjs/Rx';
   providers: [HTTP_PROVIDERS]
 })
 export class Grid implements OnInit {
-  static DATA_PROVIDER_PARAMS = [
-    'additionalRequestParams',
-    'data',
-    'pageParam',
-    'pageSizeParam',
-    'pageSize',
-    'sortParam',
-    'url'
-  ];
-
   @Input() options: GridOptions;
 
   private columns: Array<GridColumn> = [];
@@ -62,20 +52,6 @@ export class Grid implements OnInit {
     this.initColumns();
     this.initDataProvider();
     this.render();
-  }
-
-  /**
-   * Set specific grid value option.
-   *
-   * @param {string} option
-   * @param {any} value
-   */
-  setOption(option: string, value: any) {
-    this.options[option] = value;
-
-    if (Grid.DATA_PROVIDER_PARAMS.indexOf(option)) {
-      this.dataProvider[option] = value;
-    }
   }
 
   /**
@@ -138,11 +114,10 @@ export class Grid implements OnInit {
   /**
    * Render data for given page.
    *
-   * @param {number} page
+   * @param {number} pageIndex
    */
-  toPage(page: number) {
-    this.pageIndex = page;
-    this.render();
+  setPageIndex(pageIndex: number) {
+    this.pageIndex = pageIndex;
   }
 
   /**
@@ -150,10 +125,9 @@ export class Grid implements OnInit {
    *
    * @param {number} pageSize
    */
-  changePageSize(pageSize: number) {
+  setPageSize(pageSize: number) {
     this.dataProvider.pageSize = pageSize;
     this.pageIndex = 1;
-    this.render();
   }
 
   /**
@@ -162,17 +136,9 @@ export class Grid implements OnInit {
    * @param {string} columnName
    * @param {string} value Keyword to be used as filter for the column
    */
-  addFilter(columnName: string, value: string) {
+  setFilter(columnName: string, value: string) {
     this.dataProvider.setFilter(columnName, value);
-  }
-
-  /**
-   * Callling this method would filter the grid data based on all filter values
-   * that have been added previously using {{addFilter}} method.
-   */
-  filter() {
     this.pageIndex = 1;
-    this.render();
   }
 
   /**
@@ -182,9 +148,8 @@ export class Grid implements OnInit {
    * @param {string} sortColumn Name of grid column to be used for sorting
    * @param {string} sortType Optional, values are 'asc' or 'desc'
    */
-  sort(sortColumn: string, sortType?: string) {
+  setSort(sortColumn: string, sortType?: string) {
     this.dataProvider.setSort(sortColumn, sortType);
-    this.render();
   }
 
   /**
@@ -247,12 +212,15 @@ export class Grid implements OnInit {
    * Initialize data provider based on grid options.
    */
   protected initDataProvider() {
-    let params: any = {};
-    for (let param of Grid.DATA_PROVIDER_PARAMS) {
-      params[param] = this.options[param];
-    }
-
-    this.dataProvider = new GridDataProvider(this.http, params);
+    this.dataProvider = new GridDataProvider(this.http, {
+      additionalRequestParams: this.options.additionalRequestParams,
+      data: this.options.data,
+      pageParam: this.options.pageParam,
+      pageSizeParam: this.options.pageSizeParam,
+      pageSize: this.options.defaultPageSize,
+      sortParam: this.options.sortParam,
+      url: this.options.url
+    });
 
     if (!_.isUndefined(this.options.defaultSortColumn)) {
       this.dataProvider.setSort(
@@ -327,9 +295,10 @@ export class Grid implements OnInit {
     event.preventDefault();
 
     let element: HTMLSelectElement = event.target as HTMLSelectElement;
-    let page: number = Number(element.getAttribute('data-page'));
+    let pageIndex: number = Number(element.getAttribute('data-page'));
 
-    this.toPage(page);
+    this.setPageIndex(pageIndex);
+    this.render();
   }
 
   /**
@@ -353,7 +322,8 @@ export class Grid implements OnInit {
     let element: HTMLSelectElement = event.target as HTMLSelectElement;
     let pageSize: number = Number(element.options.item(element.selectedIndex).innerHTML);
 
-    this.changePageSize(pageSize);
+    this.setPageSize(pageSize);
+    this.render();
   }
 
   /**
@@ -367,7 +337,7 @@ export class Grid implements OnInit {
     let columnName: string = element.getAttribute('name');
     let keyword: string = element.value.trim();
 
-    this.addFilter(columnName, keyword);
+    this.setFilter(columnName, keyword);
   }
 
   /**
@@ -380,7 +350,7 @@ export class Grid implements OnInit {
   protected onFilterInputEnter(event: MouseEvent) {
     this.onFilterInputBlur(event);
 
-    this.filter();
+    this.render();
   }
 
   /**
@@ -397,7 +367,8 @@ export class Grid implements OnInit {
     });
 
     if (this.isSortingAllowed(column)) {
-      this.sort(columnName, this.getSortType(column));
+      this.setSort(columnName, this.getSortType(column));
+      this.render();
     } else {
       console.log('Sorting by "' + column.name + '" is not allowed.');
     }

@@ -1,3 +1,4 @@
+import { Input } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Loadable } from './loadable';
 import { GridSort } from './grid-sort';
@@ -17,7 +18,7 @@ export class GridDataProvider extends Loadable {
   static DEFAULT_PAGE_SIZE_PARAM_VALUE: string = 'pageSize';
   static DEFAULT_PAGE_SIZE_VALUE: number = 20;
   static DEFAULT_SORT_PARAM_VALUE: string = 'orderBy';
-  static DEFAULT_TOTAL_COUNT_HEADER_PARAM_VALUE = 'X-Pagination-Total-Count';
+  static DEFAULT_TOTAL_COUNT_HEADER_VALUE: string = 'X-Pagination-Total-Count';
 
   additionalRequestParams: any;
   data: Array<any>;
@@ -155,7 +156,7 @@ export class GridDataProvider extends Loadable {
       .subscribe(
         (res: Response) => {
           this.totalCount = Number(res.headers.get(
-            GridDataProvider.DEFAULT_TOTAL_COUNT_HEADER_PARAM_VALUE
+            GridDataProvider.DEFAULT_TOTAL_COUNT_HEADER_VALUE
           ));
           this.pageData = res.json();
         },
@@ -176,7 +177,7 @@ export class GridDataProvider extends Loadable {
     params.set(this.pageParam, this.page.toString());
 
     if (this.pageSize !== false) {
-      params.set(this.pageSizeParam, this.pageSize.toString());
+      params.set(this.pageSizeParam, this.pageSize as string);
     }
 
     if (!_.isUndefined(this.sortColumn)) {

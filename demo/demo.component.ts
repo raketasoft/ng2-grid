@@ -59,7 +59,9 @@ export class DemoComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.basicGrid.sort('name');
+    this.basicGrid.setSort('name');
+    this.basicGrid.setPageSize(50);
+    this.basicGrid.render();
 
     this.changeDetectionRef.detectChanges();
   }
