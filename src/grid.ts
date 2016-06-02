@@ -46,8 +46,8 @@ export class Grid implements OnInit {
     if (_.isUndefined(this.options)) {
       this.options = new GridOptions();
     }
-    if (!_.isUndefined(this.options.httpService)) {
-      this.http = this.options.httpService;
+    if (!_.isUndefined(this.options.get('httpService'))) {
+      this.http = this.options.get('httpService');
     }
     this.initColumns();
     this.initDataProvider();
@@ -55,11 +55,29 @@ export class Grid implements OnInit {
   }
 
   /**
-   * Return data displayed on current grid page.
+   * Set data for grid data provider.
+   *
+   * @returns {Array<any>}
+   */
+  setData(data: any): Array<any> {
+    return this.dataProvider.data = data;
+  }
+
+  /**
+   * Return data bound to grid data provider.
    *
    * @returns {Array<any>}
    */
   getData(): Array<any> {
+    return this.dataProvider.data;
+  }
+
+  /**
+   * Return data display on current page.
+   *
+   * @returns {Array<any>}
+   */
+  getPageData(): Array<any> {
     return this.data;
   }
 
@@ -158,7 +176,7 @@ export class Grid implements OnInit {
   render() {
     this.dataProvider.page = this.pageIndex;
 
-    if (_.isUndefined(this.options.url)) {
+    if (_.isUndefined(this.options.get('url'))) {
       this.refresh();
     } else {
       this.dataProvider.fetch().subscribe(
@@ -180,7 +198,7 @@ export class Grid implements OnInit {
     if (!_.isEmpty(this.data) && _.isEmpty(this.columns)) {
       this.setColumnsFromData(this.data);
     }
-    if (this.options.paging) {
+    if (this.options.get('paging')) {
       this.paginate();
     }
   }
@@ -213,19 +231,19 @@ export class Grid implements OnInit {
    */
   protected initDataProvider() {
     this.dataProvider = new GridDataProvider(this.http, {
-      additionalRequestParams: this.options.additionalRequestParams,
-      data: this.options.data,
-      pageParam: this.options.pageParam,
-      pageSizeParam: this.options.pageSizeParam,
-      pageSize: this.options.defaultPageSize,
-      sortParam: this.options.sortParam,
-      url: this.options.url
+      additionalRequestParams: this.options.get('additionalRequestParams'),
+      data: this.options.get('data'),
+      pageParam: this.options.get('pageParam'),
+      pageSizeParam: this.options.get('pageSizeParam'),
+      pageSize: this.options.get('defaultPageSize'),
+      sortParam: this.options.get('sortParam'),
+      url: this.options.get('url')
     });
 
-    if (!_.isUndefined(this.options.defaultSortColumn)) {
+    if (!_.isUndefined(this.options.get('defaultSortColumn'))) {
       this.dataProvider.setSort(
-        this.options.defaultSortColumn,
-        this.options.defaultSortType
+        this.options.get('defaultSortColumn'),
+        this.options.get('defaultSortType')
       );
     }
   }
@@ -235,8 +253,8 @@ export class Grid implements OnInit {
    * If no column options are given set default options from provided data.
    */
   protected initColumns() {
-    if (!_.isEmpty(this.options.columns)) {
-      for (let value of this.options.columns) {
+    if (!_.isEmpty(this.options.get('columns'))) {
+      for (let value of this.options.get('columns')) {
         this.columns.push(new GridColumn(value));
       }
     }
@@ -263,7 +281,7 @@ export class Grid implements OnInit {
    */
   protected paginate() {
     let pageButtonCount: number = Math.min(
-      this.options.pageButtonCount,
+      this.options.get('pageButtonCount'),
       this.getTotalPages()
     );
     let offsetLeft: number = Math.floor(pageButtonCount / 2);
@@ -307,8 +325,9 @@ export class Grid implements OnInit {
    * @returns {boolean}
    */
   protected isPageSizeOptionsEnabled(): boolean {
-    return this.options.paging && (!_.isEmpty(this.options.pageSizeOptions)
-      || this.options.pageSizeOptions !== false);
+    return this.options.get('paging')
+      && (!_.isEmpty(this.options.get('pageSizeOptions'))
+        || this.options.get('pageSizeOptions') !== false);
   }
 
   /**
@@ -415,7 +434,7 @@ export class Grid implements OnInit {
    * @returns {boolean}
    */
   protected isSortingAllowed(column: GridColumn): boolean {
-    return this.options.sorting && column.sorting;
+    return this.options.get('sorting') && column.sorting;
   }
 
   /**

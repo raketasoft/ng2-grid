@@ -1,10 +1,10 @@
 <div class="ng-grid">
-  <div class="ng-grid-header" [style.width]="options.width"
-      [class.scroll]="options.height">
-    <table [style.width]="options.width">
-      <thead *ngIf="options.heading">
+  <div class="ng-grid-header" [style.width]="options.get('width')"
+      [class.scroll]="options.get('height')">
+    <table [style.width]="options.get('width')">
+      <thead *ngIf="options.get('heading')">
         <tr>
-          <th *ngIf="options.selection" class="ng-grid-heading selection">
+          <th *ngIf="options.get('selection')" class="ng-grid-heading selection">
             <input #selectAll type="checkbox"
                 (click)="onSelectAllCheckboxClick(selectAll.checked)">
           </th>
@@ -19,9 +19,9 @@
           </th>
         </tr>
       </thead>
-      <tbody *ngIf="options.filtering">
+      <tbody *ngIf="options.get('filtering')">
         <tr>
-          <td *ngIf="options.selection" class="ng-grid-filter selection"></td>
+          <td *ngIf="options.get('selection')" class="ng-grid-filter selection"></td>
           <td *ngFor="let column of columns" class="ng-grid-filter">
             <input type="text" *ngIf="column.filtering"
               [attr.name]="column.name"
@@ -32,12 +32,12 @@
       </tbody>
     </table>
   </div>
-  <div class="ng-grid-body" [style.width]="options.width"
-      [class.scroll]="options.height" [style.max-height]="options.height">
-    <table [style.width]="options.width">
+  <div class="ng-grid-body" [style.width]="options.get('width')"
+      [class.scroll]="options.get('height')" [style.max-height]="options.get('height')">
+    <table [style.width]="options.get('width')">
       <tbody>
         <tr *ngFor="let row of data">
-          <td *ngIf="options.selection" class="ng-grid-column selection">
+          <td *ngIf="options.get('selection')" class="ng-grid-column selection">
             <input type="checkbox"
                 [(ngModel)]="row.selected"
                 (click)="onSelectItemCheckboxClick(row)">
@@ -51,7 +51,7 @@
     </table>
   </div>
   <div class="ng-grid-footer clearfix">
-    <div class="ng-grid-pager {{options.pageElementPosition}}" *ngIf="options.paging">
+    <div class="ng-grid-pager {{options.get('pageElementPosition')}}" *ngIf="options.paging">
       <span>Pages:</span>
       <a href="#" *ngIf="pageIndex > 1" [attr.data-page]="1"
         (click)="onPageButtonClick($event)">First</a>
@@ -70,12 +70,12 @@
         (click)="onPageButtonClick($event)">Last</a>
       <span>{{pageIndex}} of {{getTotalPages()}}</span>
     </div>
-    <div class="ng-grid-pager-size {{options.pageSizeElementPosition}}"
+    <div class="ng-grid-pager-size {{options.get('pageSizeElementPosition')}}"
       *ngIf="isPageSizeOptionsEnabled()">
       <span>Page size:</span>
       <select [(ngModel)]="dataProvider.pageSize"
         (change)="onPageSizeDropDownChange($event)">
-        <option *ngFor="let value of options.pageSizeOptions" [ngValue]="value">
+        <option *ngFor="let value of options.get('pageSizeOptions')" [ngValue]="value">
           {{value}}
         </option>
       </select>

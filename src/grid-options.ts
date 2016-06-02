@@ -22,28 +22,28 @@ export class GridOptions extends Loadable {
   static DEFAULT_SORTING_VALUE: boolean = true;
   static DEFAULT_WIDTH_VALUE: string = '100%';
 
-  additionalRequestParams: any;
-  columns: Array<any>;
-  data: Array<any>;
-  defaultPageSize: any;
-  defaultSortColumn: string;
-  defaultSortType: string;
-  heading: boolean;
-  height: string;
-  httpService: Http;
-  pageButtonCount: number;
-  pageElementPosition: string;
-  pageParam: string;
-  pageSizeOptions: any;
-  pageSizeElementPosition: string;
-  pageSizeParam: string;
-  paging: boolean;
-  filtering: boolean;
-  selection: boolean;
-  sortParam: string;
-  sorting: boolean;
-  url: string;
-  width: string;
+  protected additionalRequestParams: any;
+  protected columns: Array<any>;
+  protected data: Array<any>;
+  protected defaultPageSize: any;
+  protected defaultSortColumn: string;
+  protected defaultSortType: string;
+  protected heading: boolean;
+  protected height: string;
+  protected httpService: Http;
+  protected pageButtonCount: number;
+  protected pageElementPosition: string;
+  protected pageParam: string;
+  protected pageSizeOptions: any;
+  protected pageSizeElementPosition: string;
+  protected pageSizeParam: string;
+  protected paging: boolean;
+  protected filtering: boolean;
+  protected selection: boolean;
+  protected sortParam: string;
+  protected sorting: boolean;
+  protected url: string;
+  protected width: string;
 
   /**
    * Class constructor.
@@ -84,5 +84,15 @@ export class GridOptions extends Loadable {
     if (_.isUndefined(this.width)) {
       this.width = GridOptions.DEFAULT_WIDTH_VALUE;
     }
+  }
+
+  /**
+   * Return specified param.
+   *
+   * @param {string} param
+   * @returns {any}
+   */
+  get(param: string): any {
+    return this[param];
   }
 }

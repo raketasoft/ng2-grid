@@ -1,4 +1,3 @@
-import { Input } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Loadable } from './loadable';
 import { GridSort } from './grid-sort';
