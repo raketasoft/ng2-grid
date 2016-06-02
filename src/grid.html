@@ -1,7 +1,7 @@
 <div class="ng-grid">
   <div class="ng-grid-header" [style.width]="options.get('width')"
       [class.scroll]="options.get('height')">
-    <table [style.width]="options.get('width')">
+    <table [class]="getHeadingCssClass()" [style.width]="options.get('width')">
       <thead *ngIf="options.get('heading')">
         <tr>
           <th *ngIf="options.get('selection')" class="ng-grid-heading selection">
@@ -34,9 +34,10 @@
   </div>
   <div class="ng-grid-body" [style.width]="options.get('width')"
       [class.scroll]="options.get('height')" [style.max-height]="options.get('height')">
-    <table [style.width]="options.get('width')">
+    <table [class]="getBodyCssClass()" [style.width]="options.get('width')">
       <tbody>
-        <tr *ngFor="let row of data">
+        <tr *ngFor="let row of data; #i = index"
+            [style.background]="getAlternateBackground(i)">
           <td *ngIf="options.get('selection')" class="ng-grid-column selection">
             <input type="checkbox"
                 [(ngModel)]="row.selected"

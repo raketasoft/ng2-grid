@@ -191,6 +191,45 @@ export class Grid implements OnInit {
   }
 
   /**
+   * Determine the background color of grid row.
+   *
+   * @param {number} index Row index
+   * @returns {string} Row color
+   */
+  protected getAlternateBackground(index: number) {
+    if (this.options.get('alternateTemplate') && index % 2 === 0) {
+      return this.options.get('alternateTemplateColor');
+    }
+  }
+
+  /**
+   * Get heading css class.
+   *
+   * @returns {string}
+   */
+  protected getHeadingCssClass(): string {
+    if (_.isUndefined(this.options.get('headingCssClass'))) {
+      return '';
+    }
+
+    return this.options.get('headingCssClass');
+  }
+
+
+  /**
+   * Get body css class.
+   *
+   * @returns {string}
+   */
+  protected getBodyCssClass(): string {
+    if (_.isUndefined(this.options.get('bodyCssClass'))) {
+      return '';
+    }
+
+    return this.options.get('bodyCssClass');
+  }
+
+  /**
    * Refresh grid and pagination with provider data.
    */
   protected refresh() {

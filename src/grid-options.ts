@@ -10,6 +10,8 @@ import * as _ from 'lodash';
  * @since 1.0.0-alpha
  */
 export class GridOptions extends Loadable {
+  static DEFAULT_ALTERNATE_TEMLPATE_COLOR_VALUE: string = '#f9f9f9';
+  static DEFAULT_ALTERNATE_TEMLPATE_VALUE: boolean = true;
   static DEFAULT_HEADING_VALUE: boolean = true;
   static DEFAULT_PAGE_BUTTON_COUNT_VALUE: number = 5;
   static DEFAULT_PAGE_ELEMENT_POSITION_VALUE: string = 'left';
@@ -23,12 +25,16 @@ export class GridOptions extends Loadable {
   static DEFAULT_WIDTH_VALUE: string = '100%';
 
   protected additionalRequestParams: any;
+  protected alternateTemplateColor: string;
+  protected alternateTemplate: boolean;
+  protected bodyCssClass: string;
   protected columns: Array<any>;
   protected data: Array<any>;
   protected defaultPageSize: any;
   protected defaultSortColumn: string;
   protected defaultSortType: string;
   protected heading: boolean;
+  protected headingCssClass: string;
   protected height: string;
   protected httpService: Http;
   protected pageButtonCount: number;
@@ -51,6 +57,12 @@ export class GridOptions extends Loadable {
    */
   constructor(params?: any) {
     super(params);
+    if (_.isUndefined(this.alternateTemplateColor)) {
+      this.alternateTemplateColor = GridOptions.DEFAULT_ALTERNATE_TEMLPATE_COLOR_VALUE;
+    }
+    if (_.isUndefined(this.alternateTemplate)) {
+      this.alternateTemplate = GridOptions.DEFAULT_ALTERNATE_TEMLPATE_VALUE;
+    }
     if (_.isUndefined(this.heading)) {
       this.heading = GridOptions.DEFAULT_HEADING_VALUE;
     }

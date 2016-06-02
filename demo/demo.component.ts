@@ -46,6 +46,8 @@ export class DemoComponent implements OnInit, AfterViewInit {
         {sorting: false, filtering: false, width: '100px',
           template: '<a href="">Edit</a> | <a href="">Delete</a>'}
       ],
+      headingCssClass: 'heading-table',
+      bodyCssClass: 'body-table',
       defaultPageSize: 50,
       defaultSortColumn: 'name',
       defaultSortType: 'desc',
@@ -58,6 +60,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       additionalRequestParams: {
         'expand': 'company,interests'
       },
+      alternateTemplate: false,
       height: '300px',
     });
   }
