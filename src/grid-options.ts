@@ -22,28 +22,28 @@ export class GridOptions extends Loadable {
   static DEFAULT_SORTING_VALUE: boolean = true;
   static DEFAULT_WIDTH_VALUE: string = '100%';
 
-  private additionalRequestParams: any;
-  private columns: Array<any>;
-  private data: Array<any>;
-  private defaultPageSize: any;
-  private defaultSortColumn: string;
-  private defaultSortType: string;
-  private heading: boolean;
-  private height: string;
-  private httpService: Http;
-  private pageButtonCount: number;
-  private pageElementPosition: string;
-  private pageParam: string;
-  private pageSizeOptions: any;
-  private pageSizeElementPosition: string;
-  private pageSizeParam: string;
-  private paging: boolean;
-  private filtering: boolean;
-  private selection: boolean;
-  private sortParam: string;
-  private sorting: boolean;
-  private url: string;
-  private width: string;
+  additionalRequestParams: any;
+  columns: Array<any>;
+  data: Array<any>;
+  defaultPageSize: any;
+  defaultSortColumn: string;
+  defaultSortType: string;
+  heading: boolean;
+  height: string;
+  httpService: Http;
+  pageButtonCount: number;
+  pageElementPosition: string;
+  pageParam: string;
+  pageSizeOptions: any;
+  pageSizeElementPosition: string;
+  pageSizeParam: string;
+  paging: boolean;
+  filtering: boolean;
+  selection: boolean;
+  sortParam: string;
+  sorting: boolean;
+  url: string;
+  width: string;
 
   /**
    * Class constructor.
