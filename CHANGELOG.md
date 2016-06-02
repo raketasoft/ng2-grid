@@ -1,3 +1,18 @@
+<a name="1.0.0-alpha.4"></a>
+# 1.0.0-alpha.4 (2016-06-03)
+
+### Features
+
+* **grid-column:** Add lodash template support for cell rendering
+* **grid-options:** Add body and heading CSS class options
+* **grid-options:** Add alternate template support
+* **demo:** Update demo examples with latest features
+
+### Bug Fixes
+
+* **grid:** Update grid api methods
+* **grid-options:** Convert options to immutable class
+
 <a name="1.0.0-alpha.3"></a>
 # 1.0.0-alpha.3 (2016-06-01)
 
