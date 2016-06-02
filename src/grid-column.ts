@@ -18,6 +18,7 @@ export class GridColumn extends Loadable {
   filtering: boolean;
   sorting: boolean;
   width: string;
+  template: string;
 
   /**
    * Class constructor.
@@ -49,8 +50,13 @@ export class GridColumn extends Loadable {
    * @returns {string}
    */
   renderCell(data: any): string {
-    let value: string = _.get(data, this.name) as string;
+    if (_.isUndefined(this.template)) {
+      return _.get(data, this.name) as string;
+    }
 
-    return value;
+    _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+    let compiled: _.TemplateExecutor = _.template(this.template);
+
+    return compiled(data).toString();
   }
 }

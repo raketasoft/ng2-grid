@@ -36,11 +36,15 @@ export class DemoComponent implements OnInit, AfterViewInit {
     this.columnOptions = new GridOptions({
       data: DEMO_DATA,
       columns: [
-        {heading: 'Name', name: 'name', width: '150px'},
+        {heading: 'Name', name: 'name', width: '150px',
+          template: '<a href="">{{name}}</a>'},
         {heading: 'Age', name: 'age', width: '50px'},
         {heading: 'Address', name: 'address', width: '200px'},
         {heading: 'Country', name: 'country.name', width: '100px'},
-        {heading: 'Married', name: 'isMarried', width: '50px', sorting: false, filtering: false}
+        {heading: 'Married', name: 'isMarried', width: '50px', sorting: false,
+          filtering: false, template: '{{isMarried ? "Yes" : "No"}}'},
+        {sorting: false, filtering: false, width: '100px',
+          template: '<a href="">Edit</a> | <a href="">Delete</a>'}
       ],
       defaultPageSize: 50,
       defaultSortColumn: 'name',
