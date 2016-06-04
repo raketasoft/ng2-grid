@@ -4,6 +4,7 @@ import { GridOptions } from './grid-options';
 import { GridColumn } from './grid-column';
 import { GridDataProvider } from './grid-data-provider';
 import { GridSort } from './grid-sort';
+import { GridCell } from './grid-cell';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
 
@@ -20,7 +21,8 @@ import 'rxjs/Rx';
   moduleId: module.id,
   templateUrl: './grid.html',
   styleUrls: ['./assets/ng2-grid.css'],
-  providers: [HTTP_PROVIDERS]
+  providers: [HTTP_PROVIDERS],
+  directives: [GridCell]
 })
 export class Grid implements OnInit {
   @Input() options: GridOptions;
@@ -28,14 +30,15 @@ export class Grid implements OnInit {
   private columns: Array<GridColumn> = [];
   private dataProvider: GridDataProvider;
   private data: Array<any>;
-  private http: Http;
   private pageIndex: number = 1;
   private pages: Array<number>;
 
   /**
    * Class constructor.
+   *
+   * @param {Http} http
    */
-  constructor(http: Http) {
+  constructor(private http: Http) {
     this.http = http;
   }
 

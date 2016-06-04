@@ -36,16 +36,20 @@
       [class.scroll]="options.get('height')" [style.max-height]="options.get('height')">
     <table [class]="getBodyCssClass()" [style.width]="options.get('width')">
       <tbody>
-        <tr *ngFor="let row of data; #i = index"
+        <tr *ngFor="let row of data; let i = index"
             [style.background]="getAlternateBackground(i)">
-          <td *ngIf="options.get('selection')" class="ng-grid-column selection">
+          <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
             <input type="checkbox"
                 [(ngModel)]="row.selected"
                 (click)="onSelectItemCheckboxClick(row)">
           </td>
-          <td *ngFor="let column of columns" class="ng-grid-column"
-              [style.width]="column.width"
-              [innerHtml]="column.renderCell(row)">
+          <td *ngFor="let column of columns" class="ng-grid-cell"
+              [style.width]="column.width">
+              <ng-grid-cell
+                [data]="row"
+                [template]="column.template"
+                [directives]="column.templateDirectives">
+              </ng-grid-cell>
           </td>
         </tr>
       </tbody>

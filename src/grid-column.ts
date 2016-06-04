@@ -19,6 +19,7 @@ export class GridColumn extends Loadable {
   sorting: boolean;
   width: string;
   template: string;
+  templateDirectives: Array<any>;
 
   /**
    * Class constructor.
@@ -32,6 +33,12 @@ export class GridColumn extends Loadable {
     if (_.isUndefined(this.sorting)) {
       this.sorting = GridColumn.DEFAULT_SORTING_VALUE;
     }
+    if (_.isUndefined(this.template)) {
+      this.template = '{{' + this.name + '}}';
+    }
+    if (_.isUndefined(this.templateDirectives)) {
+      this.templateDirectives = [];
+    }
   }
 
   /**
@@ -41,22 +48,5 @@ export class GridColumn extends Loadable {
    */
   renderHeading(): string {
     return this.heading ? this.heading : this.name;
-  }
-
-  /**
-   * Render single grid cell for this column for the given data row.
-   *
-   * @param {any} data
-   * @returns {string}
-   */
-  renderCell(data: any): string {
-    if (_.isUndefined(this.template)) {
-      return _.get(data, this.name) as string;
-    }
-
-    _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
-    let compiled: _.TemplateExecutor = _.template(this.template);
-
-    return compiled(data).toString();
   }
 }
