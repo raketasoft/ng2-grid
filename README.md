@@ -7,13 +7,41 @@ Lightweight data grid component for Angular 2.
 * Sorting
 * Filtering
 * Paging
-* Remote Data Access
 * Selection
+* Templating
+* Remote Data Access
 
 ## Installation
 
-1. `npm install raketasoft-ng2-grid --save`
-2. `npm install lodash --save`
+```bash
+`npm install raketasoft-ng2-grid --save`
+`npm install lodash --save`
+```
+
+The only way to include it right now is to use module loader like [SystemJS]
+(https://github.com/systemjs/systemjs). Example configuration:
+
+```javascript
+System.config({
+    defaultJSExtensions: true,
+    map: {
+        'raketasoft-ng2-grid': 'node_modules/raketasoft-ng2-grid',
+        'lodash': 'node_modules/lodash'
+    }
+});
+
+Then import and include in your component's directives:
+
+```typescript
+import { GridComponent, GridOptions } from 'raketasoft-ng2-grid';
+
+@Component({
+    directives: [GridComponent]
+})
+export class MyComponent {
+    ...
+}
+```
 
 ## Demo
 
