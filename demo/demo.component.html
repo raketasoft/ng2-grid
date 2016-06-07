@@ -20,7 +20,7 @@
   <ng-grid-column heading="Address" name="address"></ng-grid-column>
   <ng-grid-column heading="Country" name="country.name"></ng-grid-column>
   <ng-grid-column heading="Married" name="isMarried">
-    <template let-column="column" let-data="data">
+    <template let-data="data">
       {{data.isMarried ? 'Yes' : 'No'}}
     </template>
   </ng-grid-column>
