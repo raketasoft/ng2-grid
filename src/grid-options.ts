@@ -47,6 +47,7 @@ export class GridOptions extends Loadable {
   protected selection: boolean;
   protected sortParam: string;
   protected sorting: boolean;
+  protected totalCountHeader: string;
   protected url: string;
   protected width: string;
 

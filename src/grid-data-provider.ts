@@ -26,6 +26,7 @@ export class GridDataProvider extends Loadable {
   pageSize: any;
   page: number = 1;
   sortParam: string;
+  totalCountHeader: string;
   url: string;
 
   private filterData: any[];
@@ -55,6 +56,9 @@ export class GridDataProvider extends Loadable {
     }
     if (_.isUndefined(this.sortParam)) {
       this.sortParam = GridDataProvider.DEFAULT_SORT_PARAM_VALUE;
+    }
+    if (_.isUndefined(this.totalCountHeader)) {
+      this.totalCountHeader = GridDataProvider.DEFAULT_TOTAL_COUNT_HEADER_VALUE;
     }
     this.filterData = this.data;
   }
@@ -154,9 +158,7 @@ export class GridDataProvider extends Loadable {
     response
       .subscribe(
         (res: Response) => {
-          this.totalCount = Number(res.headers.get(
-            GridDataProvider.DEFAULT_TOTAL_COUNT_HEADER_VALUE
-          ));
+          this.totalCount = Number(res.headers.get(this.totalCountHeader));
           this.pageData = res.json();
         },
         (err: any) => console.log(err)

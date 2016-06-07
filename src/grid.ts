@@ -92,6 +92,15 @@ export class Grid implements OnInit, AfterContentInit {
   }
 
   /**
+   * Return number of total results.
+   *
+   * @returns {number}
+   */
+  getTotalCount(): number {
+    return this.dataProvider.getTotalCount();
+  }
+
+  /**
    * Return data display on current page.
    *
    * @returns {Array<any>}
@@ -294,6 +303,7 @@ export class Grid implements OnInit, AfterContentInit {
       pageSizeParam: this.options.get('pageSizeParam'),
       pageSize: this.options.get('defaultPageSize'),
       sortParam: this.options.get('sortParam'),
+      totalCountHeader: this.options.get('totalCountHeader'),
       url: this.options.get('url')
     });
 
@@ -464,8 +474,6 @@ export class Grid implements OnInit, AfterContentInit {
    * @returns {boolean}
    */
   protected isSortingAllowed(column: GridColumn): boolean {
-    console.log(this.options.get('sorting'));
-    console.log(column);
     return this.options.get('sorting') && column.sorting == true;
   }
 
