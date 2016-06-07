@@ -13,13 +13,15 @@ Lightweight data grid component for Angular 2.
 
 ## Installation
 
+Start by installing npm dependencies:
+
 ```bash
-`npm install raketasoft-ng2-grid --save`
-`npm install lodash --save`
+> npm install raketasoft-ng2-grid --save
+> npm install lodash --save
 ```
 
-The only way to include it right now is to use module loader like [SystemJS]
-(https://github.com/systemjs/systemjs). Example configuration:
+The only way to include the component right now is to use module loader like
+[SystemJS](https://github.com/systemjs/systemjs). Example configuration:
 
 ```javascript
 System.config({
@@ -29,6 +31,7 @@ System.config({
         'lodash': 'node_modules/lodash'
     }
 });
+```
 
 Then import and include in your component's directives:
 
