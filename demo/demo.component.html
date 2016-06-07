@@ -11,7 +11,7 @@
 <ng-grid #columnGrid [options]="columnOptions">
   <ng-grid-column heading="Name" name="name">
     <template let-column="column" let-data="data">
-      <a href="#" (click)="onNameColumnClick($event, data)">
+      <a href="#" (click)="onItemClick($event, data)">
         {{column.resolveCell(data)}}
       </a>
     </template>
@@ -25,9 +25,9 @@
     </template>
   </ng-grid-column>
   <ng-grid-column textAlign="center" width="120px" sorting="false" filtering="false">
-    <template>
-      <input type="button" value="Edit">
-      <input type="button" value="Delete" (click)="onDeleteButtonClick($event, data)">
+    <template let-data="data">
+      <input type="button" value="Edit" (click)="onItemClick($event, data)">
+      <input type="button" value="Delete" (click)="onItemClick($event, data)">
     </template>
   </ng-grid-column>
 </ng-grid>

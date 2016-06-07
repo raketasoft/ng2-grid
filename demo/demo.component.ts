@@ -59,7 +59,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
     this.changeDetectorRef.detectChanges();
   }
 
-  onNameColumnClick(e: MouseEvent, item: any) {
+  onItemClick(e: MouseEvent, item: any) {
     e.preventDefault();
     console.log(item);
   }
