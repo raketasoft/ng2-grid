@@ -1,6 +1,6 @@
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Loadable } from './loadable';
-import { GridSort } from './grid-sort';
+import { Grid } from './grid';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
@@ -32,7 +32,7 @@ export class GridDataProvider extends Loadable {
   private filters: Object = new Object();
   private pageData: Array<any>;
   private sortColumn: string;
-  private sortType: string = GridSort.TYPE_ASC;
+  private sortType: string = Grid.SORT_ASC;
   private totalCount: number;
 
   /**
@@ -180,7 +180,7 @@ export class GridDataProvider extends Loadable {
     }
 
     if (!_.isUndefined(this.sortColumn)) {
-      let sortByValue: string = (this.sortType === GridSort.TYPE_ASC ? '' : '-')
+      let sortByValue: string = (this.sortType === Grid.SORT_ASC ? '' : '-')
         + this.sortColumn;
       params.set(this.sortParam, sortByValue);
     }

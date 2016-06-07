@@ -1,0 +1,42 @@
+<h2>Basic Example</h2>
+<ng-grid #basicGrid [options]="basicOptions">
+  <ng-grid-column name="name"></ng-grid-column>
+  <ng-grid-column name="age"></ng-grid-column>
+  <ng-grid-column name="address"></ng-grid-column>
+  <ng-grid-column name="country.name"></ng-grid-column>
+  <ng-grid-column name="isMarried"></ng-grid-column>
+</ng-grid>
+
+<h2>Column Definition Example</h2>
+<ng-grid #columnGrid [options]="columnOptions">
+  <ng-grid-column heading="Name" name="name">
+    <template let-column="column" let-data="data">
+      <a href="#" (click)="onNameColumnClick($event, data)">
+        {{column.resolveCell(data)}}
+      </a>
+    </template>
+  </ng-grid-column>
+  <ng-grid-column heading="Age" name="age"></ng-grid-column>
+  <ng-grid-column heading="Address" name="address"></ng-grid-column>
+  <ng-grid-column heading="Country" name="country.name"></ng-grid-column>
+  <ng-grid-column heading="Married" name="isMarried">
+    <template let-column="column" let-data="data">
+      {{data.isMarried ? 'Yes' : 'No'}}
+    </template>
+  </ng-grid-column>
+  <ng-grid-column textAlign="center" width="120px" sorting="false" filtering="false">
+    <template>
+      <input type="button" value="Edit">
+      <input type="button" value="Delete" (click)="onDeleteButtonClick($event, data)">
+    </template>
+  </ng-grid-column>
+</ng-grid>
+
+<h2>Remote Data Example</h2>
+<ng-grid #remoteDataGrid [options]="remoteDataOptions">
+  <ng-grid-column heading="Name" name="name"></ng-grid-column>
+  <ng-grid-column heading="Age" name="age"></ng-grid-column>
+  <ng-grid-column heading="Address" name="address"></ng-grid-column>
+  <ng-grid-column heading="Country" name="country.name"></ng-grid-column>
+  <ng-grid-column heading="Married" name="isMarried"></ng-grid-column>
+</ng-grid>

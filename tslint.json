@@ -98,11 +98,6 @@
     "radix": true,
     "semicolon": [true, "always"],
     "switch-default": true,
-    "triple-equals": [
-      true,
-      "allow-null-check",
-      "allow-undefined-check"
-    ],
     "typedef": [
       true,
       "parameter",

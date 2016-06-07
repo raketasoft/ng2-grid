@@ -15,7 +15,7 @@
               [class.sort-desc]="isSortedBy(column, 'desc')"
               [class.sort-disable]="!isSortingAllowed(column)"
               (click)="onHeadingClick($event)">
-            {{column.renderHeading()}}
+            {{column.resolveHeading()}}
           </th>
         </tr>
       </thead>
@@ -23,7 +23,7 @@
         <tr>
           <td *ngIf="options.get('selection')" class="ng-grid-filter selection"></td>
           <td *ngFor="let column of columns" class="ng-grid-filter">
-            <input type="text" *ngIf="column.filtering"
+            <input type="text" *ngIf="column.filtering == true"
               [attr.name]="column.name"
               (keyup.enter)="onFilterInputEnter($event)"
               (blur)="onFilterInputBlur($event)" />
@@ -44,12 +44,15 @@
                 (click)="onSelectItemCheckboxClick(row)">
           </td>
           <td *ngFor="let column of columns" class="ng-grid-cell"
-              [style.width]="column.width">
-              <ng-grid-cell
-                [data]="row"
-                [template]="column.template"
-                [directives]="column.templateDirectives">
-              </ng-grid-cell>
+              [style.width]="column.width"
+              [style.text-align]="column.textAlign">
+            <span *ngIf="column.template">
+              <ng-grid-cell-renderer [column]="column" [data]="row">
+              </ng-grid-cell-renderer>
+            </span>
+            <span *ngIf="!column.template">
+              {{column.resolveCell(row)}}
+            </span>
           </td>
         </tr>
       </tbody>

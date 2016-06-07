@@ -1,10 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ContentChildren,
+  QueryList,
+  AfterContentInit
+} from '@angular/core';
 import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
 import { GridOptions } from './grid-options';
 import { GridColumn } from './grid-column';
 import { GridDataProvider } from './grid-data-provider';
-import { GridSort } from './grid-sort';
-import { GridCell } from './grid-cell';
+import { GridCellRenderer } from './grid-cell-renderer';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
 
@@ -22,12 +28,16 @@ import 'rxjs/Rx';
   templateUrl: './grid.html',
   styleUrls: ['./assets/ng2-grid.css'],
   providers: [HTTP_PROVIDERS],
-  directives: [GridCell]
+  directives: [GridCellRenderer]
 })
-export class Grid implements OnInit {
-  @Input() options: GridOptions;
+export class Grid implements OnInit, AfterContentInit {
+  static SORT_ASC: string = 'asc';
+  static SORT_DESC: string = 'desc';
 
-  private columns: Array<GridColumn> = [];
+  @Input() options: GridOptions;
+  @ContentChildren(GridColumn) columnList: QueryList<GridColumn>;
+
+  private columns: Array<GridColumn>;
   private dataProvider: GridDataProvider;
   private data: Array<any>;
   private pageIndex: number = 1;
@@ -43,7 +53,7 @@ export class Grid implements OnInit {
   }
 
   /**
-   * Init properties and render data after component initialization.
+   * Handle OnInit event.
    */
   ngOnInit() {
     if (_.isUndefined(this.options)) {
@@ -52,9 +62,15 @@ export class Grid implements OnInit {
     if (!_.isUndefined(this.options.get('httpService'))) {
       this.http = this.options.get('httpService');
     }
-    this.initColumns();
     this.initDataProvider();
     this.render();
+  }
+
+  /**
+   * Handle AfterViewInit event.
+   */
+  ngAfterContentInit() {
+    this.columns = this.columnList.toArray();
   }
 
   /**
@@ -92,9 +108,11 @@ export class Grid implements OnInit {
   getSelectedItems(): Array<any> {
     var selectedItems: Array<any> = [];
 
-    for (let row of this.data) {
-      if (row.selected) {
-        selectedItems.push(row);
+    if (!_.isEmpty(this.data)) {
+      for (let row of this.data) {
+        if (row.selected) {
+          selectedItems.push(row);
+        }
       }
     }
 
@@ -237,9 +255,6 @@ export class Grid implements OnInit {
    */
   protected refresh() {
     this.data = this.dataProvider.getData();
-    if (!_.isEmpty(this.data) && _.isEmpty(this.columns)) {
-      this.setColumnsFromData(this.data);
-    }
     if (this.options.get('paging')) {
       this.paginate();
     }
@@ -287,33 +302,6 @@ export class Grid implements OnInit {
         this.options.get('defaultSortColumn'),
         this.options.get('defaultSortType')
       );
-    }
-  }
-
-  /**
-   * Initialize grid columns based on column options.
-   * If no column options are given set default options from provided data.
-   */
-  protected initColumns() {
-    if (!_.isEmpty(this.options.get('columns'))) {
-      for (let value of this.options.get('columns')) {
-        this.columns.push(new GridColumn(value));
-      }
-    }
-  }
-
-  /**
-   * Set grid columns from data.
-   *
-   * @param {Array<any>} data
-   */
-  protected setColumnsFromData(data: Array<any>) {
-    let firstRow: any = data[0];
-    for (let key in firstRow) {
-      this.columns.push(new GridColumn({
-        name: this.getColumnName(key, firstRow),
-        heading: key
-      }));
     }
   }
 
@@ -465,8 +453,8 @@ export class Grid implements OnInit {
   protected getSortType(column: GridColumn): string {
     return column.name !== this.dataProvider.getSortColumn() ?
       this.dataProvider.getSortType() :
-        (this.dataProvider.getSortType() === GridSort.TYPE_ASC ?
-          GridSort.TYPE_DESC : GridSort.TYPE_ASC);
+        (this.dataProvider.getSortType() === Grid.SORT_ASC ?
+          Grid.SORT_DESC : Grid.SORT_ASC);
   }
 
   /**
@@ -476,7 +464,9 @@ export class Grid implements OnInit {
    * @returns {boolean}
    */
   protected isSortingAllowed(column: GridColumn): boolean {
-    return this.options.get('sorting') && column.sorting;
+    console.log(this.options.get('sorting'));
+    console.log(column);
+    return this.options.get('sorting') && column.sorting == true;
   }
 
   /**

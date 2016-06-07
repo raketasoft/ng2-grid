@@ -1,4 +1,10 @@
-import { Loadable } from './loadable';
+import {
+  Component,
+  TemplateRef,
+  Input,
+  ContentChild,
+  OnInit
+} from '@angular/core';
 import * as _ from 'lodash';
 
 /**
@@ -9,44 +15,52 @@ import * as _ from 'lodash';
  * @author Branimir Borisov <branimir@raketasoft.com>
  * @since 1.0.0-alpha
  */
-export class GridColumn extends Loadable {
+@Component({
+  'selector': 'ng-grid-column',
+  'template': ''
+})
+export class GridColumn implements OnInit {
   static DEFAULT_FILTERING_VALUE: boolean = true;
   static DEFAULT_SORTING_VALUE: boolean = true;
 
-  heading: string;
-  name: string;
-  filtering: boolean;
-  sorting: boolean;
-  width: string;
-  template: string;
-  templateDirectives: Array<any>;
+  @Input() heading: string;
+  @Input() name: string;
+  @Input() filtering: boolean;
+  @Input() sorting: boolean;
+  @Input() width: string;
+  @Input() textAlign: string;
+  @ContentChild(TemplateRef) template: TemplateRef<any>;
 
   /**
-   * Class constructor.
-   * Set default values for properties if not specified in params.
+   * Handle OnInit event.
    */
-  constructor(params?: any) {
-    super(params);
+  ngOnInit() {
     if (_.isUndefined(this.filtering)) {
       this.filtering = GridColumn.DEFAULT_FILTERING_VALUE;
     }
     if (_.isUndefined(this.sorting)) {
       this.sorting = GridColumn.DEFAULT_SORTING_VALUE;
     }
-    if (_.isUndefined(this.template)) {
-      this.template = '{{' + this.name + '}}';
-    }
-    if (_.isUndefined(this.templateDirectives)) {
-      this.templateDirectives = [];
-    }
   }
 
   /**
-   * Render grid heading for this column.
+   * Resolve grid heading value for this column.
    *
    * @returns {string}
    */
-  renderHeading(): string {
+  resolveHeading(): string {
     return this.heading ? this.heading : this.name;
+  }
+
+  /**
+   * Resolve grid cell value for given column name and data row.
+   *
+   * @param {any} data
+   * @param {string} columnName
+   *
+   * @returns {string}
+   */
+  resolveCell(data: any, columnName: string = this.name): string {
+      return _.get(data, columnName) as string;
   }
 }
