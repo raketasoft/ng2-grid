@@ -1,9 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ContentChildren,
+  QueryList,
+  AfterContentInit
+} from '@angular/core';
 import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
 import { GridOptions } from './grid-options';
-import { GridColumn } from './grid-column';
+import { GridColumnComponent } from './grid-column.component';
+import { GridCellRendererComponent } from './grid-cell-renderer.component';
 import { GridDataProvider } from './grid-data-provider';
-import { GridSort } from './grid-sort';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
 
@@ -18,29 +25,35 @@ import 'rxjs/Rx';
 @Component({
   selector: 'ng-grid',
   moduleId: module.id,
-  templateUrl: './grid.html',
+  templateUrl: './grid.component.html',
   styleUrls: ['./assets/ng2-grid.css'],
-  providers: [HTTP_PROVIDERS]
+  providers: [HTTP_PROVIDERS],
+  directives: [GridCellRendererComponent]
 })
-export class Grid implements OnInit {
-  @Input() options: GridOptions;
+export class GridComponent implements OnInit, AfterContentInit {
+  static SORT_ASC: string = 'asc';
+  static SORT_DESC: string = 'desc';
 
-  private columns: Array<GridColumn> = [];
+  @Input() options: GridOptions;
+  @ContentChildren(GridColumnComponent) columnList: QueryList<GridColumnComponent>;
+
+  private columns: Array<GridColumnComponent>;
   private dataProvider: GridDataProvider;
   private data: Array<any>;
-  private http: Http;
   private pageIndex: number = 1;
   private pages: Array<number>;
 
   /**
    * Class constructor.
+   *
+   * @param {Http} http
    */
-  constructor(http: Http) {
+  constructor(private http: Http) {
     this.http = http;
   }
 
   /**
-   * Init properties and render data after component initialization.
+   * Handle OnInit event.
    */
   ngOnInit() {
     if (_.isUndefined(this.options)) {
@@ -49,9 +62,15 @@ export class Grid implements OnInit {
     if (!_.isUndefined(this.options.get('httpService'))) {
       this.http = this.options.get('httpService');
     }
-    this.initColumns();
     this.initDataProvider();
     this.render();
+  }
+
+  /**
+   * Handle AfterViewInit event.
+   */
+  ngAfterContentInit() {
+    this.columns = this.columnList.toArray();
   }
 
   /**
@@ -73,6 +92,15 @@ export class Grid implements OnInit {
   }
 
   /**
+   * Return number of total results.
+   *
+   * @returns {number}
+   */
+  getTotalCount(): number {
+    return this.dataProvider.getTotalCount();
+  }
+
+  /**
    * Return data display on current page.
    *
    * @returns {Array<any>}
@@ -89,9 +117,11 @@ export class Grid implements OnInit {
   getSelectedItems(): Array<any> {
     var selectedItems: Array<any> = [];
 
-    for (let row of this.data) {
-      if (row.selected) {
-        selectedItems.push(row);
+    if (!_.isEmpty(this.data)) {
+      for (let row of this.data) {
+        if (row.selected) {
+          selectedItems.push(row);
+        }
       }
     }
 
@@ -234,9 +264,6 @@ export class Grid implements OnInit {
    */
   protected refresh() {
     this.data = this.dataProvider.getData();
-    if (!_.isEmpty(this.data) && _.isEmpty(this.columns)) {
-      this.setColumnsFromData(this.data);
-    }
     if (this.options.get('paging')) {
       this.paginate();
     }
@@ -276,6 +303,7 @@ export class Grid implements OnInit {
       pageSizeParam: this.options.get('pageSizeParam'),
       pageSize: this.options.get('defaultPageSize'),
       sortParam: this.options.get('sortParam'),
+      totalCountHeader: this.options.get('totalCountHeader'),
       url: this.options.get('url')
     });
 
@@ -284,33 +312,6 @@ export class Grid implements OnInit {
         this.options.get('defaultSortColumn'),
         this.options.get('defaultSortType')
       );
-    }
-  }
-
-  /**
-   * Initialize grid columns based on column options.
-   * If no column options are given set default options from provided data.
-   */
-  protected initColumns() {
-    if (!_.isEmpty(this.options.get('columns'))) {
-      for (let value of this.options.get('columns')) {
-        this.columns.push(new GridColumn(value));
-      }
-    }
-  }
-
-  /**
-   * Set grid columns from data.
-   *
-   * @param {Array<any>} data
-   */
-  protected setColumnsFromData(data: Array<any>) {
-    let firstRow: any = data[0];
-    for (let key in firstRow) {
-      this.columns.push(new GridColumn({
-        name: this.getColumnName(key, firstRow),
-        heading: key
-      }));
     }
   }
 
@@ -420,7 +421,7 @@ export class Grid implements OnInit {
   protected onHeadingClick(event: MouseEvent) {
     let element: HTMLElement = event.target as HTMLElement;
     let columnName: string = element.getAttribute('data-id');
-    let column: GridColumn = _.find(this.columns, function(item: any) {
+    let column: GridColumnComponent = _.find(this.columns, function(item: any) {
       return item.name === columnName;
     });
 
@@ -440,7 +441,7 @@ export class Grid implements OnInit {
    * current sort type value
    * @returns {boolean}
    */
-  protected isSortedBy(column: GridColumn, sortType?: string): boolean {
+  protected isSortedBy(column: GridColumnComponent, sortType?: string): boolean {
     let isOrderedByField: boolean =
         column.name === this.dataProvider.getSortColumn();
 
@@ -459,11 +460,11 @@ export class Grid implements OnInit {
    * @param {GridColumn} column
    * @returns {string}
    */
-  protected getSortType(column: GridColumn): string {
+  protected getSortType(column: GridColumnComponent): string {
     return column.name !== this.dataProvider.getSortColumn() ?
       this.dataProvider.getSortType() :
-        (this.dataProvider.getSortType() === GridSort.TYPE_ASC ?
-          GridSort.TYPE_DESC : GridSort.TYPE_ASC);
+        (this.dataProvider.getSortType() === GridComponent.SORT_ASC ?
+          GridComponent.SORT_DESC : GridComponent.SORT_ASC);
   }
 
   /**
@@ -472,8 +473,8 @@ export class Grid implements OnInit {
    * @param {GridColumn} column
    * @returns {boolean}
    */
-  protected isSortingAllowed(column: GridColumn): boolean {
-    return this.options.get('sorting') && column.sorting;
+  protected isSortingAllowed(column: GridColumnComponent): boolean {
+    return this.options.get('sorting') && column.sorting == true;
   }
 
   /**

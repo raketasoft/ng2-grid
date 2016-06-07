@@ -1,6 +1,6 @@
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Loadable } from './loadable';
-import { GridSort } from './grid-sort';
+import { GridComponent } from './grid.component';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
@@ -26,13 +26,14 @@ export class GridDataProvider extends Loadable {
   pageSize: any;
   page: number = 1;
   sortParam: string;
+  totalCountHeader: string;
   url: string;
 
   private filterData: any[];
   private filters: Object = new Object();
   private pageData: Array<any>;
   private sortColumn: string;
-  private sortType: string = GridSort.TYPE_ASC;
+  private sortType: string = GridComponent.SORT_ASC;
   private totalCount: number;
 
   /**
@@ -55,6 +56,9 @@ export class GridDataProvider extends Loadable {
     }
     if (_.isUndefined(this.sortParam)) {
       this.sortParam = GridDataProvider.DEFAULT_SORT_PARAM_VALUE;
+    }
+    if (_.isUndefined(this.totalCountHeader)) {
+      this.totalCountHeader = GridDataProvider.DEFAULT_TOTAL_COUNT_HEADER_VALUE;
     }
     this.filterData = this.data;
   }
@@ -154,9 +158,7 @@ export class GridDataProvider extends Loadable {
     response
       .subscribe(
         (res: Response) => {
-          this.totalCount = Number(res.headers.get(
-            GridDataProvider.DEFAULT_TOTAL_COUNT_HEADER_VALUE
-          ));
+          this.totalCount = Number(res.headers.get(this.totalCountHeader));
           this.pageData = res.json();
         },
         (err: any) => console.log(err)
@@ -180,7 +182,7 @@ export class GridDataProvider extends Loadable {
     }
 
     if (!_.isUndefined(this.sortColumn)) {
-      let sortByValue: string = (this.sortType === GridSort.TYPE_ASC ? '' : '-')
+      let sortByValue: string = (this.sortType === GridComponent.SORT_ASC ? '' : '-')
         + this.sortColumn;
       params.set(this.sortParam, sortByValue);
     }

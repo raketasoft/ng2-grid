@@ -100,10 +100,10 @@
   overflow-y: scroll;
 }
 
-.ng-grid-column {
+.ng-grid-cell {
 }
 
-.ng-grid-column.selection {
+.ng-grid-cell.selection {
   width: 20px;
   text-align: center;
 }

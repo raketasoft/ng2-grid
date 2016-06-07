@@ -5,27 +5,28 @@ import {
   OnInit,
   AfterViewInit
 } from '@angular/core';
-import { Grid, GridOptions } from '../index';
+import { Http, HTTP_PROVIDERS } from '@angular/http';
+import { GridComponent, GridColumnComponent, GridOptions } from '../index';
 import DEMO_DATA from './data';
 
 @Component({
   selector: 'demo',
-  template: `
-    <h2>Basic Example</h2>
-    <ng-grid #basicGrid [options]="basicOptions"></ng-grid>
-    <h2>Column Definition Example</h2>
-    <ng-grid #columnGrid [options]="columnOptions"></ng-grid>
-    <h2>Remote Data Example</h2>
-    <ng-grid #remoteDataGrid [options]="remoteDataOptions"></ng-grid>`,
-  directives: [Grid]
+  moduleId: module.id,
+  templateUrl: './demo.component.html',
+  providers: [HTTP_PROVIDERS],
+  directives: [GridComponent, GridColumnComponent]
 })
 export class DemoComponent implements OnInit, AfterViewInit {
   basicOptions: GridOptions;
   columnOptions: GridOptions;
   remoteDataOptions: GridOptions;
-  @ViewChild('basicGrid') basicGrid: Grid;
+  fullConfigurationOptions: GridOptions;
+  @ViewChild('basicGrid') basicGrid: GridComponent;
 
-  constructor(private changeDetectionRef: ChangeDetectorRef) { }
+  constructor(
+    private http: Http,
+    private changeDetectorRef: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.basicOptions = new GridOptions({
@@ -35,22 +36,6 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
     this.columnOptions = new GridOptions({
       data: DEMO_DATA,
-      columns: [
-        {heading: 'Name', name: 'name', width: '150px',
-          template: '<a href="">{{name}}</a>'},
-        {heading: 'Age', name: 'age', width: '50px'},
-        {heading: 'Address', name: 'address', width: '200px'},
-        {heading: 'Country', name: 'country.name', width: '100px'},
-        {heading: 'Married', name: 'isMarried', width: '50px', sorting: false,
-          filtering: false, template: '{{isMarried ? "Yes" : "No"}}'},
-        {sorting: false, filtering: false, width: '100px',
-          template: '<a href="">Edit</a> | <a href="">Delete</a>'}
-      ],
-      headingCssClass: 'heading-table',
-      bodyCssClass: 'body-table',
-      defaultPageSize: 50,
-      defaultSortColumn: 'name',
-      defaultSortType: 'desc',
       height: '300px',
       selection: true
     });
@@ -60,8 +45,38 @@ export class DemoComponent implements OnInit, AfterViewInit {
       additionalRequestParams: {
         'expand': 'company,interests'
       },
-      alternateTemplate: false,
       height: '300px',
+    });
+
+    this.fullConfigurationOptions = new GridOptions({
+      additionalRequestParams: {
+        'expand': 'company,interests'
+      },
+      alternateTemplateColor: '#f9f9f9',
+      alternateTemplate: false,
+      bodyCssClass: 'body-table',
+      data: null,
+      defaultPageSize: 5,
+      defaultSortColumn: 'name',
+      defaultSortType: GridComponent.SORT_DESC,
+      heading: true,
+      headingCssClass: 'heading-table',
+      height: '300px',
+      httpService: this.http,
+      pageButtonCount: 10,
+      pageElementPosition: 'right',
+      pageParam: 'page',
+      pageSizeOptions: [5, 10, 20, 50],
+      pageSizeElementPosition: 'left',
+      pageSizeParam: 'pageSize',
+      paging: true,
+      filtering: true,
+      selection: true,
+      sortParam: 'orderBy',
+      sorting: true,
+      totalCountHeader: 'X-Pagination-Total-Count',
+      url: 'http://localhost:3000/',
+      width: '100%'
     });
   }
 
@@ -70,6 +85,11 @@ export class DemoComponent implements OnInit, AfterViewInit {
     this.basicGrid.setPageSize(50);
     this.basicGrid.render();
 
-    this.changeDetectionRef.detectChanges();
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onItemClick(e: MouseEvent, item: any) {
+    e.preventDefault();
+    console.log(item);
   }
 }

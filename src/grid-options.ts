@@ -28,7 +28,6 @@ export class GridOptions extends Loadable {
   protected alternateTemplateColor: string;
   protected alternateTemplate: boolean;
   protected bodyCssClass: string;
-  protected columns: Array<any>;
   protected data: Array<any>;
   protected defaultPageSize: any;
   protected defaultSortColumn: string;
@@ -48,6 +47,7 @@ export class GridOptions extends Loadable {
   protected selection: boolean;
   protected sortParam: string;
   protected sorting: boolean;
+  protected totalCountHeader: string;
   protected url: string;
   protected width: string;
 

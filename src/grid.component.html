@@ -15,7 +15,7 @@
               [class.sort-desc]="isSortedBy(column, 'desc')"
               [class.sort-disable]="!isSortingAllowed(column)"
               (click)="onHeadingClick($event)">
-            {{column.renderHeading()}}
+            {{column.resolveHeading()}}
           </th>
         </tr>
       </thead>
@@ -23,7 +23,7 @@
         <tr>
           <td *ngIf="options.get('selection')" class="ng-grid-filter selection"></td>
           <td *ngFor="let column of columns" class="ng-grid-filter">
-            <input type="text" *ngIf="column.filtering"
+            <input type="text" *ngIf="column.filtering == true"
               [attr.name]="column.name"
               (keyup.enter)="onFilterInputEnter($event)"
               (blur)="onFilterInputBlur($event)" />
@@ -36,16 +36,23 @@
       [class.scroll]="options.get('height')" [style.max-height]="options.get('height')">
     <table [class]="getBodyCssClass()" [style.width]="options.get('width')">
       <tbody>
-        <tr *ngFor="let row of data; #i = index"
+        <tr *ngFor="let row of data; let i = index"
             [style.background]="getAlternateBackground(i)">
-          <td *ngIf="options.get('selection')" class="ng-grid-column selection">
+          <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
             <input type="checkbox"
                 [(ngModel)]="row.selected"
                 (click)="onSelectItemCheckboxClick(row)">
           </td>
-          <td *ngFor="let column of columns" class="ng-grid-column"
+          <td *ngFor="let column of columns" class="ng-grid-cell"
               [style.width]="column.width"
-              [innerHtml]="column.renderCell(row)">
+              [style.text-align]="column.textAlign">
+            <span *ngIf="column.template">
+              <ng-grid-cell-renderer [column]="column" [data]="row">
+              </ng-grid-cell-renderer>
+            </span>
+            <span *ngIf="!column.template">
+              {{column.resolveCell(row)}}
+            </span>
           </td>
         </tr>
       </tbody>

@@ -1,0 +1,51 @@
+<h2>Basic Example</h2>
+<ng-grid #basicGrid [options]="basicOptions">
+  <ng-grid-column name="name"></ng-grid-column>
+  <ng-grid-column name="age"></ng-grid-column>
+  <ng-grid-column name="address"></ng-grid-column>
+  <ng-grid-column name="country.name"></ng-grid-column>
+  <ng-grid-column name="isMarried"></ng-grid-column>
+</ng-grid>
+
+<h2>Column Definition Example</h2>
+<ng-grid [options]="columnOptions">
+  <ng-grid-column heading="Name" name="name" textAlign="left" width="140px" >
+    <template let-column="column" let-data="data">
+      <a href="#" (click)="onItemClick($event, data)">
+        {{column.resolveCell(data)}}
+      </a>
+    </template>
+  </ng-grid-column>
+  <ng-grid-column heading="Age" name="age" textAlign="left" width="80px"></ng-grid-column>
+  <ng-grid-column heading="Address" name="address" textAlign="left" width="140px"></ng-grid-column>
+  <ng-grid-column heading="Country" name="country.name" textAlign="left" width="140px"></ng-grid-column>
+  <ng-grid-column heading="Married" name="isMarried" textAlign="left" width="80px">
+    <template let-data="data">
+      {{data.isMarried ? 'Yes' : 'No'}}
+    </template>
+  </ng-grid-column>
+  <ng-grid-column textAlign="center" width="100px" sorting="false" filtering="false">
+    <template let-data="data">
+      <input type="button" value="Edit" (click)="onItemClick($event, data)">
+      <input type="button" value="Delete" (click)="onItemClick($event, data)">
+    </template>
+  </ng-grid-column>
+</ng-grid>
+
+<h2>Remote Data Example</h2>
+<ng-grid [options]="remoteDataOptions">
+  <ng-grid-column heading="Name" name="name"></ng-grid-column>
+  <ng-grid-column heading="Age" name="age"></ng-grid-column>
+  <ng-grid-column heading="Address" name="address"></ng-grid-column>
+  <ng-grid-column heading="Country" name="country.name"></ng-grid-column>
+  <ng-grid-column heading="Married" name="isMarried"></ng-grid-column>
+</ng-grid>
+
+<h2>Full Configuration Example</h2>
+<ng-grid [options]="fullConfigurationOptions">
+  <ng-grid-column heading="Name" name="name"></ng-grid-column>
+  <ng-grid-column heading="Age" name="age"></ng-grid-column>
+  <ng-grid-column heading="Address" name="address"></ng-grid-column>
+  <ng-grid-column heading="Country" name="country.name"></ng-grid-column>
+  <ng-grid-column heading="Married" name="isMarried"></ng-grid-column>
+</ng-grid>
