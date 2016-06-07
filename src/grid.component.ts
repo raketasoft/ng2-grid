@@ -8,9 +8,9 @@ import {
 } from '@angular/core';
 import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
 import { GridOptions } from './grid-options';
-import { GridColumn } from './grid-column';
+import { GridColumnComponent } from './grid-column.component';
+import { GridCellRendererComponent } from './grid-cell-renderer.component';
 import { GridDataProvider } from './grid-data-provider';
-import { GridCellRenderer } from './grid-cell-renderer';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
 
@@ -25,19 +25,19 @@ import 'rxjs/Rx';
 @Component({
   selector: 'ng-grid',
   moduleId: module.id,
-  templateUrl: './grid.html',
+  templateUrl: './grid.component.html',
   styleUrls: ['./assets/ng2-grid.css'],
   providers: [HTTP_PROVIDERS],
-  directives: [GridCellRenderer]
+  directives: [GridCellRendererComponent]
 })
-export class Grid implements OnInit, AfterContentInit {
+export class GridComponent implements OnInit, AfterContentInit {
   static SORT_ASC: string = 'asc';
   static SORT_DESC: string = 'desc';
 
   @Input() options: GridOptions;
-  @ContentChildren(GridColumn) columnList: QueryList<GridColumn>;
+  @ContentChildren(GridColumnComponent) columnList: QueryList<GridColumnComponent>;
 
-  private columns: Array<GridColumn>;
+  private columns: Array<GridColumnComponent>;
   private dataProvider: GridDataProvider;
   private data: Array<any>;
   private pageIndex: number = 1;
@@ -421,7 +421,7 @@ export class Grid implements OnInit, AfterContentInit {
   protected onHeadingClick(event: MouseEvent) {
     let element: HTMLElement = event.target as HTMLElement;
     let columnName: string = element.getAttribute('data-id');
-    let column: GridColumn = _.find(this.columns, function(item: any) {
+    let column: GridColumnComponent = _.find(this.columns, function(item: any) {
       return item.name === columnName;
     });
 
@@ -441,7 +441,7 @@ export class Grid implements OnInit, AfterContentInit {
    * current sort type value
    * @returns {boolean}
    */
-  protected isSortedBy(column: GridColumn, sortType?: string): boolean {
+  protected isSortedBy(column: GridColumnComponent, sortType?: string): boolean {
     let isOrderedByField: boolean =
         column.name === this.dataProvider.getSortColumn();
 
@@ -460,11 +460,11 @@ export class Grid implements OnInit, AfterContentInit {
    * @param {GridColumn} column
    * @returns {string}
    */
-  protected getSortType(column: GridColumn): string {
+  protected getSortType(column: GridColumnComponent): string {
     return column.name !== this.dataProvider.getSortColumn() ?
       this.dataProvider.getSortType() :
-        (this.dataProvider.getSortType() === Grid.SORT_ASC ?
-          Grid.SORT_DESC : Grid.SORT_ASC);
+        (this.dataProvider.getSortType() === GridComponent.SORT_ASC ?
+          GridComponent.SORT_DESC : GridComponent.SORT_ASC);
   }
 
   /**
@@ -473,7 +473,7 @@ export class Grid implements OnInit, AfterContentInit {
    * @param {GridColumn} column
    * @returns {boolean}
    */
-  protected isSortingAllowed(column: GridColumn): boolean {
+  protected isSortingAllowed(column: GridColumnComponent): boolean {
     return this.options.get('sorting') && column.sorting == true;
   }
 

@@ -5,22 +5,22 @@ import {
   OnInit,
   AfterViewInit
 } from '@angular/core';
-import { Grid, GridColumn, GridOptions } from '../index';
+import { GridComponent, GridColumnComponent, GridOptions } from '../index';
 import DEMO_DATA from './data';
 
 @Component({
   selector: 'demo',
   moduleId: module.id,
   templateUrl: './demo.component.html',
-  directives: [Grid, GridColumn]
+  directives: [GridComponent, GridColumnComponent]
 })
 export class DemoComponent implements OnInit, AfterViewInit {
   basicOptions: GridOptions;
   columnOptions: GridOptions;
   remoteDataOptions: GridOptions;
-  @ViewChild('basicGrid') basicGrid: Grid;
-  @ViewChild('columnGrid') columnGrid: Grid;
-  @ViewChild('remoteDataGrid') remoteDataGrid: Grid;
+  @ViewChild('basicGrid') basicGrid: GridComponent;
+  @ViewChild('columnGrid') columnGrid: GridComponent;
+  @ViewChild('remoteDataGrid') remoteDataGrid: GridComponent;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) { }
 
@@ -36,7 +36,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       bodyCssClass: 'body-table',
       defaultPageSize: 50,
       defaultSortColumn: 'name',
-      defaultSortType: Grid.SORT_DESC,
+      defaultSortType: GridComponent.SORT_DESC,
       height: '300px',
       selection: true
     });

@@ -4,7 +4,7 @@ import {
   Input,
   OnInit
 } from '@angular/core';
-import { GridColumn } from './grid-column';
+import { GridColumnComponent } from './grid-column.component';
 
 /**
  * GridCell component used to render grid cell template.
@@ -16,9 +16,9 @@ import { GridColumn } from './grid-column';
   selector: 'ng-grid-cell-renderer',
   template: ''
 })
-export class GridCellRenderer implements OnInit {
+export class GridCellRendererComponent implements OnInit {
   @Input() data: any;
-  @Input() column: GridColumn;
+  @Input() column: GridColumnComponent;
 
   /**
    * Class constructor.

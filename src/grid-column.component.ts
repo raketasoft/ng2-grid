@@ -19,7 +19,7 @@ import * as _ from 'lodash';
   'selector': 'ng-grid-column',
   'template': ''
 })
-export class GridColumn implements OnInit {
+export class GridColumnComponent implements OnInit {
   static DEFAULT_FILTERING_VALUE: boolean = true;
   static DEFAULT_SORTING_VALUE: boolean = true;
 
@@ -36,10 +36,10 @@ export class GridColumn implements OnInit {
    */
   ngOnInit() {
     if (_.isUndefined(this.filtering)) {
-      this.filtering = GridColumn.DEFAULT_FILTERING_VALUE;
+      this.filtering = GridColumnComponent.DEFAULT_FILTERING_VALUE;
     }
     if (_.isUndefined(this.sorting)) {
-      this.sorting = GridColumn.DEFAULT_SORTING_VALUE;
+      this.sorting = GridColumnComponent.DEFAULT_SORTING_VALUE;
     }
   }
 
