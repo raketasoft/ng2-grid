@@ -36,7 +36,7 @@ System.config({
 Then import and include in your component's directives:
 
 ```typescript
-import { GridComponent, GridOptions } from 'raketasoft-ng2-grid';
+import { GridComponent, GridColumnComponent, GridOptions } from 'raketasoft-ng2-grid';
 
 @Component({
     directives: [GridComponent]
