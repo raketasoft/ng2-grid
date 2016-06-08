@@ -39,7 +39,7 @@ Then import and include in your component's directives:
 import { GridComponent, GridColumnComponent, GridOptions } from 'raketasoft-ng2-grid';
 
 @Component({
-    directives: [GridComponent]
+    directives: [GridComponent, GridColumnComponent]
 })
 export class MyComponent {
     ...
