@@ -9,7 +9,7 @@
 
 <h2>Column Definition Example</h2>
 <ng-grid [options]="columnOptions">
-  <ng-grid-column heading="Name" name="name" textAlign="left" width="140px" >
+  <ng-grid-column heading="Name" name="name" textAlign="left" width="140px">
     <template let-column="column" let-data="data">
       <a href="#" (click)="onItemClick($event, data)">
         {{column.resolveCell(data)}}
@@ -19,7 +19,15 @@
   <ng-grid-column heading="Age" name="age" textAlign="left" width="80px"></ng-grid-column>
   <ng-grid-column heading="Address" name="address" textAlign="left" width="140px"></ng-grid-column>
   <ng-grid-column heading="Country" name="country.name" textAlign="left" width="140px"></ng-grid-column>
-  <ng-grid-column heading="Married" name="isMarried" textAlign="left" width="80px">
+  <ng-grid-column
+      heading="Married"
+      name="isMarried"
+      type="select"
+      [items]="getIsMarriedItems()"
+      valueField="value"
+      textField="text"
+      textAlign="left"
+      width="80px">
     <template let-data="data">
       {{data.isMarried ? 'Yes' : 'No'}}
     </template>

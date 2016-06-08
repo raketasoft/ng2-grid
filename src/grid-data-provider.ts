@@ -102,6 +102,16 @@ export class GridDataProvider extends Loadable {
   }
 
   /**
+   * Return filter value for given column.
+   *
+   * @param {string} columnName
+   * @returns {any}
+   */
+  getFilter(columnName: string): any {
+    return this.filters[columnName];
+  }
+
+  /**
    * Set a filter value for specific column.
    *
    * @param {string} columnName

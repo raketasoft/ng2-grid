@@ -190,6 +190,16 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
+   * Return filter value for given column.
+   *
+   * @param {string} columnName
+   * @returns {any}
+   */
+  getFilter(columnName: string): any {
+    return this.dataProvider.getFilter(columnName);
+  }
+
+  /**
    * Calling this method would sort the grid data by the given sort column and
    * sort type.
    *
@@ -218,6 +228,28 @@ export class GridComponent implements OnInit, AfterContentInit {
         }
       );
     }
+  }
+
+  /**
+   * Check if text filter is enabled for given column.
+   *
+   * @param {GridColumnComponent} column
+   * @returns {boolean}
+   */
+  protected isTextFilterEnabled(column: GridColumnComponent) {
+    return (column.type == GridColumnComponent.COLUMN_TYPE_TEXT
+        && column.filtering == true);
+  }
+
+  /**
+   * Check if select filter is enabled for given column.
+   *
+   * @param {GridColumnComponent} column
+   * @returns {boolean}
+   */
+  protected isSelectFilterEnabled(column: GridColumnComponent) {
+    return (column.type == GridColumnComponent.COLUMN_TYPE_SELECT
+        && column.filtering == true);
   }
 
   /**
@@ -386,28 +418,51 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
-   * Filter input blur handler.
+   * Select filter change handler.
    * When invoked a filter would be set with the input value.
    *
    * @param {MouseEvent} event
+   * @param {GridColumnComponent} column
    */
-  protected onFilterInputBlur(event: MouseEvent) {
+  protected onSelectFilterChange(event: MouseEvent, column: GridColumnComponent) {
+    let element: HTMLSelectElement = event.target as HTMLSelectElement;
+    let selectedItem: HTMLOptionElement = element
+        .options
+        .item(element.selectedIndex) as HTMLOptionElement;
+
+    if (selectedItem.value === '-') {
+      selectedItem.value = '';
+    }
+
+    this.setFilter(column.name, selectedItem.value);
+    this.render();
+  }
+
+
+  /**
+   * Input filter blur handler.
+   * When invoked a filter would be set with the input value.
+   *
+   * @param {MouseEvent} event
+   * @param {GridColumnComponent} column
+   */
+  protected onInputFilterBlur(event: MouseEvent, column: GridColumnComponent) {
     let element: HTMLInputElement = event.target as HTMLInputElement;
-    let columnName: string = element.getAttribute('name');
     let keyword: string = element.value.trim();
 
-    this.setFilter(columnName, keyword);
+    this.setFilter(column.name, keyword);
   }
 
   /**
-   * Filter input enter key hanlder.
+   * Input filter enter key hanlder.
    * When invoked a filter would be set with the input value and the grid
    * filter would be triggered.
    *
    * @param {MouseEvent} event
+   * @param {GridColumnComponent} column
    */
-  protected onFilterInputEnter(event: MouseEvent) {
-    this.onFilterInputBlur(event);
+  protected onInputFilterEnter(event: MouseEvent, column: GridColumnComponent) {
+    this.onInputFilterBlur(event, column);
 
     this.render();
   }

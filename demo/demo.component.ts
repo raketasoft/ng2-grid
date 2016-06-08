@@ -92,4 +92,11 @@ export class DemoComponent implements OnInit, AfterViewInit {
     e.preventDefault();
     console.log(item);
   }
+
+  getIsMarriedItems(): Array<any> {
+    return [
+      {value: true, text: 'Yes'},
+      {value: false, text: 'No'},
+    ];
+  }
 }

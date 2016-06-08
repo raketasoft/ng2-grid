@@ -23,10 +23,17 @@
         <tr>
           <td *ngIf="options.get('selection')" class="ng-grid-filter selection"></td>
           <td *ngFor="let column of columns" class="ng-grid-filter">
-            <input type="text" *ngIf="column.filtering == true"
-              [attr.name]="column.name"
-              (keyup.enter)="onFilterInputEnter($event)"
-              (blur)="onFilterInputBlur($event)" />
+            <input type="text" *ngIf="isTextFilterEnabled(column)"
+                (keyup.enter)="onInputFilterEnter($event, column)"
+                (blur)="onInputFilterBlur($event, column)" />
+            <select *ngIf="isSelectFilterEnabled(column)"
+                (change)="onSelectFilterChange($event, column)">
+              <option>-</option>
+              <option *ngFor="let item of column.items"
+                  value="{{item[column.valueField]}}">
+                {{item[column.textField]}}
+              </option>
+            </select>
           </td>
         </tr>
       </tbody>
