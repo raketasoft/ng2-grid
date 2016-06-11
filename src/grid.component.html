@@ -27,8 +27,9 @@
                 (keyup.enter)="onInputFilterEnter($event, column)"
                 (blur)="onInputFilterBlur($event, column)" />
             <select *ngIf="isSelectFilterEnabled(column)"
-                (change)="onSelectFilterChange($event, column)">
-              <option>-</option>
+                [ngModel]="dataProvider.filters[column.name]"
+                (ngModelChange)="onSelectFilterChange($event, column)">
+              <option></option>
               <option *ngFor="let item of column.items"
                   value="{{item[column.valueField]}}">
                 {{item[column.textField]}}
@@ -88,8 +89,8 @@
     <div class="ng-grid-pager-size {{options.get('pageSizeElementPosition')}}"
       *ngIf="isPageSizeOptionsEnabled()">
       <span>Page size:</span>
-      <select [(ngModel)]="dataProvider.pageSize"
-        (change)="onPageSizeDropDownChange($event)">
+      <select [ngModel]="dataProvider.pageSize"
+        (ngModelChange)="onPageSizeDropDownChange($event)">
         <option *ngFor="let value of options.get('pageSizeOptions')" [ngValue]="value">
           {{value}}
         </option>

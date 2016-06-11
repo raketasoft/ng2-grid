@@ -152,11 +152,14 @@ export class GridComponent implements OnInit, AfterContentInit {
    * @returns {number}
    */
   getTotalPages(): number {
-    if (this.dataProvider.pageSize === false) {
+    if (this.dataProvider.pageSize === false ||
+        this.dataProvider.pageSize > this.dataProvider.getTotalCount()) {
       return 1;
     }
 
-    return Math.ceil(this.dataProvider.getTotalCount() / this.dataProvider.pageSize);
+    return Math.ceil(
+      this.dataProvider.getTotalCount() / this.dataProvider.pageSize
+    );
   }
 
   /**
@@ -407,13 +410,10 @@ export class GridComponent implements OnInit, AfterContentInit {
    * When invoked the page size of the grid would be changed and data would be
    * re-rendered.
    *
-   * @param {MouseEvent} event
+   * @param {any} event
    */
-  protected onPageSizeDropDownChange(event: MouseEvent) {
-    let element: HTMLSelectElement = event.target as HTMLSelectElement;
-    let pageSize: number = Number(element.options.item(element.selectedIndex).innerHTML);
-
-    this.setPageSize(pageSize);
+  protected onPageSizeDropDownChange(event: any) {
+    this.setPageSize(event);
     this.render();
   }
 
@@ -421,20 +421,11 @@ export class GridComponent implements OnInit, AfterContentInit {
    * Select filter change handler.
    * When invoked a filter would be set with the input value.
    *
-   * @param {MouseEvent} event
+   * @param {any} event
    * @param {GridColumnComponent} column
    */
-  protected onSelectFilterChange(event: MouseEvent, column: GridColumnComponent) {
-    let element: HTMLSelectElement = event.target as HTMLSelectElement;
-    let selectedItem: HTMLOptionElement = element
-        .options
-        .item(element.selectedIndex) as HTMLOptionElement;
-
-    if (selectedItem.value === '-') {
-      selectedItem.value = '';
-    }
-
-    this.setFilter(column.name, selectedItem.value);
+  protected onSelectFilterChange(event: any, column: GridColumnComponent) {
+    this.setFilter(column.name, event);
     this.render();
   }
 
@@ -497,6 +488,10 @@ export class GridComponent implements OnInit, AfterContentInit {
    * @returns {boolean}
    */
   protected isSortedBy(column: GridColumnComponent, sortType?: string): boolean {
+    if (!(column.sorting === true)) {
+      return false;
+    }
+
     let isOrderedByField: boolean =
         column.name === this.dataProvider.getSortColumn();
 

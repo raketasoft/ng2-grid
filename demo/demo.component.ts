@@ -99,4 +99,16 @@ export class DemoComponent implements OnInit, AfterViewInit {
       {value: false, text: 'No'},
     ];
   }
+
+  getCountryItems(): Array<any> {
+    return [
+      {value: 'Brazil', text: 'Brazil'},
+      {value: 'Canada', text: 'Canada'},
+      {value: 'China', text: 'China'},
+      {value: 'France', text: 'France'},
+      {value: 'Russia', text: 'Russia'},
+      {value: 'United Kingdom', text: 'United Kingdom'},
+      {value: 'United States', text: 'United States'},
+    ];
+  }
 }

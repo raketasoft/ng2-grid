@@ -18,7 +18,16 @@
   </ng-grid-column>
   <ng-grid-column heading="Age" name="age" textAlign="left" width="80px"></ng-grid-column>
   <ng-grid-column heading="Address" name="address" textAlign="left" width="140px"></ng-grid-column>
-  <ng-grid-column heading="Country" name="country.name" textAlign="left" width="140px"></ng-grid-column>
+  <ng-grid-column
+    heading="Country"
+    name="country.name"
+    type="select"
+    [items]="getCountryItems()"
+    valueField="value"
+    textField="text"
+    textAlign="left"
+    width="140px">
+  </ng-grid-column>
   <ng-grid-column
       heading="Married"
       name="isMarried"

@@ -21,6 +21,7 @@ export class GridDataProvider extends Loadable {
 
   additionalRequestParams: any;
   data: Array<any>;
+  filters: Array<any> = [];
   pageParam: string;
   pageSizeParam: string;
   pageSize: any;
@@ -29,8 +30,7 @@ export class GridDataProvider extends Loadable {
   totalCountHeader: string;
   url: string;
 
-  private filterData: any[];
-  private filters: Object = new Object();
+  private filterData: Array<any>;
   private pageData: Array<any>;
   private sortColumn: string;
   private sortType: string = GridComponent.SORT_ASC;
