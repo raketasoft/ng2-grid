@@ -73,6 +73,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       paging: true,
       rowAlternateStyle: false,
       rowHoverStyle: true,
+      rowSelectionStyle: false,
       rowStyleCallback: function (row: any) {
         return row.isMarried ? 'married' : 'not-married';
       },
@@ -98,6 +99,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
   onItemClick(e: MouseEvent, item: any) {
     e.preventDefault();
+    e.stopPropagation();
     console.log(item);
   }
 

@@ -35,6 +35,7 @@ export class GridComponent implements OnInit, AfterContentInit {
   static SORT_DESC: string = 'desc';
   static ROW_ALT_CLASS: string = 'alt';
   static ROW_HOVER_CLASS: string = 'hover';
+  static ROW_SELECT_CLASS: string = 'select';
 
   @Input() options: GridOptions;
   @ContentChildren(GridColumnComponent) columnList: QueryList<GridColumnComponent>;
@@ -278,6 +279,10 @@ export class GridComponent implements OnInit, AfterContentInit {
       cssClass += ' ' + callback(data);
     }
 
+    if (data.selected && this.options.get('rowSelectionStyle')) {
+      cssClass += ' ' + GridComponent.ROW_SELECT_CLASS;
+    }
+
     return cssClass;
   }
 
@@ -293,7 +298,6 @@ export class GridComponent implements OnInit, AfterContentInit {
 
     return this.options.get('headingCssClass');
   }
-
 
   /**
    * Get body css class.
@@ -330,15 +334,25 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
-   * Handle select/deselect a single grid row.
+   * Handle row select checkbox click.
    *
-   * @param {any} row Data row
+   * @param {MouseEvent} event
+   * @param {any} row
    */
-  protected onSelectItemCheckboxClick(item: any) {
-    if (_.isUndefined(item.selected)) {
-      item.selected = false;
+  protected onSelectItemCheckboxClick(e: MouseEvent, row: any) {
+    e.stopPropagation();
+    this.selectRow(row);
+  }
+
+  /**
+   * Handle grid row click event.
+   *
+   * @param {any} row
+   */
+  protected onRowClick(row: any) {
+    if (this.options.get('selection')) {
+      this.selectRow(row);
     }
-    item.selected = !item.selected;
   }
 
   /**
@@ -554,6 +568,18 @@ export class GridComponent implements OnInit, AfterContentInit {
     }
 
     return key;
+  }
+
+  /**
+   * Handle select/deselect a single grid row.
+   *
+   * @param {any} row
+   */
+  private selectRow(row: any) {
+    if (_.isUndefined(row.selected)) {
+      row.selected = false;
+    }
+    row.selected = !row.selected;
   }
 
   /**

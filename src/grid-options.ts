@@ -20,6 +20,7 @@ export class GridOptions extends Loadable {
   static DEFAULT_PAGING_VALUE: boolean = true;
   static DEFAULT_ROW_ALTERNATE_STYLE_VALUE: boolean = true;
   static DEFAULT_ROW_HOVER_STYLE_VALUE: boolean = true;
+  static DEFAULT_ROW_SELECTION_STYLE_VALUE: boolean = true;
   static DEFAULT_SELECTION_VALUE: boolean = false;
   static DEFAULT_SORTING_VALUE: boolean = true;
   static DEFAULT_WIDTH_VALUE: string = '100%';
@@ -43,6 +44,7 @@ export class GridOptions extends Loadable {
   protected paging: boolean;
   protected rowAlternateStyle: boolean;
   protected rowHoverStyle: boolean;
+  protected rowSelectionStyle: boolean;
   protected rowStyleCallback: RowStyleCallback;
   protected filtering: boolean;
   protected selection: boolean;
@@ -87,6 +89,9 @@ export class GridOptions extends Loadable {
     }
     if (_.isUndefined(this.rowHoverStyle)) {
       this.rowHoverStyle = GridOptions.DEFAULT_ROW_HOVER_STYLE_VALUE;
+    }
+    if (_.isUndefined(this.rowSelectionStyle)) {
+      this.rowSelectionStyle = GridOptions.DEFAULT_ROW_SELECTION_STYLE_VALUE;
     }
     if (_.isUndefined(this.selection)) {
       this.selection = GridOptions.DEFAULT_SELECTION_VALUE;

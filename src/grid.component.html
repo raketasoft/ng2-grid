@@ -45,11 +45,12 @@
     <table [class]="getBodyCssClass()" [style.width]="options.get('width')">
       <tbody>
         <tr *ngFor="let row of data; let i = index"
-            [class]="getRowCssClass(i, row)">
+            [class]="getRowCssClass(i, row)"
+            (click)="onRowClick(row)">
           <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
             <input type="checkbox"
-                [(ngModel)]="row.selected"
-                (click)="onSelectItemCheckboxClick(row)">
+                [ngModel]="row.selected"
+                (click)="onSelectItemCheckboxClick($event, row)">
           </td>
           <td *ngFor="let column of columns" class="ng-grid-cell"
               [style.width]="column.width"

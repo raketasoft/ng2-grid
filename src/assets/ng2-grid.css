@@ -98,6 +98,13 @@
   background: #c4e3f3;
 }
 
+.ng-grid-body table tr.select,
+.ng-grid-body table tr.select:hover {
+  color: #fff;
+  background: #059eff;
+}
+
+
 .ng-grid-body table tr:first-child td {
   border-top: 0;
 }
