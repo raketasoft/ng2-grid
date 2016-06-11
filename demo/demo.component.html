@@ -63,6 +63,27 @@
   <ng-grid-column heading="Name" name="name"></ng-grid-column>
   <ng-grid-column heading="Age" name="age"></ng-grid-column>
   <ng-grid-column heading="Address" name="address"></ng-grid-column>
-  <ng-grid-column heading="Country" name="country.name"></ng-grid-column>
-  <ng-grid-column heading="Married" name="isMarried"></ng-grid-column>
+  <ng-grid-column
+    heading="Country"
+    name="country.name"
+    type="select"
+    [items]="countryItems"
+    valueField="value"
+    textField="text"
+    textAlign="left"
+    width="140px">
+  </ng-grid-column>
+  <ng-grid-column
+      heading="Married"
+      name="isMarried"
+      type="select"
+      [items]="isMarriedItems"
+      valueField="value"
+      textField="text"
+      textAlign="left"
+      width="80px">
+    <template let-data="data">
+      {{data.isMarried ? 'Yes' : 'No'}}
+    </template>
+  </ng-grid-column>
 </ng-grid>

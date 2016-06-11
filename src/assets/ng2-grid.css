@@ -38,6 +38,7 @@
 .ng-grid-heading {
   cursor: pointer;
   text-align: left;
+  background: #f9f9f9;
 }
 
 .ng-grid-heading.sort {
@@ -49,7 +50,7 @@
 
 .ng-grid-heading.selection {
   cursor: auto;
-  width: 20px;
+  width: 30px;
   text-align: center;
 }
 
@@ -73,6 +74,7 @@
 }
 
 .ng-grid-filter {
+  background: #f9f9f9;
 }
 
 .ng-grid-filter input,
@@ -86,6 +88,14 @@
 }
 
 .ng-grid-body table td {
+}
+
+.ng-grid-body table tr.alt {
+  background: #f9f9f9;
+}
+
+.ng-grid-body table tr.hover:hover {
+  background: #c4e3f3;
 }
 
 .ng-grid-body table tr:first-child td {
@@ -105,7 +115,7 @@
 }
 
 .ng-grid-cell.selection {
-  width: 20px;
+  width: 30px;
   text-align: center;
 }
 

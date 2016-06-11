@@ -140,3 +140,13 @@ nav a.router-link-active {
 * {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* custom */
+.married {
+  color: #fff;
+  background: #db687d;
+}
+.not-married {
+  color: #fff;
+  background: #4cae4c;
+}

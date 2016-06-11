@@ -54,13 +54,12 @@ export class DemoComponent implements OnInit, AfterViewInit {
       additionalRequestParams: {
         'expand': 'company,interests'
       },
-      alternateTemplateColor: '#f9f9f9',
-      alternateTemplate: false,
       bodyCssClass: 'body-table',
       data: null,
       defaultPageSize: 5,
       defaultSortColumn: 'name',
       defaultSortType: GridComponent.SORT_DESC,
+      filtering: true,
       heading: true,
       headingCssClass: 'heading-table',
       height: '300px',
@@ -72,7 +71,11 @@ export class DemoComponent implements OnInit, AfterViewInit {
       pageSizeElementPosition: 'left',
       pageSizeParam: 'pageSize',
       paging: true,
-      filtering: true,
+      rowAlternateStyle: false,
+      rowHoverStyle: true,
+      rowStyleCallback: function (row: any) {
+        return row.isMarried ? 'married' : 'not-married';
+      },
       selection: true,
       sortParam: 'orderBy',
       sorting: true,

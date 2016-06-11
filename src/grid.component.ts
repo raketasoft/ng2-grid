@@ -7,7 +7,7 @@ import {
   AfterContentInit
 } from '@angular/core';
 import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
-import { GridOptions } from './grid-options';
+import { GridOptions, RowStyleCallback } from './grid-options';
 import { GridColumnComponent } from './grid-column.component';
 import { GridCellRendererComponent } from './grid-cell-renderer.component';
 import { GridDataProvider } from './grid-data-provider';
@@ -33,6 +33,8 @@ import 'rxjs/Rx';
 export class GridComponent implements OnInit, AfterContentInit {
   static SORT_ASC: string = 'asc';
   static SORT_DESC: string = 'desc';
+  static ROW_ALT_CLASS: string = 'alt';
+  static ROW_HOVER_CLASS: string = 'hover';
 
   @Input() options: GridOptions;
   @ContentChildren(GridColumnComponent) columnList: QueryList<GridColumnComponent>;
@@ -256,15 +258,27 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
-   * Determine the background color of grid row.
+   * Determine the CSS class that needs to be applied to the each grid row.
    *
    * @param {number} index Row index
+   * @param {any} data Row data
    * @returns {string} Row color
    */
-  protected getAlternateBackground(index: number) {
-    if (this.options.get('alternateTemplate') && index % 2 === 0) {
-      return this.options.get('alternateTemplateColor');
+  protected getRowCssClass(index: number, data: any) {
+    let cssClass: string = '';
+    if (this.options.get('rowAlternateStyle') && index % 2 !== 0) {
+      cssClass += GridComponent.ROW_ALT_CLASS;
     }
+    if (this.options.get('rowHoverStyle')) {
+      cssClass += ' ' + GridComponent.ROW_HOVER_CLASS;
+    }
+
+    let callback: RowStyleCallback = this.options.get('rowStyleCallback');
+    if (!_.isUndefined(callback)) {
+      cssClass += ' ' + callback(data);
+    }
+
+    return cssClass;
   }
 
   /**

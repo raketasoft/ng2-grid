@@ -10,8 +10,7 @@ import * as _ from 'lodash';
  * @since 1.0.0-alpha
  */
 export class GridOptions extends Loadable {
-  static DEFAULT_ALTERNATE_TEMLPATE_COLOR_VALUE: string = '#f9f9f9';
-  static DEFAULT_ALTERNATE_TEMLPATE_VALUE: boolean = true;
+  static DEFAULT_FILTERING_VALUE: boolean = true;
   static DEFAULT_HEADING_VALUE: boolean = true;
   static DEFAULT_PAGE_BUTTON_COUNT_VALUE: number = 5;
   static DEFAULT_PAGE_ELEMENT_POSITION_VALUE: string = 'left';
@@ -19,14 +18,13 @@ export class GridOptions extends Loadable {
   static DEFAULT_PAGE_SIZE_ELEMENT_POSITION_VALUE: string = 'right';
   static DEFAULT_PAGE_SIZE_VALUE: number = 20;
   static DEFAULT_PAGING_VALUE: boolean = true;
-  static DEFAULT_FILTERING_VALUE: boolean = true;
+  static DEFAULT_ROW_ALTERNATE_STYLE_VALUE: boolean = true;
+  static DEFAULT_ROW_HOVER_STYLE_VALUE: boolean = true;
   static DEFAULT_SELECTION_VALUE: boolean = false;
   static DEFAULT_SORTING_VALUE: boolean = true;
   static DEFAULT_WIDTH_VALUE: string = '100%';
 
   protected additionalRequestParams: any;
-  protected alternateTemplateColor: string;
-  protected alternateTemplate: boolean;
   protected bodyCssClass: string;
   protected data: Array<any>;
   protected defaultPageSize: any;
@@ -43,6 +41,9 @@ export class GridOptions extends Loadable {
   protected pageSizeElementPosition: string;
   protected pageSizeParam: string;
   protected paging: boolean;
+  protected rowAlternateStyle: boolean;
+  protected rowHoverStyle: boolean;
+  protected rowStyleCallback: RowStyleCallback;
   protected filtering: boolean;
   protected selection: boolean;
   protected sortParam: string;
@@ -57,11 +58,8 @@ export class GridOptions extends Loadable {
    */
   constructor(params?: any) {
     super(params);
-    if (_.isUndefined(this.alternateTemplateColor)) {
-      this.alternateTemplateColor = GridOptions.DEFAULT_ALTERNATE_TEMLPATE_COLOR_VALUE;
-    }
-    if (_.isUndefined(this.alternateTemplate)) {
-      this.alternateTemplate = GridOptions.DEFAULT_ALTERNATE_TEMLPATE_VALUE;
+    if (_.isUndefined(this.filtering)) {
+      this.filtering = GridOptions.DEFAULT_FILTERING_VALUE;
     }
     if (_.isUndefined(this.heading)) {
       this.heading = GridOptions.DEFAULT_HEADING_VALUE;
@@ -84,8 +82,11 @@ export class GridOptions extends Loadable {
     if (_.isUndefined(this.paging)) {
       this.paging = GridOptions.DEFAULT_PAGING_VALUE;
     }
-    if (_.isUndefined(this.filtering)) {
-      this.filtering = GridOptions.DEFAULT_FILTERING_VALUE;
+    if (_.isUndefined(this.rowAlternateStyle)) {
+      this.rowAlternateStyle = GridOptions.DEFAULT_ROW_ALTERNATE_STYLE_VALUE;
+    }
+    if (_.isUndefined(this.rowHoverStyle)) {
+      this.rowHoverStyle = GridOptions.DEFAULT_ROW_HOVER_STYLE_VALUE;
     }
     if (_.isUndefined(this.selection)) {
       this.selection = GridOptions.DEFAULT_SELECTION_VALUE;
@@ -108,3 +109,5 @@ export class GridOptions extends Loadable {
     return this[param];
   }
 }
+
+export interface RowStyleCallback { (row: any): string; }

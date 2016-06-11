@@ -45,7 +45,7 @@
     <table [class]="getBodyCssClass()" [style.width]="options.get('width')">
       <tbody>
         <tr *ngFor="let row of data; let i = index"
-            [style.background]="getAlternateBackground(i)">
+            [class]="getRowCssClass(i, row)">
           <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
             <input type="checkbox"
                 [(ngModel)]="row.selected"
