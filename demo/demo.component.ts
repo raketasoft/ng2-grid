@@ -22,6 +22,8 @@ export class DemoComponent implements OnInit, AfterViewInit {
   remoteDataOptions: GridOptions;
   fullConfigurationOptions: GridOptions;
   @ViewChild('basicGrid') basicGrid: GridComponent;
+  isMarriedItems: Array<any>;
+  countryItems: Array<any>;
 
   constructor(
     private http: Http,
@@ -78,6 +80,9 @@ export class DemoComponent implements OnInit, AfterViewInit {
       url: 'http://localhost:3000/',
       width: '100%'
     });
+
+    this.isMarriedItems = this.getIsMarriedItems();
+    this.countryItems = this.getCountryItems();
   }
 
   ngAfterViewInit() {
@@ -95,8 +100,8 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
   getIsMarriedItems(): Array<any> {
     return [
-      {value: true, text: 'Yes'},
-      {value: false, text: 'No'},
+      {value: 'true', text: 'Yes'},
+      {value: 'false', text: 'No'},
     ];
   }
 

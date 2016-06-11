@@ -31,7 +31,7 @@
                 (ngModelChange)="onSelectFilterChange($event, column)">
               <option></option>
               <option *ngFor="let item of column.items"
-                  value="{{item[column.valueField]}}">
+                  [ngValue]="item[column.valueField]">
                 {{item[column.textField]}}
               </option>
             </select>
@@ -91,7 +91,8 @@
       <span>Page size:</span>
       <select [ngModel]="dataProvider.pageSize"
         (ngModelChange)="onPageSizeDropDownChange($event)">
-        <option *ngFor="let value of options.get('pageSizeOptions')" [ngValue]="value">
+        <option *ngFor="let value of options.get('pageSizeOptions')"
+            [ngValue]="value">
           {{value}}
         </option>
       </select>
