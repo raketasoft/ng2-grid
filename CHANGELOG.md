@@ -1,3 +1,19 @@
+<a name="1.0.0-alpha.6"></a>
+# 1.0.0-alpha.6 (2016-06-12)
+
+### Features
+
+* **grid-column:** Add column type support and select/drop-down filters
+* **grid-options:** Add row style customization support using callback function
+* **grid-options:** Add row selection style customization
+* **grid:** Add support for selecting item on row click
+* **demo:** Update demo examples
+
+### Bug Fixes
+
+* **grid:** Fix issue with sort class applied to action column
+* **grid:** Fix issue with total page count, when remote data is not returned
+
 <a name="1.0.0-alpha.5"></a>
 # 1.0.0-alpha.5 (2016-06-07)
 
