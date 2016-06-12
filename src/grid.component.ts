@@ -31,8 +31,6 @@ import 'rxjs/Rx';
   directives: [GridCellRendererComponent]
 })
 export class GridComponent implements OnInit, AfterContentInit {
-  static SORT_ASC: string = 'asc';
-  static SORT_DESC: string = 'desc';
   static ROW_ALT_CLASS: string = 'alt';
   static ROW_HOVER_CLASS: string = 'hover';
   static ROW_SELECT_CLASS: string = 'select';
@@ -41,10 +39,11 @@ export class GridComponent implements OnInit, AfterContentInit {
   @ContentChildren(GridColumnComponent) columnList: QueryList<GridColumnComponent>;
 
   private columns: Array<GridColumnComponent>;
-  private dataProvider: GridDataProvider;
   private data: Array<any>;
-  private pageIndex: number = 1;
+  private filters: Array<any> = [];
+  private dataProvider: GridDataProvider;
   private pages: Array<number>;
+
 
   /**
    * Class constructor.
@@ -65,6 +64,7 @@ export class GridComponent implements OnInit, AfterContentInit {
     if (!_.isUndefined(this.options.get('httpService'))) {
       this.http = this.options.get('httpService');
     }
+    this.data = this.options.get('data');
     this.initDataProvider();
     this.render();
   }
@@ -77,21 +77,21 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
-   * Set data for grid data provider.
+   * Set all data for bound to the grid.
    *
    * @returns {Array<any>}
    */
-  setData(data: any): Array<any> {
-    return this.dataProvider.data = data;
+  setData(data: Array<any>) {
+    this.data = this.dataProvider.allData = data;
   }
 
   /**
-   * Return data bound to grid data provider.
+   * Return all data bound to the grid.
    *
    * @returns {Array<any>}
    */
   getData(): Array<any> {
-    return this.dataProvider.data;
+    return this.data;
   }
 
   /**
@@ -104,31 +104,39 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
-   * Return data display on current page.
+   * Return number of total results.
    *
-   * @returns {Array<any>}
+   * @param {number} totalCount
    */
-  getPageData(): Array<any> {
-    return this.data;
+  setTotalCount(totalCount: number) {
+    this.dataProvider.setTotalCount(totalCount);
   }
 
   /**
-   * Return a list of selected grid items.
+   * Set the results displayed in current page.
+   *
+   * @params {Array<any>} results
+   */
+  setResults(results: Array<any>) {
+    this.dataProvider.setData(results);
+  }
+
+  /**
+   * Return results displayed on current page.
    *
    * @returns {Array<any>}
    */
-  getSelectedItems(): Array<any> {
-    var selectedItems: Array<any> = [];
+  getResults(): Array<any> {
+    return this.dataProvider.getData();
+  }
 
-    if (!_.isEmpty(this.data)) {
-      for (let row of this.data) {
-        if (row.selected) {
-          selectedItems.push(row);
-        }
-      }
-    }
-
-    return selectedItems;
+  /**
+   * Return number of results displayed on current page.
+   *
+   * @returns {number}
+   */
+  getCount(): number {
+    return this.dataProvider.getCount();
   }
 
   /**
@@ -137,32 +145,7 @@ export class GridComponent implements OnInit, AfterContentInit {
    * @returns {number}
    */
   getPageIndex(): number {
-    return this.pageIndex;
-  }
-
-  /**
-   * Return current page size.
-   *
-   * @returns {number}
-   */
-  getPageSize(): number {
-    return this.dataProvider.pageSize;
-  }
-
-  /**
-   * Return total number of grid pages.
-   *
-   * @returns {number}
-   */
-  getTotalPages(): number {
-    if (this.dataProvider.pageSize === false ||
-        this.dataProvider.pageSize > this.dataProvider.getTotalCount()) {
-      return 1;
-    }
-
-    return Math.ceil(
-      this.dataProvider.getTotalCount() / this.dataProvider.pageSize
-    );
+    return this.dataProvider.pageIndex;
   }
 
   /**
@@ -171,17 +154,39 @@ export class GridComponent implements OnInit, AfterContentInit {
    * @param {number} pageIndex
    */
   setPageIndex(pageIndex: number) {
-    this.pageIndex = pageIndex;
+    this.dataProvider.pageIndex = pageIndex;
+  }
+
+  /**
+   * Return current page size.
+   *
+   * @returns {number|false}
+   */
+  getPageSize(): any {
+    return this.dataProvider.pageSize;
   }
 
   /**
    * Change page size to given value and render data.
    *
-   * @param {number} pageSize
+   * @param {number|false} pageSize
    */
-  setPageSize(pageSize: number) {
+  setPageSize(pageSize: any) {
     this.dataProvider.pageSize = pageSize;
-    this.pageIndex = 1;
+    this.setPageIndex(1);
+  }
+
+  /**
+   * Return total number of grid pages.
+   *
+   * @returns {number}
+   */
+  getTotalPages(): number {
+    if (this.getPageSize() === false || this.getPageSize() > this.getTotalCount()) {
+      return 1;
+    }
+
+    return Math.ceil(this.getTotalCount() / this.getPageSize());
   }
 
   /**
@@ -191,8 +196,18 @@ export class GridComponent implements OnInit, AfterContentInit {
    * @param {string} value Keyword to be used as filter for the column
    */
   setFilter(columnName: string, value: string) {
-    this.dataProvider.setFilter(columnName, value);
-    this.pageIndex = 1;
+    if (!_.isEmpty(value)) {
+      this.filters[columnName] = value;
+      if (!_.isUndefined(this.options.get('url'))) {
+        this.dataProvider.requestParams[columnName] = value;
+      }
+    } else if (!_.isEmpty(this.filters[columnName])) {
+      delete this.filters[columnName];
+      if (!_.isUndefined(this.options.get('url'))) {
+        delete this.dataProvider.requestParams[columnName];
+      }
+    }
+    this.setPageIndex(1);
   }
 
   /**
@@ -202,7 +217,7 @@ export class GridComponent implements OnInit, AfterContentInit {
    * @returns {any}
    */
   getFilter(columnName: string): any {
-    return this.dataProvider.getFilter(columnName);
+    return this.filters[columnName];
   }
 
   /**
@@ -217,23 +232,60 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
+   * Return a list of selected grid items.
+   *
+   * @returns {Array<any>}
+   */
+  getSelectedItems(): Array<any> {
+    var selectedItems: Array<any> = [];
+
+    if (!_.isEmpty(this.getResults())) {
+      for (let row of this.getResults()) {
+        if (row.selected) {
+          selectedItems.push(row);
+        }
+      }
+    }
+
+    return selectedItems;
+  }
+
+  /**
    * Render grid.
    */
   render() {
-    this.dataProvider.page = this.pageIndex;
-
     if (_.isUndefined(this.options.get('url'))) {
-      this.refresh();
+      this.filter();
+      this.paginate();
     } else {
       this.dataProvider.fetch().subscribe(
         (res: Response) => {
-          this.refresh();
+          this.paginate();
         },
         (err: any) => {
           console.log(err);
         }
       );
     }
+  }
+
+  /**
+   * Filter provided data.
+   */
+  protected filter() {
+    var self: GridComponent = this;
+
+    this.dataProvider.allData = _.filter(this.data, function(item: any) {
+      var match: boolean = true;
+      for (let filter in self.filters) {
+        let value: string = _.get(item, filter).toString();
+
+        match = match &&
+          !_.isEmpty(value.match(new RegExp(self.filters[filter], 'i')));
+      }
+
+      return match;
+    });
   }
 
   /**
@@ -313,22 +365,12 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
-   * Refresh grid and pagination with provider data.
-   */
-  protected refresh() {
-    this.data = this.dataProvider.getData();
-    if (this.options.get('paging')) {
-      this.paginate();
-    }
-  }
-
-  /**
    * Handle select/deselect all grid rows.
    *
    * @param {boolean} selected
    */
   protected onSelectAllCheckboxClick(selected: boolean) {
-    for (let row of this.data) {
+    for (let row of this.getResults()) {
       row.selected = selected;
     }
   }
@@ -360,18 +402,18 @@ export class GridComponent implements OnInit, AfterContentInit {
    */
   protected initDataProvider() {
     this.dataProvider = new GridDataProvider(this.http, {
-      additionalRequestParams: this.options.get('additionalRequestParams'),
-      data: this.options.get('data'),
+      allData: this.options.get('data'),
       pageParam: this.options.get('pageParam'),
       pageSizeParam: this.options.get('pageSizeParam'),
       pageSize: this.options.get('defaultPageSize'),
+      requestParams: this.options.get('additionalRequestParams'),
       sortParam: this.options.get('sortParam'),
       totalCountHeader: this.options.get('totalCountHeader'),
       url: this.options.get('url')
     });
 
     if (!_.isUndefined(this.options.get('defaultSortColumn'))) {
-      this.dataProvider.setSort(
+      this.setSort(
         this.options.get('defaultSortColumn'),
         this.options.get('defaultSortType')
       );
@@ -383,26 +425,28 @@ export class GridComponent implements OnInit, AfterContentInit {
    * current page index and max button count.
    */
   protected paginate() {
-    let pageButtonCount: number = Math.min(
-      this.options.get('pageButtonCount'),
-      this.getTotalPages()
-    );
-    let offsetLeft: number = Math.floor(pageButtonCount / 2);
-    let offsetRight: number = Math.ceil(pageButtonCount / 2) - 1;
-    let startIndex: number = this.pageIndex - offsetLeft;
-    let endIndex: number = this.pageIndex + offsetRight;
+    if (this.options.get('paging')) {
+      let pageButtonCount: number = Math.min(
+        this.options.get('pageButtonCount'),
+        this.getTotalPages()
+      );
+      let offsetLeft: number = Math.floor(pageButtonCount / 2);
+      let offsetRight: number = Math.ceil(pageButtonCount / 2) - 1;
+      let startIndex: number = this.getPageIndex() - offsetLeft;
+      let endIndex: number = this.getPageIndex() + offsetRight;
 
-    if (startIndex < 1) {
-      startIndex = 1;
-      endIndex = pageButtonCount;
-    } else if (endIndex > this.getTotalPages()) {
-      endIndex = this.getTotalPages();
-      startIndex = endIndex - pageButtonCount + 1;
-    }
+      if (startIndex < 1) {
+        startIndex = 1;
+        endIndex = pageButtonCount;
+      } else if (endIndex > this.getTotalPages()) {
+        endIndex = this.getTotalPages();
+        startIndex = endIndex - pageButtonCount + 1;
+      }
 
-    this.pages = [];
-    for (let i: number = startIndex; i <= endIndex; i++) {
-      this.pages.push(i);
+      this.pages = [];
+      for (let i: number = startIndex; i <= endIndex; i++) {
+        this.pages.push(i);
+      }
     }
   }
 
@@ -541,8 +585,8 @@ export class GridComponent implements OnInit, AfterContentInit {
   protected getSortType(column: GridColumnComponent): string {
     return column.name !== this.dataProvider.getSortColumn() ?
       this.dataProvider.getSortType() :
-        (this.dataProvider.getSortType() === GridComponent.SORT_ASC ?
-          GridComponent.SORT_DESC : GridComponent.SORT_ASC);
+        (this.dataProvider.getSortType() === GridDataProvider.SORT_ASC ?
+          GridDataProvider.SORT_DESC : GridDataProvider.SORT_ASC);
   }
 
   /**

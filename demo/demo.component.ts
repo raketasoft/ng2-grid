@@ -6,7 +6,12 @@ import {
   AfterViewInit
 } from '@angular/core';
 import { Http, HTTP_PROVIDERS } from '@angular/http';
-import { GridComponent, GridColumnComponent, GridOptions } from '../index';
+import {
+  GridComponent,
+  GridColumnComponent,
+  GridOptions,
+  GridDataProvider
+} from '../index';
 import DEMO_DATA from './data';
 
 @Component({
@@ -58,7 +63,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       data: null,
       defaultPageSize: 5,
       defaultSortColumn: 'name',
-      defaultSortType: GridComponent.SORT_DESC,
+      defaultSortType: GridDataProvider.SORT_DESC,
       filtering: true,
       heading: true,
       headingCssClass: 'heading-table',

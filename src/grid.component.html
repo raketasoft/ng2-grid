@@ -27,7 +27,7 @@
                 (keyup.enter)="onInputFilterEnter($event, column)"
                 (blur)="onInputFilterBlur($event, column)" />
             <select *ngIf="isSelectFilterEnabled(column)"
-                [ngModel]="dataProvider.filters[column.name]"
+                [ngModel]="getFilter(column.name)"
                 (ngModelChange)="onSelectFilterChange($event, column)">
               <option></option>
               <option *ngFor="let item of column.items"
@@ -44,7 +44,7 @@
       [class.scroll]="options.get('height')" [style.max-height]="options.get('height')">
     <table [class]="getBodyCssClass()" [style.width]="options.get('width')">
       <tbody>
-        <tr *ngFor="let row of data; let i = index"
+        <tr *ngFor="let row of getResults(); let i = index"
             [class]="getRowCssClass(i, row)"
             (click)="onRowClick(row)">
           <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
@@ -70,27 +70,27 @@
   <div class="ng-grid-footer clearfix">
     <div class="ng-grid-pager {{options.get('pageElementPosition')}}" *ngIf="options.paging">
       <span>Pages:</span>
-      <a href="#" *ngIf="pageIndex > 1" [attr.data-page]="1"
+      <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="1"
         (click)="onPageButtonClick($event)">First</a>
-      <a href="#" *ngIf="pageIndex > 1" [attr.data-page]="getPageIndex() - 1"
+      <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="getPageIndex() - 1"
         (click)="onPageButtonClick($event)">Prev</a>
       <template ngFor let-page [ngForOf]="pages">
-        <a href="#" *ngIf="page != pageIndex" [attr.data-page]="page"
+        <a href="#" *ngIf="page != getPageIndex()" [attr.data-page]="page"
           (click)="onPageButtonClick($event)">{{page}}</a>
-        <span *ngIf="page == pageIndex">{{page}}</span>
+        <span *ngIf="page == getPageIndex()">{{page}}</span>
       </template>
-      <a href="#" *ngIf="pageIndex < getTotalPages()"
+      <a href="#" *ngIf="getPageIndex() < getTotalPages()"
         [attr.data-page]="getPageIndex() + 1"
         (click)="onPageButtonClick($event)">Next</a>
-      <a href="#" *ngIf="pageIndex < getTotalPages()"
+      <a href="#" *ngIf="getPageIndex() < getTotalPages()"
         [attr.data-page]="getTotalPages()"
         (click)="onPageButtonClick($event)">Last</a>
-      <span>{{pageIndex}} of {{getTotalPages()}}</span>
+      <span>{{getPageIndex()}} of {{getTotalPages()}}</span>
     </div>
     <div class="ng-grid-pager-size {{options.get('pageSizeElementPosition')}}"
       *ngIf="isPageSizeOptionsEnabled()">
       <span>Page size:</span>
-      <select [ngModel]="dataProvider.pageSize"
+      <select [ngModel]="getPageSize()"
         (ngModelChange)="onPageSizeDropDownChange($event)">
         <option *ngFor="let value of options.get('pageSizeOptions')"
             [ngValue]="value">
