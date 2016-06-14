@@ -1,3 +1,15 @@
+<a name="1.0.0-alpha.7"></a>
+# 1.0.0-alpha.7 (2016-06-14)
+
+### Features
+
+* **grid:** Move filtering logic outside data provider, update grid API
+
+### Bug Fixes
+
+* **grid-column:** Fix issue with select filter option values
+
+
 <a name="1.0.0-alpha.6"></a>
 # 1.0.0-alpha.6 (2016-06-12)
 
@@ -43,7 +55,7 @@
 
 ### Bug Fixes
 
-* **grid:** Update grid api methods
+* **grid:** Update grid API methods
 * **grid-options:** Convert options to immutable class
 
 
