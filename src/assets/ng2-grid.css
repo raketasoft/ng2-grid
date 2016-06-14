@@ -13,7 +13,20 @@
   padding: 10px;
 }
 
-.ng-grid-header {
+.ng-grid-selection {
+  margin-bottom: 10px;
+}
+
+.ng-grid-selection a,
+.ng-grid-selection span {
+  margin: 0 5px;
+}
+
+.ng-grid-selection *:first-child {
+  margin-left: 0;
+}
+
+.ng-grid-header table {
   border-top: 1px solid #ccc;
 }
 

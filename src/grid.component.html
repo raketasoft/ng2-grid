@@ -1,4 +1,8 @@
 <div class="ng-grid">
+  <div *ngIf="options.get('selection')" class="ng-grid-selection">
+    <span>Selected items: {{selectedItems.length}}</span> 
+    <a href="">Clear</a>
+  </div>
   <div class="ng-grid-header" [style.width]="options.get('width')"
       [class.scroll]="options.get('height')">
     <table [class]="getHeadingCssClass()" [style.width]="options.get('width')">

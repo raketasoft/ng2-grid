@@ -43,7 +43,8 @@ export class GridComponent implements OnInit, AfterContentInit {
   private filters: Array<any> = [];
   private dataProvider: GridDataProvider;
   private pages: Array<number>;
-
+  private selectedItems: Array<any> = [];
+  private allItemsSelected: boolean = false;
 
   /**
    * Class constructor.
@@ -237,17 +238,7 @@ export class GridComponent implements OnInit, AfterContentInit {
    * @returns {Array<any>}
    */
   getSelectedItems(): Array<any> {
-    var selectedItems: Array<any> = [];
-
-    if (!_.isEmpty(this.getResults())) {
-      for (let row of this.getResults()) {
-        if (row.selected) {
-          selectedItems.push(row);
-        }
-      }
-    }
-
-    return selectedItems;
+    return this.selectedItems;
   }
 
   /**
@@ -314,25 +305,25 @@ export class GridComponent implements OnInit, AfterContentInit {
    * Determine the CSS class that needs to be applied to the each grid row.
    *
    * @param {number} index Row index
-   * @param {any} data Row data
+   * @param {any} row Row data
    * @returns {string} Row color
    */
-  protected getRowCssClass(index: number, data: any) {
+  protected getRowCssClass(index: number, row: any) {
     let cssClass: string = '';
     if (this.options.get('rowAlternateStyle') && index % 2 !== 0) {
-      cssClass += GridComponent.ROW_ALT_CLASS;
+      cssClass = this.concatCssClass(cssClass, GridComponent.ROW_ALT_CLASS);
     }
     if (this.options.get('rowHoverStyle')) {
-      cssClass += ' ' + GridComponent.ROW_HOVER_CLASS;
+      cssClass = this.concatCssClass(cssClass, GridComponent.ROW_HOVER_CLASS);
     }
 
     let callback: RowStyleCallback = this.options.get('rowStyleCallback');
     if (!_.isUndefined(callback)) {
-      cssClass += ' ' + callback(data);
+      cssClass = this.concatCssClass(cssClass, callback(row));
     }
 
-    if (data.selected && this.options.get('rowSelectionStyle')) {
-      cssClass += ' ' + GridComponent.ROW_SELECT_CLASS;
+    if (row.selected && this.options.get('rowSelectionStyle')) {
+      cssClass = this.concatCssClass(cssClass, GridComponent.ROW_SELECT_CLASS);
     }
 
     return cssClass;
@@ -371,7 +362,7 @@ export class GridComponent implements OnInit, AfterContentInit {
    */
   protected onSelectAllCheckboxClick(selected: boolean) {
     for (let row of this.getResults()) {
-      row.selected = selected;
+      this.selectRow(row, selected);
     }
   }
 
@@ -615,15 +606,58 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
+   * Concat css class name to another using space.
+   *
+   * @param {string} cssClass
+   * @param {string} addition
+   * @returns {string}
+   */
+  private concatCssClass(cssClass: string, addition: string): string {
+    return cssClass + (cssClass.length ? ' ' : '') + addition;
+  }
+
+  /**
+   * Clear selected items array.
+   */
+  private clearSelection() {
+    for (let row of this.getResults()) {
+      if (row.selected) {
+        row.selected = false;
+      }
+    }
+
+    while (this.selectedItems.length > 0) {
+      this.selectedItems.pop();
+    }
+
+    this.allItemsSelected = false;
+  }
+
+  /**
    * Handle select/deselect a single grid row.
    *
    * @param {any} row
+   * @param {boolean} value
    */
-  private selectRow(row: any) {
+  private selectRow(row: any, value?: boolean) {
     if (_.isUndefined(row.selected)) {
       row.selected = false;
     }
-    row.selected = !row.selected;
+
+    row.selected = !_.isUndefined(value) ? value : !row.selected;
+
+    if (row.selected) {
+      let isSelected: boolean = this.selectedItems.find(function(item: any) {
+        return item == row;
+      });
+      if (!isSelected) {
+        this.selectedItems.push(row);
+      }
+    } else {
+      this.selectedItems.splice(this.selectedItems.indexOf(row), 1);
+    }
+
+    this.allItemsSelected = this.selectedItems.length === this.getCount();
   }
 
   /**

@@ -13,6 +13,7 @@ import {
   GridDataProvider
 } from '../index';
 import DEMO_DATA from './data';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'demo',
@@ -37,12 +38,12 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.basicOptions = new GridOptions({
-      data: DEMO_DATA,
+      data: _.cloneDeep(DEMO_DATA),
       height: '300px'
     });
 
     this.columnOptions = new GridOptions({
-      data: DEMO_DATA,
+      data: _.cloneDeep(DEMO_DATA),
       height: '300px',
       selection: true
     });
@@ -77,8 +78,8 @@ export class DemoComponent implements OnInit, AfterViewInit {
       pageSizeParam: 'pageSize',
       paging: true,
       rowAlternateStyle: false,
-      rowHoverStyle: true,
-      rowSelectionStyle: false,
+      rowHoverStyle: false,
+      rowSelectionStyle: true,
       rowStyleCallback: function (row: any) {
         return row.isMarried ? 'married' : 'not-married';
       },
