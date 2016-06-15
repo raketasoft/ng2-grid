@@ -1,3 +1,10 @@
+<a name="1.0.0-alpha.8"></a>
+# 1.0.0-alpha.8 (2016-06-15)
+
+### Bug Fixes
+
+* **grid:** Move template definition inline for publishing with the js file
+
 <a name="1.0.0-alpha.7"></a>
 # 1.0.0-alpha.7 (2016-06-14)
 
