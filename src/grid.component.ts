@@ -24,7 +24,6 @@ import 'rxjs/Rx';
  */
 @Component({
   selector: 'ng-grid',
-  moduleId: module.id,
   template: `
 <div class="ng-grid">
   <div class="ng-grid-header" [style.width]="options.get('width')"
@@ -128,7 +127,6 @@ import 'rxjs/Rx';
     </div>
   </div>
 </div>`,
-  styleUrls: ['./assets/ng2-grid.css'],
   providers: [HTTP_PROVIDERS],
   directives: [GridCellRendererComponent]
 })
