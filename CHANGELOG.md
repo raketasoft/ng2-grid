@@ -1,3 +1,11 @@
+<a name="1.0.0-alpha.10"></a>
+# 1.0.0-alpha.10 (2016-06-16)
+
+### Bug Fixes
+
+* **grid-data-provider:** Fix issue with default initialization of requestParams
+
+
 <a name="1.0.0-alpha.9"></a>
 # 1.0.0-alpha.9 (2016-06-16)
 
