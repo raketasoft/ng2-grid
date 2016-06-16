@@ -23,7 +23,7 @@ Start by installing npm dependencies:
 Load CSS
 
 ```html
-<link rel="stylesheet" type="text/css" href="node_modules/raketasoft-ng2-grid/src/assets/ng2-grid.css" />
+<link rel="stylesheet" type="text/css" href="node_modules/raketasoft-ng2-grid/src/assets/ng2-grid.css">
 ```
 
 The only way to include the component right now is to use module loader like
