@@ -21,11 +21,11 @@ export class GridDataProvider extends Loadable {
   static SORT_DESC: string = 'desc';
 
   allData: Array<any>;
-  requestParams: Array<any>;
   pageParam: string;
   pageSizeParam: string;
   pageSize: any;
   pageIndex: number = 1;
+  requestParams: Array<any>;
   sortParam: string;
   totalCountHeader: string;
   url: string;
@@ -52,6 +52,9 @@ export class GridDataProvider extends Loadable {
     }
     if (_.isUndefined(this.pageSize)) {
       this.pageSize = GridDataProvider.DEFAULT_PAGE_SIZE_VALUE;
+    }
+    if (_.isUndefined(this.requestParams)) {
+      this.requestParams = [];
     }
     if (_.isUndefined(this.sortParam)) {
       this.sortParam = GridDataProvider.DEFAULT_SORT_PARAM_VALUE;

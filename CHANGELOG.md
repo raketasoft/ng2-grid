@@ -1,3 +1,43 @@
+<a name="1.0.0-alpha.10"></a>
+# 1.0.0-alpha.10 (2016-06-16)
+
+### Bug Fixes
+
+* **grid-data-provider:** Fix issue with default initialization of requestParams
+
+
+<a name="1.0.0-alpha.9"></a>
+# 1.0.0-alpha.9 (2016-06-16)
+
+### Features
+
+* **docs:** Update README
+
+### Bug Fixes
+
+* **grid:** Remove css autoload
+
+
+<a name="1.0.0-alpha.8"></a>
+# 1.0.0-alpha.8 (2016-06-15)
+
+### Bug Fixes
+
+* **grid:** Move template definition inline for publishing with the js file
+
+
+<a name="1.0.0-alpha.7"></a>
+# 1.0.0-alpha.7 (2016-06-14)
+
+### Features
+
+* **grid:** Move filtering logic outside data provider, update grid API
+
+### Bug Fixes
+
+* **grid-column:** Fix issue with select filter option values
+
+
 <a name="1.0.0-alpha.6"></a>
 # 1.0.0-alpha.6 (2016-06-12)
 
@@ -43,7 +83,7 @@
 
 ### Bug Fixes
 
-* **grid:** Update grid api methods
+* **grid:** Update grid API methods
 * **grid-options:** Convert options to immutable class
 
 
