@@ -49,10 +49,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
     this.remoteDataOptions = new GridOptions({
       url: 'http://localhost:3000/',
-      additionalRequestParams: {
-        'expand': 'company,interests'
-      },
-      height: '300px',
+      height: '300px'
     });
 
     this.fullConfigurationOptions = new GridOptions({
