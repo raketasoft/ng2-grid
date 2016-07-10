@@ -37,12 +37,12 @@ import 'rxjs/Rx';
                 (click)="onSelectAllCheckboxClick(selectAll.checked)">
           </th>
           <th *ngFor="let column of columns" class="ng-grid-heading"
-              [style.width]="column.width" [attr.data-id]="column.name"
+              [style.width]="column.width"
               [class.sort]="isSortedBy(column)"
               [class.sort-asc]="isSortedBy(column, 'asc')"
               [class.sort-desc]="isSortedBy(column, 'desc')"
               [class.sort-disable]="!isSortingAllowed(column)"
-              (click)="onHeadingClick($event)">
+              (click)="onHeadingClick(column)">
             {{column.resolveHeading()}}
           </th>
         </tr>
@@ -641,17 +641,11 @@ export class GridComponent implements OnInit, AfterContentInit {
    * Grid heading click handler.
    * When invoked the grid would be sorted by the clicked column.
    *
-   * @param {MouseEvent} event
+   * @param {GridColumnComponent} column
    */
-  protected onHeadingClick(event: MouseEvent) {
-    let element: HTMLElement = event.target as HTMLElement;
-    let columnName: string = element.getAttribute('data-id');
-    let column: GridColumnComponent = _.find(this.columns, function(item: any) {
-      return item.name === columnName;
-    });
-
+  protected onHeadingClick(column: GridColumnComponent) {
     if (this.isSortingAllowed(column)) {
-      this.setSort(columnName, this.getSortType(column));
+      this.setSort(column.name, this.getSortType(column));
       this.render();
     } else {
       console.log('Sorting by "' + column.name + '" is not allowed.');
