@@ -20,15 +20,15 @@ export class GridDataProvider extends Loadable {
   static SORT_ASC: string = 'asc';
   static SORT_DESC: string = 'desc';
 
-  allData: Array<any>;
   pageParam: string;
   pageSizeParam: string;
   pageSize: any;
   pageIndex: number = 1;
   requestParams: Array<any>;
   sortParam: string;
+  sourceData: Array<any>;
+  sourceUrl: string;
   totalCountHeader: string;
-  url: string;
 
   private data: Array<any>;
   private sortColumn: string;
@@ -41,8 +41,8 @@ export class GridDataProvider extends Loadable {
    */
   constructor(private http: Http, params?: any) {
     super(params);
-    if (_.isUndefined(this.allData)) {
-      this.allData = [];
+    if (_.isUndefined(this.sourceData)) {
+      this.sourceData = [];
     }
     if (_.isUndefined(this.pageParam)) {
       this.pageParam = GridDataProvider.DEFAULT_PAGE_PARAM_VALUE;
@@ -71,7 +71,7 @@ export class GridDataProvider extends Loadable {
    * @returns {Array<any>}
    */
   getData(): Array<any> {
-    if (_.isUndefined(this.url)) {
+    if (_.isUndefined(this.sourceUrl)) {
       this.sort();
       this.slice();
     }
@@ -103,8 +103,8 @@ export class GridDataProvider extends Loadable {
    * @returns {number}
    */
   getTotalCount(): number {
-    if (_.isUndefined(this.url)) {
-      this.totalCount = this.allData.length;
+    if (_.isUndefined(this.sourceUrl)) {
+      this.totalCount = this.sourceData.length;
     }
 
     return this.totalCount;
@@ -156,7 +156,7 @@ export class GridDataProvider extends Loadable {
     var params: URLSearchParams = this.buildRequestParams();
 
     var response: Observable<Response> = this.http
-        .get(this.url, {search: params})
+        .get(this.sourceUrl, {search: params})
         .share();
 
     response
@@ -208,9 +208,9 @@ export class GridDataProvider extends Loadable {
       let start: number = (this.pageIndex - 1) * this.pageSize;
       let end: number = start + this.pageSize;
 
-      data = _.slice(this.allData, start, end);
+      data = _.slice(this.sourceData, start, end);
     } else {
-      data = this.allData;
+      data = this.sourceData;
     }
 
     this.data = data;
@@ -221,7 +221,7 @@ export class GridDataProvider extends Loadable {
    */
   protected sort() {
     if (!_.isUndefined(this.sortColumn)) {
-      this.allData = _.orderBy(this.allData, [this.sortColumn], [this.sortType]);
+      this.sourceData = _.orderBy(this.sourceData, [this.sortColumn], [this.sortType]);
     }
   }
 }

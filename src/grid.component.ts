@@ -33,6 +33,7 @@ import 'rxjs/Rx';
         <tr>
           <th *ngIf="options.get('selection')" class="ng-grid-heading selection">
             <input #selectAll type="checkbox"
+                [ngModel]="allItemsSelected()"
                 (click)="onSelectAllCheckboxClick(selectAll.checked)">
           </th>
           <th *ngFor="let column of columns" class="ng-grid-heading"
@@ -144,7 +145,6 @@ export class GridComponent implements OnInit, AfterContentInit {
   private dataProvider: GridDataProvider;
   private pages: Array<number>;
   private selectedItems: Array<any> = [];
-  private allItemsSelected: boolean = false;
 
   /**
    * Class constructor.
@@ -178,12 +178,12 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
-   * Set all data for bound to the grid.
+   * Set all data bound to the grid.
    *
    * @returns {Array<any>}
    */
   setData(data: Array<any>) {
-    this.data = this.dataProvider.allData = data;
+    this.data = this.dataProvider.sourceData = data;
   }
 
   /**
@@ -347,10 +347,12 @@ export class GridComponent implements OnInit, AfterContentInit {
   render() {
     if (_.isUndefined(this.options.get('url'))) {
       this.filter();
+      this.clearSelection();
       this.paginate();
     } else {
       this.dataProvider.fetch().subscribe(
         (res: Response) => {
+          this.clearSelection();
           this.paginate();
         },
         (err: any) => {
@@ -366,7 +368,7 @@ export class GridComponent implements OnInit, AfterContentInit {
   protected filter() {
     var self: GridComponent = this;
 
-    this.dataProvider.allData = _.filter(this.data, function(item: any) {
+    this.dataProvider.sourceData = _.filter(this.data, function(item: any) {
       var match: boolean = true;
       for (let filter in self.filters) {
         let value: string = _.get(item, filter).toString();
@@ -462,7 +464,7 @@ export class GridComponent implements OnInit, AfterContentInit {
    */
   protected onSelectAllCheckboxClick(selected: boolean) {
     for (let row of this.getResults()) {
-      this.selectRow(row, selected);
+      this.setRowSelection(row, selected);
     }
   }
 
@@ -474,7 +476,21 @@ export class GridComponent implements OnInit, AfterContentInit {
    */
   protected onSelectItemCheckboxClick(e: MouseEvent, row: any) {
     e.stopPropagation();
-    this.selectRow(row);
+    this.setRowSelection(row);
+  }
+
+  /**
+   * Check if all results on current page are selected.
+   *
+   * @returns {boolean}
+   */
+  protected allItemsSelected(): boolean {
+    if (this.getSelectedItems().length > 0
+      && this.getResults().length === this.getSelectedItems().length) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -484,7 +500,7 @@ export class GridComponent implements OnInit, AfterContentInit {
    */
   protected onRowClick(row: any) {
     if (this.options.get('selection')) {
-      this.selectRow(row);
+      this.setRowSelection(row);
     }
   }
 
@@ -493,14 +509,14 @@ export class GridComponent implements OnInit, AfterContentInit {
    */
   protected initDataProvider() {
     this.dataProvider = new GridDataProvider(this.http, {
-      allData: this.options.get('data'),
       pageParam: this.options.get('pageParam'),
       pageSizeParam: this.options.get('pageSizeParam'),
       pageSize: this.options.get('defaultPageSize'),
       requestParams: this.options.get('additionalRequestParams'),
       sortParam: this.options.get('sortParam'),
-      totalCountHeader: this.options.get('totalCountHeader'),
-      url: this.options.get('url')
+      sourceData: this.options.get('data'),
+      sourceUrl: this.options.get('url'),
+      totalCountHeader: this.options.get('totalCountHeader')
     });
 
     if (!_.isUndefined(this.options.get('defaultSortColumn'))) {
@@ -729,8 +745,6 @@ export class GridComponent implements OnInit, AfterContentInit {
     while (this.selectedItems.length > 0) {
       this.selectedItems.pop();
     }
-
-    this.allItemsSelected = false;
   }
 
   /**
@@ -739,25 +753,31 @@ export class GridComponent implements OnInit, AfterContentInit {
    * @param {any} row
    * @param {boolean} value
    */
-  private selectRow(row: any, value?: boolean) {
-    if (_.isUndefined(row.selected)) {
-      row.selected = false;
-    }
+  private setRowSelection(row: any, value?: boolean) {
+    let selected: boolean = !_.isUndefined(value) ? value :
+      (_.isUndefined(row.selected) || !row.selected ? true : false);
 
-    row.selected = !_.isUndefined(value) ? value : !row.selected;
+    row.selected = selected;
 
     if (row.selected) {
-      let isSelected: boolean = this.selectedItems.find(function(item: any) {
-        return item == row;
-      });
-      if (!isSelected) {
+      if (!this.isRowSelected(row)) {
         this.selectedItems.push(row);
       }
     } else {
       this.selectedItems.splice(this.selectedItems.indexOf(row), 1);
     }
+  }
 
-    this.allItemsSelected = this.selectedItems.length === this.getCount();
+  /**
+   * Check if row is selected.
+   *
+   * @param {any} row
+   * @returns boolean
+   */
+  private isRowSelected(row: any): boolean {
+    return this.selectedItems.find(function(item: any) {
+      return item == row;
+    });
   }
 
   /**
