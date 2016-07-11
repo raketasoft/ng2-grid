@@ -647,8 +647,6 @@ export class GridComponent implements OnInit, AfterContentInit {
     if (this.isSortingAllowed(column)) {
       this.setSort(column.name, this.getSortType(column));
       this.render();
-    } else {
-      console.log('Sorting by "' + column.name + '" is not allowed.');
     }
   }
 
