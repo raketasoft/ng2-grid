@@ -33,7 +33,7 @@ import 'rxjs/Rx';
         <tr>
           <th *ngIf="options.get('selection')" class="ng-grid-heading selection">
             <input #selectAll type="checkbox"
-                [ngModel]="allItemsSelected()"
+                [ngModel]="allResultsSelected()"
                 (click)="onSelectAllCheckboxClick(selectAll.checked)">
           </th>
           <th *ngFor="let column of columns" class="ng-grid-heading"
@@ -77,7 +77,7 @@ import 'rxjs/Rx';
             (click)="onRowClick(row)">
           <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
             <input type="checkbox"
-                [ngModel]="row.selected"
+                [ngModel]="isRowSelected(row)"
                 (click)="onSelectItemCheckboxClick($event, row)">
           </td>
           <td *ngFor="let column of columns" class="ng-grid-cell"
@@ -144,6 +144,7 @@ export class GridComponent implements OnInit, AfterContentInit {
   private filters: Array<any> = [];
   private dataProvider: GridDataProvider;
   private pages: Array<number>;
+  private selectionMap: Array<any> = [];
   private selectedItems: Array<any> = [];
 
   /**
@@ -347,19 +348,24 @@ export class GridComponent implements OnInit, AfterContentInit {
   render() {
     if (_.isUndefined(this.options.get('url'))) {
       this.filter();
-      this.clearSelection();
-      this.paginate();
+      this.refresh();
     } else {
       this.dataProvider.fetch().subscribe(
         (res: Response) => {
-          this.clearSelection();
-          this.paginate();
+          this.refresh();
         },
         (err: any) => {
           console.log(err);
         }
       );
     }
+  }
+
+  /**
+   * Refresh grid component.
+   */
+  protected refresh() {
+    this.paginate();
   }
 
   /**
@@ -424,7 +430,7 @@ export class GridComponent implements OnInit, AfterContentInit {
       cssClass = this.concatCssClass(cssClass, callback(row));
     }
 
-    if (row.selected && this.options.get('rowSelectionStyle')) {
+    if (this.isRowSelected(row) && this.options.get('rowSelectionStyle')) {
       cssClass = this.concatCssClass(cssClass, GridComponent.ROW_SELECT_CLASS);
     }
 
@@ -484,13 +490,19 @@ export class GridComponent implements OnInit, AfterContentInit {
    *
    * @returns {boolean}
    */
-  protected allItemsSelected(): boolean {
-    if (this.getSelectedItems().length > 0
-      && this.getResults().length === this.getSelectedItems().length) {
+  protected allResultsSelected(): boolean {
+    if (this.getTotalPages() === 1
+      && this.selectedItems.length == this.getTotalCount()) {
       return true;
     }
 
-    return false;
+    for (let row of this.getResults()) {
+      if (!this.isRowSelected(row)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   /**
@@ -713,6 +725,23 @@ export class GridComponent implements OnInit, AfterContentInit {
     return key;
   }
 
+
+  /**
+   * Check if row is selected.
+   *
+   * @param {any} row
+   * @returns boolean
+   */
+  protected isRowSelected(row: any): boolean {
+    let id: string = row[this.options.get('uniqueId')];
+
+    if (_.isUndefined(this.selectionMap[id])) {
+      return false;
+    }
+
+    return this.selectionMap[id];
+  }
+
   /**
    * Concat css class name to another using space.
    *
@@ -725,51 +754,25 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
-   * Clear selected items array.
-   */
-  private clearSelection() {
-    for (let row of this.getResults()) {
-      if (row.selected) {
-        row.selected = false;
-      }
-    }
-
-    while (this.selectedItems.length > 0) {
-      this.selectedItems.pop();
-    }
-  }
-
-  /**
    * Handle select/deselect a single grid row.
    *
    * @param {any} row
    * @param {boolean} value
    */
   private setRowSelection(row: any, value?: boolean) {
+    let id: string = row[this.options.get('uniqueId')];
+
     let selected: boolean = !_.isUndefined(value) ? value :
-      (_.isUndefined(row.selected) || !row.selected ? true : false);
+      (_.isUndefined(this.selectionMap[id]) || !this.selectionMap[id]
+        ? true : false);
 
-    row.selected = selected;
-
-    if (row.selected) {
-      if (!this.isRowSelected(row)) {
-        this.selectedItems.push(row);
-      }
+    if (selected && !this.isRowSelected(row)) {
+      this.selectedItems.push(row);
     } else {
       this.selectedItems.splice(this.selectedItems.indexOf(row), 1);
     }
-  }
 
-  /**
-   * Check if row is selected.
-   *
-   * @param {any} row
-   * @returns boolean
-   */
-  private isRowSelected(row: any): boolean {
-    return this.selectedItems.find(function(item: any) {
-      return item == row;
-    });
+    this.selectionMap[id] = selected;
   }
 
   /**

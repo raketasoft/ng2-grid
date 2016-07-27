@@ -18,12 +18,14 @@ export class GridOptions extends Loadable {
   static DEFAULT_PAGE_SIZE_ELEMENT_POSITION_VALUE: string = 'right';
   static DEFAULT_PAGE_SIZE_VALUE: number = 20;
   static DEFAULT_PAGING_VALUE: boolean = true;
+  static DEFAULT_PRESERVE_SELECTION_VALUE: boolean = false;
   static DEFAULT_ROW_ALTERNATE_STYLE_VALUE: boolean = true;
   static DEFAULT_ROW_HOVER_STYLE_VALUE: boolean = true;
   static DEFAULT_ROW_SELECTION_STYLE_VALUE: boolean = true;
   static DEFAULT_SELECTION_VALUE: boolean = false;
   static DEFAULT_SORTING_VALUE: boolean = true;
   static DEFAULT_WIDTH_VALUE: string = '100%';
+  static DEFAULT_UNIQUE_ID_VALUE: string = 'id';
 
   protected additionalRequestParams: any;
   protected bodyCssClass: string;
@@ -42,6 +44,7 @@ export class GridOptions extends Loadable {
   protected pageSizeElementPosition: string;
   protected pageSizeParam: string;
   protected paging: boolean;
+  protected preserveSelection: boolean;
   protected rowAlternateStyle: boolean;
   protected rowHoverStyle: boolean;
   protected rowSelectionStyle: boolean;
@@ -53,6 +56,7 @@ export class GridOptions extends Loadable {
   protected totalCountHeader: string;
   protected url: string;
   protected width: string;
+  protected uniqueId: string;
 
   /**
    * Class constructor.
@@ -84,6 +88,9 @@ export class GridOptions extends Loadable {
     if (_.isUndefined(this.paging)) {
       this.paging = GridOptions.DEFAULT_PAGING_VALUE;
     }
+    if (_.isUndefined(this.preserveSelection)) {
+      this.preserveSelection = GridOptions.DEFAULT_PRESERVE_SELECTION_VALUE;
+    }
     if (_.isUndefined(this.rowAlternateStyle)) {
       this.rowAlternateStyle = GridOptions.DEFAULT_ROW_ALTERNATE_STYLE_VALUE;
     }
@@ -101,6 +108,9 @@ export class GridOptions extends Loadable {
     }
     if (_.isUndefined(this.width)) {
       this.width = GridOptions.DEFAULT_WIDTH_VALUE;
+    }
+    if (_.isUndefined(this.uniqueId)) {
+      this.uniqueId = GridOptions.DEFAULT_UNIQUE_ID_VALUE;
     }
   }
 

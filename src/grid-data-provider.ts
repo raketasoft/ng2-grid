@@ -30,7 +30,7 @@ export class GridDataProvider extends Loadable {
   sourceUrl: string;
   totalCountHeader: string;
 
-  private data: Array<any>;
+  private data: Array<any> = [];
   private sortColumn: string;
   private sortType: string = GridDataProvider.SORT_ASC;
   private totalCount: number;
