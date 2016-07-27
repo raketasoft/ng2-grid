@@ -87,7 +87,8 @@ export class DemoComponent implements OnInit, AfterViewInit {
       sorting: true,
       totalCountHeader: 'X-Pagination-Total-Count',
       url: 'http://localhost:3000/',
-      width: '100%'
+      width: '100%',
+      uniqueId: 'id'
     });
 
     this.isMarriedItems = this.getIsMarriedItems();

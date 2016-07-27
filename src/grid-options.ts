@@ -54,9 +54,9 @@ export class GridOptions extends Loadable {
   protected sortParam: string;
   protected sorting: boolean;
   protected totalCountHeader: string;
+  protected uniqueId: string;
   protected url: string;
   protected width: string;
-  protected uniqueId: string;
 
   /**
    * Class constructor.
@@ -106,11 +106,11 @@ export class GridOptions extends Loadable {
     if (_.isUndefined(this.sorting)) {
       this.sorting = GridOptions.DEFAULT_SORTING_VALUE;
     }
-    if (_.isUndefined(this.width)) {
-      this.width = GridOptions.DEFAULT_WIDTH_VALUE;
-    }
     if (_.isUndefined(this.uniqueId)) {
       this.uniqueId = GridOptions.DEFAULT_UNIQUE_ID_VALUE;
+    }
+    if (_.isUndefined(this.width)) {
+      this.width = GridOptions.DEFAULT_WIDTH_VALUE;
     }
   }
 
