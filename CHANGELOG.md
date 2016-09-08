@@ -1,3 +1,13 @@
+<a name="1.0.0-alpha.11"></a>
+# 1.0.0-alpha.11 (2016-09-08)
+
+### Features
+
+* **grid:** Add support for preserving selection during rendering (page change, filtering, etc.)
+* **grid-options:** Add new configuration option (*uniqueId*) for unique ID field for data rows. Unique ID is used to preserve selection during rendering. Defaults to *id*.
+* **demo:** Update demo with new selection examples
+
+
 <a name="1.0.0-alpha.10"></a>
 # 1.0.0-alpha.10 (2016-06-16)
 
