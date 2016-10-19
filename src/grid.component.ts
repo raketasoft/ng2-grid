@@ -343,6 +343,14 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
+   * Clear all selected items.
+   */
+  clearSelection() {
+    this.selectedItems = [];
+    this.selectionMap = [];
+  }
+
+  /**
    * Render grid.
    */
   render() {
@@ -763,8 +771,7 @@ export class GridComponent implements OnInit, AfterContentInit {
     let id: string = row[this.options.get('uniqueId')];
 
     let selected: boolean = !_.isUndefined(value) ? value :
-      (_.isUndefined(this.selectionMap[id]) || !this.selectionMap[id]
-        ? true : false);
+      (_.isUndefined(this.selectionMap[id]) || !this.selectionMap[id] ? true : false);
 
     if (selected && !this.isRowSelected(row)) {
       this.selectedItems.push(row);

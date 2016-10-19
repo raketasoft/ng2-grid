@@ -28,6 +28,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
   remoteDataOptions: GridOptions;
   fullConfigurationOptions: GridOptions;
   @ViewChild('basicGrid') basicGrid: GridComponent;
+  @ViewChild('columnGrid') columnGrid: GridComponent;
   isMarriedItems: Array<any>;
   countryItems: Array<any>;
 
@@ -106,7 +107,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
   onItemClick(e: MouseEvent, item: any) {
     e.preventDefault();
     e.stopPropagation();
-    console.log(item);
+    alert(item.name);
   }
 
   getIsMarriedItems(): Array<any> {
@@ -126,5 +127,9 @@ export class DemoComponent implements OnInit, AfterViewInit {
       {value: 'United Kingdom', text: 'United Kingdom'},
       {value: 'United States', text: 'United States'},
     ];
+  }
+
+  onClearSelectionBtnClick() {
+    this.columnGrid.clearSelection();
   }
 }

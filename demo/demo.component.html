@@ -8,7 +8,8 @@
 </ng-grid>
 
 <h2>Column Definition Example</h2>
-<ng-grid [options]="columnOptions">
+<p><button (click)="onClearSelectionBtnClick()">Clear Selection</button></p>
+<ng-grid #columnGrid [options]="columnOptions">
   <ng-grid-column heading="Name" name="name" textAlign="left" width="140px">
     <template let-column="column" let-data="data">
       <a href="#" (click)="onItemClick($event, data)">
@@ -43,8 +44,8 @@
   </ng-grid-column>
   <ng-grid-column textAlign="center" width="100px" sorting="false" filtering="false">
     <template let-data="data">
-      <input type="button" value="Edit" (click)="onItemClick($event, data)">
-      <input type="button" value="Delete" (click)="onItemClick($event, data)">
+      <button (click)="onItemClick($event, data)">Edit</button>
+      <button (click)="onItemClick($event, data)">Delete</button>
     </template>
   </ng-grid-column>
 </ng-grid>
