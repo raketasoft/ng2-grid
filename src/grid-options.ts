@@ -33,6 +33,8 @@ export class GridOptions extends Loadable {
   protected defaultPageSize: any;
   protected defaultSortColumn: string;
   protected defaultSortType: string;
+  protected defaultFilteringColumn: string;
+  protected defaultFilteringColumnValue: string;
   protected heading: boolean;
   protected headingCssClass: string;
   protected height: string;
