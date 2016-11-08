@@ -58,10 +58,9 @@ import 'rxjs/Rx';
                 [ngModel]="getFilter(column.name)"
                 (ngModelChange)="onSelectFilterChange($event, column)">
               <option></option>
-              <option *ngFor="let item of column.items"
-                  [value]="item[column.valueField]">
-                {{item[column.textField]}}
-              </option>
+              <option
+                *ngFor="let item of column.items"
+                [value]="item[column.valueField]">{{item[column.textField]}}</option>
             </select>
           </td>
         </tr>
@@ -128,10 +127,9 @@ import 'rxjs/Rx';
       <span>Page size:</span>
       <select [ngModel]="getPageSize()"
         (ngModelChange)="onPageSizeDropDownChange($event)">
-        <option *ngFor="let value of options.get('pageSizeOptions')"
-            [value]="value">
-          {{value}}
-        </option>
+        <option
+          *ngFor="let value of options.get('pageSizeOptions')"
+          [value]="value">{{value}}</option>
       </select>
     </div>
   </div>
