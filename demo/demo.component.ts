@@ -65,8 +65,8 @@ export class DemoComponent implements OnInit, AfterViewInit {
       defaultPageSize: 5,
       defaultSortColumn: 'name',
       defaultSortType: GridDataProvider.SORT_DESC,
-      defaultFilteringColumn: 'isMarried',
-      defaultFilteringColumnValue: 'true'
+      defaultFilteringColumn: 'country.name',
+      defaultFilteringColumnValue: 'Canada',
       filtering: true,
       heading: true,
       headingCssClass: 'heading-table',

@@ -31,11 +31,11 @@ export class GridOptions extends Loadable {
   protected additionalRequestParams: any;
   protected bodyCssClass: string;
   protected data: Array<any>;
+  protected defaultFilteringColumn: string;
+  protected defaultFilteringColumnValue: string;
   protected defaultPageSize: any;
   protected defaultSortColumn: string;
   protected defaultSortType: string;
-  protected defaultFilteringColumn: string;
-  protected defaultFilteringColumnValue: string;
   protected heading: boolean;
   protected headingCssClass: string;
   protected height: string;

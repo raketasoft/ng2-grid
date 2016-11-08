@@ -67,8 +67,11 @@ import 'rxjs/Rx';
       </tbody>
     </table>
   </div>
-  <div class="ng-grid-body" [style.width]="options.get('width')"
-      [class.scroll]="options.get('height')" [style.max-height]="options.get('height')">
+  <div class="ng-grid-body"
+      (scroll)="onBodyScroll($event, this)"
+      [style.width]="options.get('width')"
+      [class.scroll]="options.get('height')"
+      [style.max-height]="options.get('height')">
     <p *ngIf="!isResultsDisplayAllowed()">
       To view results please add search filters
     </p>
@@ -174,7 +177,6 @@ export class GridComponent implements OnInit, AfterContentInit {
     }
     this.data = this.options.get('data');
     this.initDataProvider();
-    this.render();
   }
 
   /**
@@ -182,6 +184,7 @@ export class GridComponent implements OnInit, AfterContentInit {
    */
   ngAfterContentInit() {
     this.columns = this.columnList.toArray();
+    this.render();
   }
 
   /**
@@ -477,6 +480,11 @@ export class GridComponent implements OnInit, AfterContentInit {
     }
 
     return this.options.get('bodyCssClass');
+  }
+
+  protected onBodyScroll(event: MouseEvent) {
+    let element: HTMLElement = event.target as HTMLElement;
+    console.log(element);
   }
 
   /**
