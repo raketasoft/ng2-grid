@@ -77,6 +77,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       pageSizeElementPosition: 'left',
       pageSizeParam: 'pageSize',
       paging: true,
+      requireFilters: true,
       rowAlternateStyle: false,
       rowHoverStyle: false,
       rowSelectionStyle: true,

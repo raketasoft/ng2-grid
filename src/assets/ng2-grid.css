@@ -9,12 +9,22 @@
 
 .ng-grid table th,
 .ng-grid table td {
-  border: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
   padding: 10px;
 }
 
-.ng-grid-header table {
-  border-top: 1px solid #ccc;
+.ng-grid table th:last-child,
+.ng-grid table td:last-child {
+  border-right: 0;
+}
+
+.ng-grid table tr:last-child td {
+  border-bottom: 0;
+}
+
+.ng-grid-header {
+  border: 1px solid #ccc;
 }
 
 .ng-grid-header.scroll {
@@ -85,9 +95,14 @@
 
 .ng-grid-body {
   border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
 }
 
-.ng-grid-body table td {
+.ng-grid-body p {
+  text-align: center;
+  margin: 0;
+  padding: 15px;
 }
 
 .ng-grid-body table tr.alt {

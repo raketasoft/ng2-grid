@@ -70,7 +70,14 @@ import 'rxjs/Rx';
   </div>
   <div class="ng-grid-body" [style.width]="options.get('width')"
       [class.scroll]="options.get('height')" [style.max-height]="options.get('height')">
-    <table [class]="getBodyCssClass()" [style.width]="options.get('width')">
+    <p *ngIf="!isResultsDisplayAllowed()">
+      To view results please add search filters
+    </p>
+    <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0">
+      No results found
+    </p>
+    <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
+      *ngIf="isResultsDisplayAllowed()">
       <tbody>
         <tr *ngFor="let row of getResults(); let i = index"
             [class]="getRowCssClass(i, row)"
@@ -96,7 +103,8 @@ import 'rxjs/Rx';
     </table>
   </div>
   <div class="ng-grid-footer clearfix">
-    <div class="ng-grid-pager {{options.get('pageElementPosition')}}" *ngIf="options.paging">
+    <div class="ng-grid-pager {{options.get('pageElementPosition')}}"
+      *ngIf="options.paging && isResultsDisplayAllowed()">
       <span>Pages:</span>
       <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="1"
         (click)="onPageButtonClick($event)">First</a>
@@ -357,7 +365,7 @@ export class GridComponent implements OnInit, AfterContentInit {
     if (_.isUndefined(this.options.get('url'))) {
       this.filter();
       this.refresh();
-    } else {
+    } else if (this.isResultsDisplayAllowed()) {
       this.dataProvider.fetch().subscribe(
         (res: Response) => {
           this.refresh();
@@ -366,6 +374,8 @@ export class GridComponent implements OnInit, AfterContentInit {
           console.log(err);
         }
       );
+    } else {
+      this.setData([]);
     }
   }
 
@@ -733,7 +743,6 @@ export class GridComponent implements OnInit, AfterContentInit {
     return key;
   }
 
-
   /**
    * Check if row is selected.
    *
@@ -748,6 +757,27 @@ export class GridComponent implements OnInit, AfterContentInit {
     }
 
     return this.selectionMap[id];
+  }
+
+  /**
+   * Check if displaying results is allowed.
+   *
+   * @returns boolean
+   */
+  protected isResultsDisplayAllowed(): boolean {
+    if (this.options.get('requireFilters')) {
+      if (!_.isUndefined(this.columns)) {
+        for (let column of this.columns) {
+          if (!_.isUndefined(this.getFilter(column.name))) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    return true;
   }
 
   /**
