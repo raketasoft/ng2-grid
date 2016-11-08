@@ -555,6 +555,13 @@ export class GridComponent implements OnInit, AfterContentInit {
         this.options.get('defaultSortType')
       );
     }
+
+    if (!_.isUndefined(this.options.get('defaultFilteringColumn'))) {
+      this.setFilter(
+        this.options.get('defaultFilteringColumn'),
+        this.options.get('defaultFilteringColumnValue')
+      );
+    }
   }
 
   /**
