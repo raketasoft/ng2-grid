@@ -206,7 +206,7 @@ export class GridDataProvider extends Loadable {
     var data: Array<any> = [];
     if (this.pageSize !== false) {
       let start: number = (this.pageIndex - 1) * this.pageSize;
-      let end: number = start + this.pageSize;
+      let end: number = start + Number(this.pageSize);
 
       data = _.slice(this.sourceData, start, end);
     } else {

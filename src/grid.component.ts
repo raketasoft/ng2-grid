@@ -1,10 +1,15 @@
 import {
   Component,
   Input,
+  ElementRef,
+  Renderer,
+  HostListener,
   OnInit,
+  AfterContentInit,
+  AfterViewInit,
   ContentChildren,
   QueryList,
-  AfterContentInit
+  ViewChild
 } from '@angular/core';
 import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
 import { GridOptions, RowStyleCallback } from './grid-options';
@@ -26,8 +31,9 @@ import 'rxjs/Rx';
   selector: 'ng-grid',
   template: `
 <div class="ng-grid">
-  <div class="ng-grid-header" [style.width]="options.get('width')"
-      [class.scroll]="options.get('height')">
+  <div #header class="ng-grid-header"
+      [class.scroll]="options.get('height')"
+      [style.width]="options.get('width')">
     <table [class]="getHeadingCssClass()" [style.width]="options.get('width')">
       <thead *ngIf="options.get('heading')">
         <tr>
@@ -67,10 +73,10 @@ import 'rxjs/Rx';
       </tbody>
     </table>
   </div>
-  <div class="ng-grid-body"
-      (scroll)="onBodyScroll($event, this)"
-      [style.width]="options.get('width')"
+  <div #body class="ng-grid-body"
       [class.scroll]="options.get('height')"
+      (scroll)="onBodyScroll(body, header)"
+      [style.width]="options.get('width')"
       [style.max-height]="options.get('height')">
     <p *ngIf="!isResultsDisplayAllowed()">
       To view results please add search filters
@@ -104,7 +110,7 @@ import 'rxjs/Rx';
       </tbody>
     </table>
   </div>
-  <div class="ng-grid-footer clearfix">
+  <div #footer class="ng-grid-footer clearfix">
     <div class="ng-grid-pager {{options.get('pageElementPosition')}}"
       *ngIf="options.paging && isResultsDisplayAllowed()">
       <span>Pages:</span>
@@ -140,13 +146,15 @@ import 'rxjs/Rx';
   providers: [HTTP_PROVIDERS],
   directives: [GridCellRendererComponent]
 })
-export class GridComponent implements OnInit, AfterContentInit {
+export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   static ROW_ALT_CLASS: string = 'alt';
   static ROW_HOVER_CLASS: string = 'hover';
   static ROW_SELECT_CLASS: string = 'select';
 
   @Input() options: GridOptions;
   @ContentChildren(GridColumnComponent) columnList: QueryList<GridColumnComponent>;
+  @ViewChild('header') headerRef: ElementRef;
+  @ViewChild('body') bodyRef: ElementRef;
 
   private columns: Array<GridColumnComponent>;
   private data: Array<any>;
@@ -156,12 +164,19 @@ export class GridComponent implements OnInit, AfterContentInit {
   private selectionMap: Array<any> = [];
   private selectedItems: Array<any> = [];
 
+  private headerOffsetTop: number;
+  private headerOffsetHeight: number;
+  private bodyOffsetTop: number;
+  private bodyOffsetHeight: number;
+  private headerTopLimit: number;
+  private headerTop: number;
+
   /**
    * Class constructor.
    *
    * @param {Http} http
    */
-  constructor(private http: Http) {
+  constructor(private http: Http, private renderer: Renderer) {
     this.http = http;
   }
 
@@ -180,11 +195,52 @@ export class GridComponent implements OnInit, AfterContentInit {
   }
 
   /**
-   * Handle AfterViewInit event.
+   * Handle AfterContentInit event.
    */
   ngAfterContentInit() {
     this.columns = this.columnList.toArray();
+  }
+
+  /**
+   * Handle AfterViewInit event.
+   */
+  ngAfterViewInit() {
     this.render();
+  }
+
+  /**
+   * Handle windows scroll event.
+   */
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(event: UIEvent) {
+    if (this.options.get('headingFixed')) {
+      this.headerRef.nativeElement.style.top = '0';
+      this.headerOffsetTop = this.headerRef.nativeElement.offsetTop;
+      this.headerOffsetHeight = this.headerRef.nativeElement.offsetHeight;
+      this.bodyOffsetTop = this.bodyRef.nativeElement.offsetTop;
+      this.bodyOffsetHeight = this.bodyRef.nativeElement.offsetHeight;
+      this.headerTopLimit = this.bodyOffsetHeight + this.bodyOffsetTop
+        - this.headerOffsetTop - this.headerOffsetHeight;
+      this.headerTop = document.body.scrollTop - this.headerOffsetTop;
+
+      if (this.headerTop <= 0) {
+        this.renderer.setElementClass(
+          this.headerRef.nativeElement,
+          'fixed',
+          false
+        );
+        this.headerRef.nativeElement.style.top = '0';
+      } else if (this.headerTop > 0 && this.headerTop < this.headerTopLimit) {
+        this.renderer.setElementClass(
+          this.headerRef.nativeElement,
+          'fixed',
+          true
+        );
+        this.headerRef.nativeElement.style.top = this.headerTop + 'px';
+      } else {
+        this.headerRef.nativeElement.style.top = this.headerTopLimit + 'px';
+      }
+    }
   }
 
   /**
@@ -482,9 +538,14 @@ export class GridComponent implements OnInit, AfterContentInit {
     return this.options.get('bodyCssClass');
   }
 
-  protected onBodyScroll(event: MouseEvent) {
-    let element: HTMLElement = event.target as HTMLElement;
-    console.log(element);
+  /**
+   * Handle body scroll event.
+   *
+   * @param {HTMLElement} bodyElement
+   * @param {HTMLElement} headerElement
+   */
+  protected onBodyScroll(bodyElement: HTMLElement, headerElement: HTMLElement) {
+    headerElement.scrollLeft = bodyElement.scrollLeft;
   }
 
   /**
@@ -515,9 +576,8 @@ export class GridComponent implements OnInit, AfterContentInit {
    * @returns {boolean}
    */
   protected allResultsSelected(): boolean {
-    if (this.getTotalPages() === 1
-      && this.selectedItems.length == this.getTotalCount()) {
-      return true;
+    if (this.getTotalCount() == 0) {
+      return false;
     }
 
     for (let row of this.getResults()) {

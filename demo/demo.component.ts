@@ -45,7 +45,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
     this.columnOptions = new GridOptions({
       data: _.cloneDeep(DEMO_DATA),
-      height: '300px',
+      headingFixed: true,
       selection: true,
       defaultPageSize: 5,
       pageSizeOptions: [5, 10, 20, 50],

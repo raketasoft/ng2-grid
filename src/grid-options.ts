@@ -12,6 +12,7 @@ import * as _ from 'lodash';
 export class GridOptions extends Loadable {
   static DEFAULT_FILTERING_VALUE: boolean = true;
   static DEFAULT_HEADING_VALUE: boolean = true;
+  static DEFAULT_HEADING_FIXED_VALUE: boolean = false;
   static DEFAULT_PAGE_BUTTON_COUNT_VALUE: number = 5;
   static DEFAULT_PAGE_ELEMENT_POSITION_VALUE: string = 'left';
   static DEFAULT_PAGE_SIZE_OPTIONS_VALUE: Array<number> = [20, 50, 100];
@@ -37,6 +38,7 @@ export class GridOptions extends Loadable {
   protected defaultSortColumn: string;
   protected defaultSortType: string;
   protected heading: boolean;
+  protected headingFixed: boolean;
   protected headingCssClass: string;
   protected height: string;
   protected httpService: Http;
@@ -73,6 +75,9 @@ export class GridOptions extends Loadable {
     }
     if (_.isUndefined(this.heading)) {
       this.heading = GridOptions.DEFAULT_HEADING_VALUE;
+    }
+    if (_.isUndefined(this.headingFixed)) {
+      this.headingFixed = GridOptions.DEFAULT_HEADING_FIXED_VALUE;
     }
     if (_.isUndefined(this.defaultPageSize)) {
       this.defaultPageSize = GridOptions.DEFAULT_PAGE_SIZE_VALUE;
