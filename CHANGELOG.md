@@ -1,3 +1,20 @@
+<a name="1.0.0-alpha.12"></a>
+# 1.0.0-alpha.12 (2016-11-15)
+
+### Features
+
+* **grid:** Add API method for clearing selection
+* **grid:** Add option for default filtering column
+* **grid:** Add option for required filters
+* **grid:** Add fixed header option
+* **demo:** Update demo with new features
+
+### Bug Fixes
+
+* **grid:** Fixed issue #9
+* **grid:** Fixed issue #10
+
+
 <a name="1.0.0-alpha.11"></a>
 # 1.0.0-alpha.11 (2016-09-08)
 
