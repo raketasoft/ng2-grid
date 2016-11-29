@@ -905,6 +905,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
   /**
    * Start grid body drag.
+   *
+   * @param {MouseEvent} event
    */
   private startBodyDrag(event: MouseEvent) {
     this.bodyClientX = event.clientX;
@@ -922,6 +924,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
   /**
    * Handle grid body drag.
+   *
+   * @param {MouseEvent} event
    */
   private bodyDrag(event: MouseEvent) {
     if (!_.isUndefined(this.bodyClientX) && !_.isUndefined(this.bodyScrollLeft)) {
