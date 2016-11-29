@@ -6,7 +6,6 @@
     "clean": "gulp clean",
     "start": "tsc && npm run tslint && concurrently \"npm run tsc:w\" \"npm run lite\" ",
     "lite": "lite-server",
-    "postinstall": "typings install",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "tslint": "gulp tslint",
