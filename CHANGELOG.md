@@ -1,3 +1,15 @@
+<a name="1.0.0-alpha.13"></a>
+# 1.0.0-alpha.13 (2016-11-29)
+
+### Features
+
+* **grid:** Add support for horizontal body scroll using mouse drag
+
+### Bug Fixes
+
+* **grid:** Fixed issue #12
+
+
 <a name="1.0.0-alpha.12"></a>
 # 1.0.0-alpha.12 (2016-11-15)
 
