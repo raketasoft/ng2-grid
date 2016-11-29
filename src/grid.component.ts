@@ -225,7 +225,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       this.parentOffset = this.headerRef.nativeElement.offsetParent.offsetTop;
       this.headerTop = document.body.scrollTop - this.headerOffsetTop - this.parentOffset;
 
-      const banner: any = document.body.querySelector('[role="banner"]');
+      const banner: Element = document.body.querySelector('[role="banner"]');
       if (!_.isNull(banner)) {
         const bannerOffset: number = banner.clientHeight;
         this.headerTop += bannerOffset;
