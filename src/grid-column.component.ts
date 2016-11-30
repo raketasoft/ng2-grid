@@ -22,9 +22,12 @@ import * as _ from 'lodash';
 export class GridColumnComponent implements OnInit {
   static COLUMN_TYPE_SELECT: string = 'select';
   static COLUMN_TYPE_TEXT: string = 'text';
+
+  static DEFAULT_CSS_CLASS_VALUE: string = '';
   static DEFAULT_FILTERING_VALUE: boolean = true;
   static DEFAULT_SORTING_VALUE: boolean = true;
 
+  @Input() cssClass: string;
   @Input() heading: string;
   @Input() name: string;
   @Input() filtering: boolean;
@@ -41,6 +44,9 @@ export class GridColumnComponent implements OnInit {
    * Handle OnInit event.
    */
   ngOnInit() {
+    if (_.isUndefined(this.cssClass)) {
+      this.cssClass = GridColumnComponent.DEFAULT_CSS_CLASS_VALUE;
+    }
     if (_.isUndefined(this.filtering)) {
       this.filtering = GridColumnComponent.DEFAULT_FILTERING_VALUE;
     }

@@ -48,6 +48,7 @@ import 'rxjs/Rx';
               [class.sort-asc]="isSortedBy(column, 'asc')"
               [class.sort-desc]="isSortedBy(column, 'desc')"
               [class.sort-disable]="!isSortingAllowed(column)"
+              [ngClass]="column.cssClass"
               (click)="onHeadingClick(column)">
             {{column.resolveHeading()}}
           </th>
@@ -100,7 +101,8 @@ import 'rxjs/Rx';
           </td>
           <td *ngFor="let column of columns" class="ng-grid-cell"
               [style.width]="column.width"
-              [style.text-align]="column.textAlign">
+              [style.text-align]="column.textAlign"
+              [ngClass]="column.cssClass">
             <span *ngIf="column.template">
               <ng-grid-cell-renderer [column]="column" [data]="row">
               </ng-grid-cell-renderer>
