@@ -221,14 +221,18 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       this.bodyOffsetTop = this.bodyRef.nativeElement.offsetTop;
       this.bodyOffsetHeight = this.bodyRef.nativeElement.offsetHeight;
       this.headerTopLimit = this.bodyOffsetHeight + this.bodyOffsetTop
-        - this.headerOffsetTop - this.headerOffsetHeight;
-      this.parentOffset = this.headerRef.nativeElement.offsetParent.offsetTop;
-      this.headerTop = document.body.scrollTop - this.headerOffsetTop - this.parentOffset;
+          - this.headerOffsetTop - this.headerOffsetHeight;
+      this.headerTop = document.body.scrollTop - this.headerOffsetTop;
 
-      const banner: Element = document.body.querySelector('[role="banner"]');
+      if (!_.isNull(this.headerRef.nativeElement.offsetParent) &&
+          !_.isNull(this.headerRef.nativeElement.offsetParent.offsetTop)) {
+        this.headerTop -= this.headerRef.nativeElement.offsetParent.offsetTop;
+      }
+
+      var banner = document.body.querySelector('[role="banner"]');
+
       if (!_.isNull(banner)) {
-        const bannerOffset: number = banner.clientHeight;
-        this.headerTop += bannerOffset;
+        this.headerTop += banner.clientHeight;
       }
 
       if (this.headerTop <= 0) {
