@@ -48,6 +48,7 @@ import 'rxjs/Rx';
               [class.sort-asc]="isSortedBy(column, 'asc')"
               [class.sort-desc]="isSortedBy(column, 'desc')"
               [class.sort-disable]="!isSortingAllowed(column)"
+              [ngClass]="column.cssClass"
               (click)="onHeadingClick(column)">
             {{column.resolveHeading()}}
           </th>
@@ -77,7 +78,10 @@ import 'rxjs/Rx';
       [class.scroll]="options.get('height')"
       (scroll)="onBodyScroll(body, header)"
       [style.width]="options.get('width')"
-      [style.max-height]="options.get('height')">
+      [style.max-height]="options.get('height')"
+      (mousedown)="onBodyMouseDown($event)"
+      (mousemove)="onBodyMouseMove($event)"
+      (dragstart)="onBodyDragStart($event)">
     <p *ngIf="!isResultsDisplayAllowed()">
       To view results please add search filters
     </p>
@@ -89,7 +93,7 @@ import 'rxjs/Rx';
       <tbody>
         <tr *ngFor="let row of getResults(); let i = index"
             [class]="getRowCssClass(i, row)"
-            (click)="onRowClick(row)">
+            (mouseup)="onRowMouseUp(row)">
           <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
             <input type="checkbox"
                 [ngModel]="isRowSelected(row)"
@@ -97,7 +101,8 @@ import 'rxjs/Rx';
           </td>
           <td *ngFor="let column of columns" class="ng-grid-cell"
               [style.width]="column.width"
-              [style.text-align]="column.textAlign">
+              [style.text-align]="column.textAlign"
+              [ngClass]="column.cssClass">
             <span *ngIf="column.template">
               <ng-grid-cell-renderer [column]="column" [data]="row">
               </ng-grid-cell-renderer>
@@ -170,6 +175,9 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   private bodyOffsetHeight: number;
   private headerTopLimit: number;
   private headerTop: number;
+  private parentOffset: number;
+  private bodyScrollLeft: number;
+  private bodyClientX: number;
 
   /**
    * Class constructor.
@@ -206,51 +214,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.render();
-  }
-
-  /**
-   * Handle windows scroll event.
-   */
-  @HostListener('window:scroll', ['$event'])
-  onWindowScroll(event: UIEvent) {
-    if (this.options.get('headingFixed')) {
-      this.headerRef.nativeElement.style.top = '0';
-      this.headerOffsetTop = this.headerRef.nativeElement.offsetTop;
-      this.headerOffsetHeight = this.headerRef.nativeElement.offsetHeight;
-      this.bodyOffsetTop = this.bodyRef.nativeElement.offsetTop;
-      this.bodyOffsetHeight = this.bodyRef.nativeElement.offsetHeight;
-      this.headerTopLimit = this.bodyOffsetHeight + this.bodyOffsetTop
-          - this.headerOffsetTop - this.headerOffsetHeight;
-      this.headerTop = document.body.scrollTop - this.headerOffsetTop;
-
-      if (!_.isNull(this.headerRef.nativeElement.offsetParent) &&
-          !_.isNull(this.headerRef.nativeElement.offsetParent.offsetTop)) {
-        this.headerTop -= this.headerRef.nativeElement.offsetParent.offsetTop;
-      }
-
-      const banner: Element = document.body.querySelector('[role="banner"]');
-      if (!_.isNull(banner)) {
-        this.headerTop += banner.clientHeight;
-      }
-
-      if (this.headerTop <= 0) {
-        this.renderer.setElementClass(
-          this.headerRef.nativeElement,
-          'fixed',
-          false
-        );
-        this.headerRef.nativeElement.style.top = '0';
-      } else if (this.headerTop > 0 && this.headerTop < this.headerTopLimit) {
-        this.renderer.setElementClass(
-          this.headerRef.nativeElement,
-          'fixed',
-          true
-        );
-        this.headerRef.nativeElement.style.top = this.headerTop + 'px';
-      } else {
-        this.headerRef.nativeElement.style.top = this.headerTopLimit + 'px';
-      }
-    }
   }
 
   /**
@@ -447,6 +410,76 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
+   * Handle windows scroll event.
+   */
+  @HostListener('window:scroll', ['$event'])
+  protected onWindowScroll(event: UIEvent) {
+    if (this.options.get('headingFixed')) {
+      this.headerRef.nativeElement.style.top = '0';
+      this.headerOffsetTop = this.headerRef.nativeElement.offsetTop;
+      this.headerOffsetHeight = this.headerRef.nativeElement.offsetHeight;
+      this.bodyOffsetTop = this.bodyRef.nativeElement.offsetTop;
+      this.bodyOffsetHeight = this.bodyRef.nativeElement.offsetHeight;
+      this.headerTopLimit = this.bodyOffsetHeight + this.bodyOffsetTop
+        - this.headerOffsetTop - this.headerOffsetHeight;
+      this.parentOffset = this.headerRef.nativeElement.offsetParent.offsetTop;
+      this.headerTop = document.body.scrollTop - this.headerOffsetTop - this.parentOffset;
+
+      const banner: Element = document.body.querySelector('[role="banner"]');
+      if (!_.isNull(banner)) {
+        this.headerTop += banner.clientHeight;
+      }
+
+      if (this.headerTop <= 0) {
+        this.renderer.setElementClass(
+          this.headerRef.nativeElement,
+          'fixed',
+          false
+        );
+        this.headerRef.nativeElement.style.top = '0';
+      } else if (this.headerTop > 0 && this.headerTop < this.headerTopLimit) {
+        this.renderer.setElementClass(
+          this.headerRef.nativeElement,
+          'fixed',
+          true
+        );
+        this.headerRef.nativeElement.style.top = this.headerTop + 'px';
+      } else {
+        this.headerRef.nativeElement.style.top = this.headerTopLimit + 'px';
+      }
+    }
+  }
+
+  /**
+   * Handle windows mouseup event.
+   */
+  @HostListener('window:mouseup', ['$event'])
+  protected onWindowMouseUp(event: MouseEvent) {
+    this.endBodyDrag();
+  }
+
+  /**
+   * Handle grid body mousedown event.
+   */
+  protected onBodyMouseDown(event: MouseEvent) {
+    this.startBodyDrag(event);
+  }
+
+  /**
+   * Handle grid body mousemove event.
+   */
+  protected onBodyMouseMove(event: MouseEvent) {
+    this.bodyDrag(event);
+  }
+
+  /**
+   * Handle grid body dragstart event.
+   */
+  protected onBodyDragStart(event: MouseEvent) {
+    this.endBodyDrag();
+  }
+
+  /**
    * Refresh grid component.
    */
   protected refresh() {
@@ -600,12 +633,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
-   * Handle grid row click event.
+   * Handle grid row mouseup event.
    *
    * @param {any} row
    */
-  protected onRowClick(row: any) {
-    if (this.options.get('selection')) {
+  protected onRowMouseUp(row: any) {
+    if (this.options.get('selection') && !this.isBodyDragged()) {
       this.setRowSelection(row);
     }
   }
@@ -861,6 +894,47 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     }
 
     return true;
+  }
+
+  /**
+   * Determine whether user is dragging grid body.
+   *
+   * @returns boolean
+   */
+  private isBodyDragged() {
+    return this.bodyRef.nativeElement.style.cursor === 'move';
+  }
+
+  /**
+   * Start grid body drag.
+   *
+   * @param {MouseEvent} event
+   */
+  private startBodyDrag(event: MouseEvent) {
+    this.bodyClientX = event.clientX;
+    this.bodyScrollLeft = this.bodyRef.nativeElement.scrollLeft;
+  }
+
+  /**
+   * End grid body drag.
+   */
+  private endBodyDrag() {
+    delete this.bodyClientX;
+    delete this.bodyScrollLeft;
+    this.bodyRef.nativeElement.style.cursor = 'auto';
+  }
+
+  /**
+   * Handle grid body drag.
+   *
+   * @param {MouseEvent} event
+   */
+  private bodyDrag(event: MouseEvent) {
+    if (!_.isUndefined(this.bodyClientX) && !_.isUndefined(this.bodyScrollLeft)) {
+      this.bodyRef.nativeElement.style.cursor = 'move';
+      this.bodyRef.nativeElement.scrollLeft = this.bodyScrollLeft
+        - (event.clientX - this.bodyClientX);
+    }
   }
 
   /**

@@ -10,16 +10,34 @@
 <h2>Column Definition Example</h2>
 <p><button (click)="onClearSelectionBtnClick()">Clear Selection</button></p>
 <ng-grid #columnGrid [options]="columnOptions">
-  <ng-grid-column heading="Name" name="name" textAlign="left" width="140px">
+  <ng-grid-column
+    cssClass="name"
+    heading="Name"
+    name="name"
+    textAlign="left"
+    width="140px">
     <template let-column="column" let-data="data">
       <a href="#" (click)="onItemClick($event, data)">
         {{column.resolveCell(data)}}
       </a>
     </template>
   </ng-grid-column>
-  <ng-grid-column heading="Age" name="age" textAlign="left" width="80px"></ng-grid-column>
-  <ng-grid-column heading="Address" name="address" textAlign="left" width="140px"></ng-grid-column>
   <ng-grid-column
+    cssClass="age"
+    heading="Age"
+    name="age"
+    textAlign="left"
+    width="80px">
+  </ng-grid-column>
+  <ng-grid-column
+    cssClass="adddress"
+    heading="Address"
+    name="address"
+    textAlign="left"
+    width="140px">
+  </ng-grid-column>
+  <ng-grid-column
+    cssClass="country"
     heading="Country"
     name="country.name"
     type="select"
@@ -30,19 +48,25 @@
     width="140px">
   </ng-grid-column>
   <ng-grid-column
-      heading="Married"
-      name="isMarried"
-      type="select"
-      [items]="isMarriedItems"
-      valueField="value"
-      textField="text"
-      textAlign="left"
-      width="80px">
+    cssClass="is-married"
+    heading="Married"
+    name="isMarried"
+    type="select"
+    [items]="isMarriedItems"
+    valueField="value"
+    textField="text"
+    textAlign="left"
+    width="80px">
     <template let-data="data">
       {{data.isMarried ? 'Yes' : 'No'}}
     </template>
   </ng-grid-column>
-  <ng-grid-column textAlign="center" width="100px" sorting="false" filtering="false">
+  <ng-grid-column
+    cssClass="actions"
+    textAlign="center"
+    width="100px"
+    sorting="false"
+    filtering="false">
     <template let-data="data">
       <button (click)="onItemClick($event, data)">Edit</button>
       <button (click)="onItemClick($event, data)">Delete</button>

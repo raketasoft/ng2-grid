@@ -1,12 +1,11 @@
 {
   "name": "raketasoft-ng2-grid",
-  "version": "1.0.0-alpha.12",
+  "version": "1.0.0-alpha.14",
   "description": "Lightweight data grid component for Angular 2",
   "scripts": {
     "clean": "gulp clean",
     "start": "tsc && npm run tslint && concurrently \"npm run tsc:w\" \"npm run lite\" ",
     "lite": "lite-server",
-    "postinstall": "typings install",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "tslint": "gulp tslint",
