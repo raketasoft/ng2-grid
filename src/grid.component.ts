@@ -81,13 +81,13 @@ import 'rxjs/Rx';
       [style.max-height]="options.get('height')"
       (mousedown)="onBodyMouseDown($event)"
       (mousemove)="onBodyMouseMove($event)"
-      (dragstart)="onBodyDragStart($event)">
-    <p *ngIf="!isResultsDisplayAllowed()">
+      (dragstart)="onBodyDragStart($event)">      
+    <p *ngIf="!isResultsDisplayAllowed()" [style.width]="fullTableWidth">
       To view results please add search filters
-    </p>
-    <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0">
+    </p>    
+    <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="fullTableWidth">
       No results found
-    </p>
+    </p>    
     <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
       *ngIf="isResultsDisplayAllowed()">
       <tbody>
@@ -177,6 +177,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   private headerTop: number;
   private bodyScrollLeft: number;
   private bodyClientX: number;
+  private fullTableWidth: string;
 
   /**
    * Class constructor.
@@ -213,6 +214,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.render();
+    this.fullTableWidth = this.headerRef.nativeElement.firstElementChild.offsetWidth + 'px';
   }
 
   /**

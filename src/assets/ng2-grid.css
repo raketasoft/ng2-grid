@@ -106,7 +106,8 @@
 .ng-grid-body p {
   text-align: center;
   margin: 0;
-  padding: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .ng-grid-body table tr.alt {
