@@ -81,13 +81,13 @@ import 'rxjs/Rx';
       [style.max-height]="options.get('height')"
       (mousedown)="onBodyMouseDown($event)"
       (mousemove)="onBodyMouseMove($event)"
-      (dragstart)="onBodyDragStart($event)">
-    <p *ngIf="!isResultsDisplayAllowed()">
+      (dragstart)="onBodyDragStart($event)">      
+    <p *ngIf="!isResultsDisplayAllowed()" [style.width]="fullTableWidth">
       To view results please add search filters
-    </p>
-    <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0">
+    </p>    
+    <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="fullTableWidth">
       No results found
-    </p>
+    </p>    
     <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
       *ngIf="isResultsDisplayAllowed()">
       <tbody>
@@ -175,9 +175,9 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   private bodyOffsetHeight: number;
   private headerTopLimit: number;
   private headerTop: number;
-  private parentOffset: number;
   private bodyScrollLeft: number;
   private bodyClientX: number;
+  private fullTableWidth: string;
 
   /**
    * Class constructor.
@@ -214,6 +214,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.render();
+    this.fullTableWidth = this.headerRef.nativeElement.firstElementChild.offsetWidth + 'px';
   }
 
   /**
@@ -421,9 +422,13 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       this.bodyOffsetTop = this.bodyRef.nativeElement.offsetTop;
       this.bodyOffsetHeight = this.bodyRef.nativeElement.offsetHeight;
       this.headerTopLimit = this.bodyOffsetHeight + this.bodyOffsetTop
-        - this.headerOffsetTop - this.headerOffsetHeight;
-      this.parentOffset = this.headerRef.nativeElement.offsetParent.offsetTop;
-      this.headerTop = document.body.scrollTop - this.headerOffsetTop - this.parentOffset;
+          - this.headerOffsetTop - this.headerOffsetHeight;
+      this.headerTop = document.body.scrollTop - this.headerOffsetTop;
+
+      if (!_.isNull(this.headerRef.nativeElement.offsetParent) &&
+          !_.isNull(this.headerRef.nativeElement.offsetParent.offsetTop)) {
+          this.headerTop -= this.headerRef.nativeElement.offsetParent.offsetTop;
+      }
 
       const banner: Element = document.body.querySelector('[role="banner"]');
       if (!_.isNull(banner)) {
