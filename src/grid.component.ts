@@ -615,7 +615,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected onSelectItemCheckboxClick(event: MouseEvent, row: any) {
     event.stopPropagation();
-    if (this.options.get('selection') && !this.isBodyDragged()) {
+    if (this.options.get('selection')) {
       this.setRowSelection(row);
     }
   }
@@ -645,7 +645,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @param {any} row
    */
   protected onRowClick(row: any) {
-    if (this.options.get('selection') && !this.isBodyDragged()) {
+    if (this.options.get('selection')) {
       this.setRowSelection(row);
     }
   }
@@ -901,15 +901,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     }
 
     return true;
-  }
-
-  /**
-   * Determine whether user is dragging grid body.
-   *
-   * @returns boolean
-   */
-  private isBodyDragged() {
-    return this.bodyRef.nativeElement.style.cursor === 'move';
   }
 
   /**
