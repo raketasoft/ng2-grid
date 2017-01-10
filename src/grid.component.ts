@@ -626,7 +626,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {boolean}
    */
   protected allResultsSelected(): boolean {
-    if (this.getTotalCount() == 0) {
+    if (!this.getTotalCount()) {
       return false;
     }
 
