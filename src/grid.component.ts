@@ -81,13 +81,13 @@ import 'rxjs/Rx';
       [style.max-height]="options.get('height')"
       (mousedown)="onBodyMouseDown($event)"
       (mousemove)="onBodyMouseMove($event)"
-      (dragstart)="onBodyDragStart($event)">      
+      (dragstart)="onBodyDragStart($event)">
     <p *ngIf="!isResultsDisplayAllowed()" [style.width]="fullTableWidth">
       To view results please add search filters
-    </p>    
+    </p>
     <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="fullTableWidth">
       No results found
-    </p>    
+    </p>
     <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
       *ngIf="isResultsDisplayAllowed()">
       <tbody>
@@ -97,7 +97,7 @@ import 'rxjs/Rx';
           <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
             <input type="checkbox"
                 [ngModel]="isRowSelected(row)"
-                (click)="onSelectItemCheckboxClick($event, row)">
+                (click)="onSelectItemCheckboxClick($event)">
           </td>
           <td *ngFor="let column of columns" class="ng-grid-cell"
               [style.width]="column.width"
@@ -461,6 +461,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   @HostListener('window:mouseup', ['$event'])
   protected onWindowMouseUp(event: MouseEvent) {
     this.endBodyDrag();
+    console.log('window:mouseup');
   }
 
   /**
@@ -481,7 +482,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Handle grid body dragstart event.
    */
   protected onBodyDragStart(event: MouseEvent) {
-    this.endBodyDrag();
+    event.preventDefault();
   }
 
   /**
@@ -611,11 +612,23 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Handle row select checkbox click.
    *
    * @param {MouseEvent} event
+   */
+  protected onSelectItemCheckboxClick(event: MouseEvent) {
+    event.preventDefault();
+  }
+
+  /**
+   * Handle row select checkbox mouseup.
+   *
+   * @param {MouseEvent} event
    * @param {any} row
    */
-  protected onSelectItemCheckboxClick(e: MouseEvent, row: any) {
-    e.stopPropagation();
-    this.setRowSelection(row);
+  protected onSelectItemCheckboxMouseUp(event: MouseEvent, row: any) {
+    console.log('checkbox:mouseup');
+    //event.stopPropagation();
+    if (this.options.get('selection') && !this.isBodyDragged()) {
+      this.setRowSelection(row);
+    }
   }
 
   /**
@@ -643,6 +656,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @param {any} row
    */
   protected onRowMouseUp(row: any) {
+    console.log('row:mouseup');
     if (this.options.get('selection') && !this.isBodyDragged()) {
       this.setRowSelection(row);
     }
