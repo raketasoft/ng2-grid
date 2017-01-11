@@ -30,7 +30,10 @@ import 'rxjs/Rx';
 @Component({
   selector: 'ng-grid',
   template: `
-<div class="ng-grid">
+<div class="ng-grid"
+  (mousedown)="onGridMouseDown($event)"
+  (mousemove)="onGridMouseMove($event)"
+  (dragstart)="onGridDragStart($event)">
   <div #header class="ng-grid-header"
       [class.scroll]="options.get('height')"
       [style.width]="options.get('width')">
@@ -78,22 +81,19 @@ import 'rxjs/Rx';
       [class.scroll]="options.get('height')"
       (scroll)="onBodyScroll(body, header)"
       [style.width]="options.get('width')"
-      [style.max-height]="options.get('height')"
-      (mousedown)="onBodyMouseDown($event)"
-      (mousemove)="onBodyMouseMove($event)"
-      (dragstart)="onBodyDragStart($event)">      
+      [style.max-height]="options.get('height')">
     <p *ngIf="!isResultsDisplayAllowed()" [style.width]="fullTableWidth">
       To view results please add search filters
-    </p>    
+    </p>
     <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="fullTableWidth">
       No results found
-    </p>    
+    </p>
     <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
       *ngIf="isResultsDisplayAllowed()">
       <tbody>
         <tr *ngFor="let row of getResults(); let i = index"
             [class]="getRowCssClass(i, row)"
-            (mouseup)="onRowMouseUp(row)">
+            (click)="onRowClick(row)">
           <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
             <input type="checkbox"
                 [ngModel]="isRowSelected(row)"
@@ -466,22 +466,22 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   /**
    * Handle grid body mousedown event.
    */
-  protected onBodyMouseDown(event: MouseEvent) {
+  protected onGridMouseDown(event: MouseEvent) {
     this.startBodyDrag(event);
   }
 
   /**
    * Handle grid body mousemove event.
    */
-  protected onBodyMouseMove(event: MouseEvent) {
+  protected onGridMouseMove(event: MouseEvent) {
     this.bodyDrag(event);
   }
 
   /**
    * Handle grid body dragstart event.
    */
-  protected onBodyDragStart(event: MouseEvent) {
-    this.endBodyDrag();
+  protected onGridDragStart(event: MouseEvent) {
+    event.preventDefault();
   }
 
   /**
@@ -613,9 +613,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @param {MouseEvent} event
    * @param {any} row
    */
-  protected onSelectItemCheckboxClick(e: MouseEvent, row: any) {
-    e.stopPropagation();
-    this.setRowSelection(row);
+  protected onSelectItemCheckboxClick(event: MouseEvent, row: any) {
+    event.stopPropagation();
+    if (this.options.get('selection')) {
+      this.setRowSelection(row);
+    }
   }
 
   /**
@@ -624,7 +626,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {boolean}
    */
   protected allResultsSelected(): boolean {
-    if (this.getTotalCount() == 0) {
+    if (!this.getTotalCount()) {
       return false;
     }
 
@@ -638,12 +640,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
-   * Handle grid row mouseup event.
+   * Handle grid row click event.
    *
    * @param {any} row
    */
-  protected onRowMouseUp(row: any) {
-    if (this.options.get('selection') && !this.isBodyDragged()) {
+  protected onRowClick(row: any) {
+    if (this.options.get('selection')) {
       this.setRowSelection(row);
     }
   }
@@ -899,15 +901,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     }
 
     return true;
-  }
-
-  /**
-   * Determine whether user is dragging grid body.
-   *
-   * @returns boolean
-   */
-  private isBodyDragged() {
-    return this.bodyRef.nativeElement.style.cursor === 'move';
   }
 
   /**
