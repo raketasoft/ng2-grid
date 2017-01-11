@@ -495,7 +495,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Filter provided data.
    */
   protected filter() {
-    var self: GridComponent = this;
+    const self: GridComponent = this;
 
     this.dataProvider.sourceData = _.filter(this.data, function(item: any) {
       var match: boolean = true;
