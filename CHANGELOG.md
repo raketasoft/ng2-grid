@@ -1,3 +1,18 @@
+<a name="1.0.0-alpha.15"></a>
+# 1.0.0-alpha.15 (2017-01-12)
+
+### Features
+
+* **grid-column:** Add support for "number" type column, including updates to filtering, sorting and validation (issue #15)
+* **grid:** Add public methods for clearing filters (issue #16)
+
+### Bug Fixes
+
+* **grid:** Fix bug with fixed header null offset
+* **grid:** Fix various issues with scrolling/dragging the grid
+* **grid:** Fix bug with select all items checkbox
+
+
 <a name="1.0.0-alpha.14"></a>
 # 1.0.0-alpha.14 (2016-11-30)
 
