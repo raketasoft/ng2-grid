@@ -511,6 +511,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     } else {
       this.setData([]);
     }
+
+    this.handleContentResize();
   }
 
   /**
@@ -518,7 +520,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   @HostListener('window:resize', ['$event'])
   protected onWindowResize(event: UIEvent) {
-    this.fullTableWidth = this.headerRef.nativeElement.firstElementChild.offsetWidth + 'px';
+    this.handleContentResize();
   }
 
   /**
@@ -593,6 +595,13 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected onGridDragStart(event: MouseEvent) {
     event.preventDefault();
+  }
+
+  /**
+   * Handle content size changes.
+   */
+  protected handleContentResize() {
+    this.fullTableWidth = this.headerRef.nativeElement.firstElementChild.offsetWidth + 'px';
   }
 
   /**
