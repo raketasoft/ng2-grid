@@ -388,6 +388,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   clearFilter(columnName: string) {
     delete this.filters[columnName];
+    this.clearError(columnName);
   }
 
   /**
@@ -397,7 +398,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     for (let column of this.columns) {
       this.clearFilter(column.name);
     }
-    this.clearAllErrors();
   }
 
   /**
