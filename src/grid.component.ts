@@ -484,6 +484,17 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Render grid.
    */
   render() {
+    let hasErrors: boolean = false;
+
+    for (let error in this.errors) {
+      hasErrors = true;
+      alert(this.errors[error]);
+    }
+
+    if (hasErrors) {
+      return false;
+    }
+
     if (_.isUndefined(this.options.get('url'))) {
       this.filter();
       this.refresh();
@@ -922,16 +933,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected onInputFilterEnter(event: MouseEvent, column: GridColumnComponent) {
     this.onInputFilterBlur(event, column);
-
-    let hasErrors: boolean = false;
-    for (let error in this.errors) {
-      hasErrors = true;
-      alert(this.errors[error]);
-    }
-
-    if (hasErrors) {
-      return false;
-    }
 
     this.render();
   }
