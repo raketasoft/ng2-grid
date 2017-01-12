@@ -382,6 +382,25 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
+   * Clear filter value for given column.
+   *
+   * @param {string} columnName
+   */
+  clearFilter(columnName: string) {
+    delete this.filters[columnName];
+  }
+
+  /**
+   * Clear filter values for all columns.
+   */
+  clearAllFilters() {
+    for (let column of this.columns) {
+      this.clearFilter(column.name);
+    }
+    this.clearAllErrors();
+  }
+
+  /**
    * Set validation error for given column.
    *
    * @param {string} columnName
