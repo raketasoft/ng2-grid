@@ -22,6 +22,7 @@ import * as _ from 'lodash';
 export class GridColumnComponent implements OnInit {
   static COLUMN_TYPE_SELECT: string = 'select';
   static COLUMN_TYPE_TEXT: string = 'text';
+  static COLUMN_TYPE_NUMBER: string = 'number';
 
   static DEFAULT_CSS_CLASS_VALUE: string = '';
   static DEFAULT_FILTERING_VALUE: boolean = true;

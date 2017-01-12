@@ -61,9 +61,10 @@ import 'rxjs/Rx';
         <tr>
           <td *ngIf="options.get('selection')" class="ng-grid-filter selection"></td>
           <td *ngFor="let column of columns" class="ng-grid-filter">
-            <input type="text" *ngIf="isTextFilterEnabled(column)"
+            <input type="text" *ngIf="isInputFilterEnabled(column)"
                 (keyup.enter)="onInputFilterEnter($event, column)"
-                (blur)="onInputFilterBlur($event, column)" />
+                (blur)="onInputFilterBlur($event, column)"
+                (change)="onInputFilterChange($event, column)" />
             <select *ngIf="isSelectFilterEnabled(column)"
                 [ngModel]="getFilter(column.name)"
                 (ngModelChange)="onSelectFilterChange($event, column)">
@@ -163,6 +164,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
   private columns: Array<GridColumnComponent>;
   private data: Array<any>;
+  private errors: Array<any> = [];
   private filters: Array<any> = [];
   private dataProvider: GridDataProvider;
   private pages: Array<number>;
@@ -198,8 +200,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     if (!_.isUndefined(this.options.get('httpService'))) {
       this.http = this.options.get('httpService');
     }
-    this.data = this.options.get('data');
-    this.initDataProvider();
   }
 
   /**
@@ -207,6 +207,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   ngAfterContentInit() {
     this.columns = this.columnList.toArray();
+    this.initDataProvider();
   }
 
   /**
@@ -214,7 +215,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.render();
-    this.fullTableWidth = this.headerRef.nativeElement.firstElementChild.offsetWidth + 'px';
   }
 
   /**
@@ -223,7 +223,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {Array<any>}
    */
   setData(data: Array<any>) {
-    this.data = this.dataProvider.sourceData = data;
+    this.data = this.dataProvider.sourceData = this.formatData(data);
   }
 
   /**
@@ -259,7 +259,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @params {Array<any>} results
    */
   setResults(results: Array<any>) {
-    this.dataProvider.setData(results);
+    this.dataProvider.setData(this.formatData(results));
   }
 
   /**
@@ -334,15 +334,35 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Add a filter value for specific column.
    *
    * @param {string} columnName
-   * @param {string} value Keyword to be used as filter for the column
+   * @param {string} value Value to be used as filter for the column
    */
   setFilter(columnName: string, value: string) {
-    if (!_.isEmpty(value)) {
+    const column: GridColumnComponent = this.getColumn(columnName);
+
+    if (column.type == GridColumnComponent.COLUMN_TYPE_NUMBER && value.length) {
+      const expression: RegExp = new RegExp("^(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))$");
+      const isValid: boolean = expression.test(value);
+
+      if (!isValid) {
+        if (!this.getError(column.name)) {
+          const columnHeading: string = column.heading ? column.heading : column.name;
+          const message: string = 'Invalid filter value for "' + columnHeading + '". Please enter valid Number.';
+
+          this.setError(column.name, message);
+        }
+
+        return false;
+      }
+    }
+
+    this.clearError(column.name);
+
+    if (value) {
       this.filters[columnName] = value;
       if (!_.isUndefined(this.options.get('url'))) {
         this.dataProvider.requestParams[columnName] = value;
       }
-    } else if (!_.isEmpty(this.filters[columnName])) {
+    } else if (this.filters[columnName]) {
       delete this.filters[columnName];
       if (!_.isUndefined(this.options.get('url'))) {
         delete this.dataProvider.requestParams[columnName];
@@ -359,6 +379,44 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   getFilter(columnName: string): any {
     return this.filters[columnName];
+  }
+
+  /**
+   * Set validation error for given column.
+   *
+   * @param {string} columnName
+   * @param {string} error Error message
+   */
+  setError(columnName: string, error: string) {
+    this.errors[columnName] = error;
+  }
+
+  /**
+   * Return validation error for given column.
+   *
+   * @param {string} columnName
+   * @returns {any}
+   */
+  getError(columnName: string): string {
+    return this.errors[columnName];
+  }
+
+  /**
+   * Clear validation error for given column.
+   *
+   * @param {string} columnName
+   */
+  clearError(columnName: string) {
+    delete this.errors[columnName];
+  }
+
+  /**
+   * Clear errors for all columns.
+   */
+  clearAllErrors() {
+    for (let column of this.columns) {
+      this.clearError(column.name);
+    }
   }
 
   /**
@@ -390,6 +448,20 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
+   * Return grid column component by given name.
+   *
+   * @param {string} columnName
+   * @returns {GridColumnComponent}
+   */
+  getColumn(columnName: string): any {
+    for (let column of this.columns) {
+      if (column.name == columnName) {
+        return column;
+      }
+    }
+  }
+
+  /**
    * Render grid.
    */
   render() {
@@ -399,6 +471,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     } else if (this.isResultsDisplayAllowed()) {
       this.dataProvider.fetch().subscribe(
         (res: Response) => {
+          this.setResults(res.json());
           this.refresh();
         },
         (err: any) => {
@@ -411,7 +484,15 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
-   * Handle windows scroll event.
+   * Handle window resize event.
+   */
+  @HostListener('window:resize', ['$event'])
+  protected onWindowResize(event: UIEvent) {
+    this.fullTableWidth = this.headerRef.nativeElement.firstElementChild.offsetWidth + 'px';
+  }
+
+  /**
+   * Handle window scroll event.
    */
   @HostListener('window:scroll', ['$event'])
   protected onWindowScroll(event: UIEvent) {
@@ -485,6 +566,27 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
+   * Format data to specified column types.
+   *
+   * @param {Array<any>} data
+   */
+  protected formatData(data: Array<any>): Array<any> {
+    if (_.isEmpty(data)) {
+      return data;
+    }
+
+    for (let column of this.columns) {
+      if (column.type == GridColumnComponent.COLUMN_TYPE_NUMBER) {
+        for (let row of data) {
+          row[column.name] = Number(row[column.name]);
+        }
+      }
+    }
+
+    return data;
+  }
+
+  /**
    * Refresh grid component.
    */
   protected refresh() {
@@ -502,8 +604,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       for (let filter in self.filters) {
         let value: string = _.get(item, filter).toString();
 
-        match = match &&
-          !_.isEmpty(value.match(new RegExp(self.filters[filter], 'i')));
+        if (self.getColumn(filter).type == GridColumnComponent.COLUMN_TYPE_NUMBER) {
+          match = match && value == self.filters[filter];
+        } else {
+          match = match && !_.isEmpty(value.match(new RegExp(self.filters[filter], 'i')));
+        }
       }
 
       return match;
@@ -511,13 +616,14 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
-   * Check if text filter is enabled for given column.
+   * Check if input filter is enabled for given column.
    *
    * @param {GridColumnComponent} column
    * @returns {boolean}
    */
-  protected isTextFilterEnabled(column: GridColumnComponent) {
-    return (column.type == GridColumnComponent.COLUMN_TYPE_TEXT
+  protected isInputFilterEnabled(column: GridColumnComponent) {
+    return ((column.type == GridColumnComponent.COLUMN_TYPE_TEXT
+        || column.type == GridColumnComponent.COLUMN_TYPE_NUMBER)
         && column.filtering == true);
   }
 
@@ -660,7 +766,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       pageSize: this.options.get('defaultPageSize'),
       requestParams: this.options.get('additionalRequestParams'),
       sortParam: this.options.get('sortParam'),
-      sourceData: this.options.get('data'),
       sourceUrl: this.options.get('url'),
       totalCountHeader: this.options.get('totalCountHeader')
     });
@@ -678,6 +783,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
         this.options.get('defaultFilteringColumnValue')
       );
     }
+
+    this.setData(this.options.get('data'));
   }
 
   /**
@@ -719,8 +826,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected onPageButtonClick(event: MouseEvent) {
     event.preventDefault();
 
-    let element: HTMLSelectElement = event.target as HTMLSelectElement;
-    let pageIndex: number = Number(element.getAttribute('data-page'));
+    const element: HTMLSelectElement = event.target as HTMLSelectElement;
+    const pageIndex: number = Number(element.getAttribute('data-page'));
 
     this.setPageIndex(pageIndex);
     this.render();
@@ -770,10 +877,20 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @param {GridColumnComponent} column
    */
   protected onInputFilterBlur(event: MouseEvent, column: GridColumnComponent) {
-    let element: HTMLInputElement = event.target as HTMLInputElement;
+    const element: HTMLInputElement = event.target as HTMLInputElement;
     let keyword: string = element.value.trim();
 
     this.setFilter(column.name, keyword);
+  }
+
+  /**
+   * Input filter change handler.
+   *
+   * @param {MouseEvent} event
+   * @param {GridColumnComponent} column
+   */
+  protected onInputFilterChange(event: MouseEvent, column: GridColumnComponent) {
+    this.clearError(column.name);
   }
 
   /**
@@ -786,6 +903,16 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected onInputFilterEnter(event: MouseEvent, column: GridColumnComponent) {
     this.onInputFilterBlur(event, column);
+
+    let hasErrors: boolean = false;
+    for (let error in this.errors) {
+      hasErrors = true;
+      alert(this.errors[error]);
+    }
+
+    if (hasErrors) {
+      return false;
+    }
 
     this.render();
   }

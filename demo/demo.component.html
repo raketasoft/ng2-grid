@@ -1,7 +1,7 @@
 <h2>Basic Example</h2>
 <ng-grid #basicGrid [options]="basicOptions">
   <ng-grid-column name="name"></ng-grid-column>
-  <ng-grid-column name="age"></ng-grid-column>
+  <ng-grid-column name="age" type="number"></ng-grid-column>
   <ng-grid-column name="address"></ng-grid-column>
   <ng-grid-column name="country.name"></ng-grid-column>
   <ng-grid-column name="isMarried"></ng-grid-column>
@@ -27,6 +27,7 @@
     heading="Age"
     name="age"
     textAlign="left"
+    type="number"
     width="80px">
   </ng-grid-column>
   <ng-grid-column
@@ -77,7 +78,7 @@
 <h2>Remote Data Example</h2>
 <ng-grid [options]="remoteDataOptions">
   <ng-grid-column heading="Name" name="name"></ng-grid-column>
-  <ng-grid-column heading="Age" name="age"></ng-grid-column>
+  <ng-grid-column heading="Age" name="age" type="number"></ng-grid-column>
   <ng-grid-column heading="Address" name="address"></ng-grid-column>
   <ng-grid-column heading="Country" name="country.name"></ng-grid-column>
   <ng-grid-column heading="Married" name="isMarried"></ng-grid-column>
@@ -86,7 +87,7 @@
 <h2>Full Configuration Example</h2>
 <ng-grid [options]="fullConfigurationOptions">
   <ng-grid-column heading="Name" name="name"></ng-grid-column>
-  <ng-grid-column heading="Age" name="age"></ng-grid-column>
+  <ng-grid-column heading="Age" name="age" type="number"></ng-grid-column>
   <ng-grid-column heading="Address" name="address"></ng-grid-column>
   <ng-grid-column
     heading="Country"

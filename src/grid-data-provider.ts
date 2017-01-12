@@ -165,7 +165,9 @@ export class GridDataProvider extends Loadable {
           this.setTotalCount(Number(res.headers.get(this.totalCountHeader)));
           this.setData(res.json());
         },
-        (err: any) => console.log(err)
+        (err: any) => {
+          console.log(err);
+        }
       );
 
     return response;
