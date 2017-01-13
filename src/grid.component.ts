@@ -340,7 +340,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     const column: GridColumnComponent = this.getColumn(columnName);
 
     if (column.type == GridColumnComponent.COLUMN_TYPE_NUMBER && value.length) {
-      const expression: RegExp = new RegExp("^(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))$");
+      const expression: RegExp = new RegExp('^(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))$');
       const isValid: boolean = expression.test(value);
 
       if (!isValid) {
