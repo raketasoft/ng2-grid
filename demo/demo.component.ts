@@ -9,6 +9,7 @@ import { Http, HTTP_PROVIDERS } from '@angular/http';
 import {
   GridComponent,
   GridColumnComponent,
+  GridEvent,
   GridOptions,
   GridDataProvider
 } from '../index';
@@ -134,5 +135,9 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
   onClearSelectionBtnClick() {
     this.columnGrid.clearSelection();
+  }
+
+  onGridEvent(event: GridEvent) {
+    console.log(event);
   }
 }

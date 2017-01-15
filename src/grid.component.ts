@@ -9,13 +9,16 @@ import {
   AfterViewInit,
   ContentChildren,
   QueryList,
-  ViewChild
+  ViewChild,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
 import { GridOptions, RowStyleCallback } from './grid-options';
 import { GridColumnComponent } from './grid-column.component';
 import { GridCellRendererComponent } from './grid-cell-renderer.component';
 import { GridDataProvider } from './grid-data-provider';
+import { GridEvent } from './grid-event';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
 
@@ -159,6 +162,14 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
   @Input() options: GridOptions;
   @ContentChildren(GridColumnComponent) columnList: QueryList<GridColumnComponent>;
+  @Output() filterChange: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
+  @Output() sortChange: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
+  @Output() pageChange: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
+  @Output() pageSizeChange: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
+  @Output() itemSelect: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
+  @Output() requestSend: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
+  @Output() serverError: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
+  @Output() update: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
   @ViewChild('header') headerRef: ElementRef;
   @ViewChild('body') bodyRef: ElementRef;
 
@@ -296,6 +307,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   setPageIndex(pageIndex: number) {
     this.dataProvider.pageIndex = pageIndex;
+
+    this.pageChange.emit(new GridEvent({
+      data: pageIndex,
+      type: GridEvent.PAGE_CHANGE_EVENT
+    }));
   }
 
   /**
@@ -315,6 +331,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   setPageSize(pageSize: any) {
     this.dataProvider.pageSize = pageSize;
     this.setPageIndex(1);
+
+    this.pageSizeChange.emit(new GridEvent({
+      data: pageSize,
+      type: GridEvent.PAGE_SIZE_CHANGE_EVENT
+    }));
   }
 
   /**
@@ -369,6 +390,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       }
     }
     this.setPageIndex(1);
+
+    this.filterChange.emit(new GridEvent({
+      data: value,
+      target: column,
+      type: GridEvent.FILTER_CHANGE_EVENT
+    }));
   }
 
   /**
@@ -447,6 +474,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   setSort(sortColumn: string, sortType?: string) {
     this.dataProvider.setSort(sortColumn, sortType);
+
+    this.sortChange.emit(new GridEvent({
+      data: sortType,
+      target: this.getColumn(sortColumn),
+      type: GridEvent.SORT_CHANGE_EVENT
+    }));
   }
 
   /**
@@ -498,16 +531,35 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     if (_.isUndefined(this.options.get('url'))) {
       this.filter();
       this.refresh();
+
+      this.update.emit(new GridEvent({
+        data: this.getResults(),
+        type: GridEvent.UPDATE_EVENT
+      }));
     } else if (this.isResultsDisplayAllowed()) {
       this.dataProvider.fetch().subscribe(
         (res: Response) => {
           this.setResults(res.json());
           this.refresh();
+
+          this.update.emit(new GridEvent({
+            data: this.getResults(),
+            type: GridEvent.UPDATE_EVENT
+          }));
         },
         (err: any) => {
           console.log(err);
+
+          this.serverError.emit(new GridEvent({
+            data: err,
+            type: GridEvent.SERVER_ERROR_EVENT
+          }));
         }
       );
+
+      this.requestSend.emit(new GridEvent({
+        type: GridEvent.REQUEST_SEND_EVENT
+      }));
     } else {
       this.setData([]);
     }
@@ -1121,6 +1173,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     }
 
     this.selectionMap[id] = selected;
+
+    this.itemSelect.emit(new GridEvent({
+      data: selected,
+      target: row,
+      type: GridEvent.ITEM_SELECT_EVENT
+    }));
   }
 
   /**

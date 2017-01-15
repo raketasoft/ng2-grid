@@ -85,7 +85,16 @@
 </ng-grid>
 
 <h2>Full Configuration Example</h2>
-<ng-grid [options]="fullConfigurationOptions">
+<ng-grid
+  (filterChange)="onGridEvent($event)"
+  (itemSelect)="onGridEvent($event)"
+  (pageChange)="onGridEvent($event)"
+  (pageSizeChange)="onGridEvent($event)"
+  (requestSend)="onGridEvent($event)"
+  (serverError)="onGridEvent($event)"
+  (sortChange)="onGridEvent($event)"
+  (update)="onGridEvent($event)"
+  [options]="fullConfigurationOptions">
   <ng-grid-column heading="Name" name="name"></ng-grid-column>
   <ng-grid-column heading="Age" name="age" type="number"></ng-grid-column>
   <ng-grid-column heading="Address" name="address"></ng-grid-column>
