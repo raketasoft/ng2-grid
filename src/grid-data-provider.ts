@@ -103,7 +103,7 @@ export class GridDataProvider extends Loadable {
    * @returns {number}
    */
   getTotalCount(): number {
-    if (_.isUndefined(this.sourceUrl)) {
+    if (_.isUndefined(this.sourceUrl) && !_.isUndefined(this.sourceData)) {
       this.totalCount = this.sourceData.length;
     }
 
