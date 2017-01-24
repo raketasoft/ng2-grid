@@ -27,9 +27,11 @@ export class DemoComponent implements OnInit, AfterViewInit {
   basicOptions: GridOptions;
   columnOptions: GridOptions;
   remoteDataOptions: GridOptions;
+  loadingDataOptions: GridOptions;
   fullConfigurationOptions: GridOptions;
   @ViewChild('basicGrid') basicGrid: GridComponent;
   @ViewChild('columnGrid') columnGrid: GridComponent;
+  @ViewChild('loadingDataGrid') loadingDataGrid: GridComponent;
   isMarriedItems: Array<any>;
   countryItems: Array<any>;
 
@@ -96,6 +98,10 @@ export class DemoComponent implements OnInit, AfterViewInit {
       uniqueId: 'id'
     });
 
+    this.loadingDataOptions = new GridOptions({
+      height: '300px'
+    });
+
     this.isMarriedItems = this.getIsMarriedItems();
     this.countryItems = this.getCountryItems();
   }
@@ -104,6 +110,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
     this.basicGrid.setSort('name');
     this.basicGrid.setPageSize(50);
     this.basicGrid.render();
+    this.loadingDataGrid.setData(_.cloneDeep(DEMO_DATA));
 
     this.changeDetectorRef.detectChanges();
   }

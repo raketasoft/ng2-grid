@@ -122,3 +122,12 @@
     </template>
   </ng-grid-column>
 </ng-grid>
+
+<h2>Grid with loading data</h2>
+<ng-grid #loadingDataGrid [options]="loadingDataOptions">
+  <ng-grid-column name="name"></ng-grid-column>
+  <ng-grid-column name="age" type="number"></ng-grid-column>
+  <ng-grid-column name="address"></ng-grid-column>
+  <ng-grid-column name="country.name"></ng-grid-column>
+  <ng-grid-column name="isMarried"></ng-grid-column>
+</ng-grid>
