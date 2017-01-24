@@ -13,10 +13,9 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
-import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import { GridOptions, RowStyleCallback } from './grid-options';
 import { GridColumnComponent } from './grid-column.component';
-import { GridCellRendererComponent } from './grid-cell-renderer.component';
 import { GridDataProvider } from './grid-data-provider';
 import { GridEvent } from './grid-event';
 import * as _ from 'lodash';
@@ -151,9 +150,7 @@ import 'rxjs/Rx';
       </select>
     </div>
   </div>
-</div>`,
-  providers: [HTTP_PROVIDERS],
-  directives: [GridCellRendererComponent]
+</div>`
 })
 export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   static ROW_ALT_CLASS: string = 'alt';
