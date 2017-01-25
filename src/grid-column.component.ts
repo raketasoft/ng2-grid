@@ -20,8 +20,10 @@ import * as _ from 'lodash';
   'template': ''
 })
 export class GridColumnComponent implements OnInit {
-  static COLUMN_TYPE_SELECT: string = 'select';
-  static COLUMN_TYPE_TEXT: string = 'text';
+  static FILTER_TYPE_SELECT: string = 'select';
+  static FILTER_TYPE_INPUT: string = 'input';
+
+  static COLUMN_TYPE_STRING: string = 'string';
   static COLUMN_TYPE_NUMBER: string = 'number';
 
   static DEFAULT_CSS_CLASS_VALUE: string = '';
@@ -32,6 +34,7 @@ export class GridColumnComponent implements OnInit {
   @Input() heading: string;
   @Input() name: string;
   @Input() filtering: boolean;
+  @Input() filterType: string;
   @Input() sorting: boolean;
   @Input() width: string;
   @Input() textAlign: string;
@@ -51,11 +54,14 @@ export class GridColumnComponent implements OnInit {
     if (_.isUndefined(this.filtering)) {
       this.filtering = GridColumnComponent.DEFAULT_FILTERING_VALUE;
     }
+    if (_.isUndefined(this.filterType)) {
+      this.filterType = GridColumnComponent.FILTER_TYPE_INPUT;
+    }
     if (_.isUndefined(this.sorting)) {
       this.sorting = GridColumnComponent.DEFAULT_SORTING_VALUE;
     }
     if (_.isUndefined(this.type)) {
-      this.type = GridColumnComponent.COLUMN_TYPE_TEXT;
+      this.type = GridColumnComponent.COLUMN_TYPE_STRING;
     }
   }
 

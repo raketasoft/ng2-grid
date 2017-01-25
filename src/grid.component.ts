@@ -234,7 +234,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {Array<any>}
    */
   setData(data: Array<any>) {
-    this.data = this.dataProvider.sourceData = this.formatData(data);
+    this.data = this.dataProvider.sourceData = data;
   }
 
   /**
@@ -270,7 +270,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @params {Array<any>} results
    */
   setResults(results: Array<any>) {
-    this.dataProvider.setData(this.formatData(results));
+    this.dataProvider.setData(results);
   }
 
   /**
@@ -354,29 +354,39 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   /**
    * Add a filter value for specific column.
    *
-   * @param {string} columnName
+   * @param {string} columnName Name of grid column or property of bound data item
    * @param {string} value Value to be used as filter for the column
+   * @param {string} columnType Type of the column (text or number)
+   *
+   * @returns {boolean}
    */
-  setFilter(columnName: string, value: string) {
+  setFilter(columnName: string, value: string, columnType?: string) {
     const column: GridColumnComponent = this.getColumn(columnName);
 
-    if (column.type == GridColumnComponent.COLUMN_TYPE_NUMBER && value.length) {
+    if (!columnType) {
+      columnType = column ? column.type : GridColumnComponent.COLUMN_TYPE_STRING;
+    }
+
+    if (columnType == GridColumnComponent.COLUMN_TYPE_NUMBER && value.length) {
       const expression: RegExp = new RegExp('^(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))$');
       const isValid: boolean = expression.test(value);
 
       if (!isValid) {
-        if (!this.getError(column.name)) {
-          const columnHeading: string = column.heading ? column.heading : column.name;
-          const message: string = 'Invalid filter value for "' + columnHeading + '". Please enter valid Number.';
+        if (!this.getError(columnName)) {
+          const columnHeading: string = column && column.heading
+            ? column.heading : columnName;
 
-          this.setError(column.name, message);
+          const message: string = 'Invalid filter value for "'
+            + columnHeading + '". Please enter valid Number.';
+
+          this.setError(columnName, message);
         }
 
         return false;
       }
     }
 
-    this.clearError(column.name);
+    this.clearError(columnName);
 
     if (value) {
       this.filters[columnName] = value;
@@ -393,9 +403,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
     this.filterChange.emit(new GridEvent({
       data: value,
-      target: column,
+      target: column ? column : columnName,
       type: GridEvent.FILTER_CHANGE_EVENT
     }));
+
+    return true;
   }
 
   /**
@@ -469,15 +481,17 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Calling this method would sort the grid data by the given sort column and
    * sort type.
    *
-   * @param {string} sortColumn Name of grid column to be used for sorting
+   * @param {string} columnName Name of grid column to be used for sorting
    * @param {string} sortType Optional, values are 'asc' or 'desc'
    */
-  setSort(sortColumn: string, sortType?: string) {
-    this.dataProvider.setSort(sortColumn, sortType);
+  setSort(columnName: string, sortType?: string) {
+    const column: GridColumnComponent = this.getColumn(columnName);
+
+    this.dataProvider.setSort(columnName, sortType);
 
     this.sortChange.emit(new GridEvent({
       data: sortType,
-      target: this.getColumn(sortColumn),
+      target: column ? column : columnName,
       type: GridEvent.SORT_CHANGE_EVENT
     }));
   }
@@ -657,27 +671,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
-   * Format data to specified column types.
-   *
-   * @param {Array<any>} data
-   */
-  protected formatData(data: Array<any>): Array<any> {
-    if (_.isEmpty(data)) {
-      return data;
-    }
-
-    for (let column of this.columns) {
-      if (column.type == GridColumnComponent.COLUMN_TYPE_NUMBER) {
-        for (let row of data) {
-          row[column.name] = Number(row[column.name]);
-        }
-      }
-    }
-
-    return data;
-  }
-
-  /**
    * Refresh grid component.
    */
   protected refresh() {
@@ -713,8 +706,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {boolean}
    */
   protected isInputFilterEnabled(column: GridColumnComponent) {
-    return ((column.type == GridColumnComponent.COLUMN_TYPE_TEXT
-        || column.type == GridColumnComponent.COLUMN_TYPE_NUMBER)
+    return (column.filterType == GridColumnComponent.FILTER_TYPE_INPUT
         && column.filtering == true);
   }
 
@@ -725,7 +717,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {boolean}
    */
   protected isSelectFilterEnabled(column: GridColumnComponent) {
-    return (column.type == GridColumnComponent.COLUMN_TYPE_SELECT
+    return (column.filterType == GridColumnComponent.FILTER_TYPE_SELECT
         && column.filtering == true);
   }
 
@@ -958,7 +950,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     this.setFilter(column.name, event);
     this.render();
   }
-
 
   /**
    * Input filter blur handler.
