@@ -1,3 +1,16 @@
+<a name="1.0.0-alpha.16"></a>
+# 1.0.0-alpha.16 (2017-01-24)
+
+### Features
+
+* **grid:** Add support for grid events (issue #3)
+
+### Bug Fixes
+
+* **grid:** Fix grid resizing/rendering issues
+* **grid:** Fix issue with data provider (issue #20)
+
+
 <a name="1.0.0-alpha.15"></a>
 # 1.0.0-alpha.15 (2017-01-12)
 

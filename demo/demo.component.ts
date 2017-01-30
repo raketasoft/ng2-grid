@@ -47,7 +47,6 @@ export class DemoComponent implements OnInit, AfterViewInit {
     });
 
     this.columnOptions = new GridOptions({
-      data: _.cloneDeep(DEMO_DATA),
       headingFixed: true,
       selection: true,
       defaultPageSize: 5,
@@ -68,8 +67,8 @@ export class DemoComponent implements OnInit, AfterViewInit {
       defaultPageSize: 5,
       defaultSortColumn: 'name',
       defaultSortType: GridDataProvider.SORT_DESC,
-      defaultFilteringColumn: 'country.name',
-      defaultFilteringColumnValue: 'Canada',
+      defaultFilteringColumn: 'country.id',
+      defaultFilteringColumnValue: 2,
       filtering: true,
       heading: true,
       headingCssClass: 'heading-table',
@@ -98,19 +97,15 @@ export class DemoComponent implements OnInit, AfterViewInit {
       uniqueId: 'id'
     });
 
-    this.loadingDataOptions = new GridOptions({
-      height: '300px'
-    });
-
     this.isMarriedItems = this.getIsMarriedItems();
     this.countryItems = this.getCountryItems();
   }
 
   ngAfterViewInit() {
-    this.basicGrid.setSort('name');
-    this.basicGrid.setPageSize(50);
-    this.basicGrid.render();
-    this.loadingDataGrid.setData(_.cloneDeep(DEMO_DATA));
+    this.columnGrid.setData(_.cloneDeep(DEMO_DATA));
+    this.columnGrid.setSort('id');
+    this.columnGrid.setPageSize(10);
+    this.columnGrid.render();
 
     this.changeDetectorRef.detectChanges();
   }
@@ -130,13 +125,13 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
   getCountryItems(): Array<any> {
     return [
-      {value: 'Brazil', text: 'Brazil'},
-      {value: 'Canada', text: 'Canada'},
-      {value: 'China', text: 'China'},
-      {value: 'France', text: 'France'},
-      {value: 'Russia', text: 'Russia'},
-      {value: 'United Kingdom', text: 'United Kingdom'},
-      {value: 'United States', text: 'United States'},
+      {value: 1, text: 'Brazil'},
+      {value: 2, text: 'Canada'},
+      {value: 3, text: 'China'},
+      {value: 4, text: 'France'},
+      {value: 5, text: 'Russia'},
+      {value: 6, text: 'United Kingdom'},
+      {value: 7, text: 'United States'},
     ];
   }
 
