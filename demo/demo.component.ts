@@ -27,11 +27,9 @@ export class DemoComponent implements OnInit, AfterViewInit {
   basicOptions: GridOptions;
   columnOptions: GridOptions;
   remoteDataOptions: GridOptions;
-  loadingDataOptions: GridOptions;
   fullConfigurationOptions: GridOptions;
   @ViewChild('basicGrid') basicGrid: GridComponent;
   @ViewChild('columnGrid') columnGrid: GridComponent;
-  @ViewChild('loadingDataGrid') loadingDataGrid: GridComponent;
   isMarriedItems: Array<any>;
   countryItems: Array<any>;
 
