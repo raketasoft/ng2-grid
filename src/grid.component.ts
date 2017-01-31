@@ -11,7 +11,8 @@ import {
   QueryList,
   ViewChild,
   Output,
-  EventEmitter
+  EventEmitter,
+  ChangeDetectorRef
 } from '@angular/core';
 import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
 import { GridOptions, RowStyleCallback } from './grid-options';
@@ -197,7 +198,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    *
    * @param {Http} http
    */
-  constructor(private http: Http, private renderer: Renderer) {
+  constructor(private http: Http, private renderer: Renderer, private changeDetectorRef: ChangeDetectorRef) {
     this.http = http;
   }
 
@@ -235,6 +236,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   setData(data: Array<any>) {
     this.data = this.dataProvider.sourceData = data;
+    this.render();
   }
 
   /**
@@ -553,6 +555,10 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     } else if (this.isResultsDisplayAllowed()) {
       this.dataProvider.fetch().subscribe(
         (res: Response) => {
+          if (_.isEmpty(res.json())) {
+            this.handleContentResize();
+          }
+
           this.setResults(res.json());
           this.refresh();
 
@@ -578,7 +584,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       this.setData([]);
     }
 
-    this.handleContentResize();
+
   }
 
   /**
