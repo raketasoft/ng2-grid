@@ -11,8 +11,7 @@ import {
   QueryList,
   ViewChild,
   Output,
-  EventEmitter,
-  ChangeDetectorRef
+  EventEmitter
 } from '@angular/core';
 import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
 import { GridOptions, RowStyleCallback } from './grid-options';
@@ -198,7 +197,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    *
    * @param {Http} http
    */
-  constructor(private http: Http, private renderer: Renderer, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private http: Http, private renderer: Renderer) {
     this.http = http;
   }
 
