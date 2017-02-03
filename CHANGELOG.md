@@ -1,3 +1,15 @@
+<a name="1.0.0-alpha.17"></a>
+# 1.0.0-alpha.17 (2017-02-03)
+
+### Features
+
+* **grid:** Allow filtering/sorting by columns that are not displayed in grid (issue #21). NOTE: This feature breaks backwards compatability with "type" property of grid columns. A new "filterType" property has been introduced to define how filter is displayed in UI and "type" property is now reserved only for filtering/sorting logic.
+
+### Bug Fixes
+
+* **grid:** Fix issue with full table width calculation
+
+
 <a name="1.0.0-alpha.16"></a>
 # 1.0.0-alpha.16 (2017-01-24)
 
