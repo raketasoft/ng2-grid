@@ -577,8 +577,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     } else {
       this.setData([]);
     }
-
-    this.handleContentResize();
   }
 
   /**
@@ -675,6 +673,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected refresh() {
     this.paginate();
+    this.handleContentResize();
   }
 
   /**
