@@ -15,23 +15,23 @@
   var packages = {
     'demo':                       { main: 'main.js', defaultExtension: 'js' },
     'rxjs':                       { defaultExtension: 'js' },
-    'angular2-in-memory-web-api': { defaultExtension: 'js' },
+    'angular-in-memory-web-api': { defaultExtension: 'js' },
     'lodash':                     { main: 'index.js', defaultExtension: 'js' }
   };
   var ngPackageNames = [
     'common',
     'compiler',
     'core',
+    'forms',
     'http',
     'platform-browser',
     'platform-browser-dynamic',
-    'router',
-    'router-deprecated',
-    'upgrade'
+    'platform-server',
+    'router'
   ];
   // Add package entries for angular packages
   ngPackageNames.forEach(function(pkgName) {
-    packages['@angular/'+pkgName] = { main: pkgName + '.umd.js', defaultExtension: 'js' };
+    packages['@angular/'+pkgName] = { main: '/bundles/'  + pkgName + '.umd.js', defaultExtension: 'js' };
   });
   var config = {
     map: map,
