@@ -1,5 +1,5 @@
 {
-  "name": "raketasoft-ng2-grid",
+  "name": "andersen-ng2-grid-fork",
   "version": "1.0.0-alpha.17",
   "description": "Lightweight data grid component for Angular 2",
   "scripts": {
@@ -17,7 +17,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/raketasoft/ng2-grid.git"
+    "url": "https://github.com/GeorgeSokolovsky/ng2-grid.git"
   },
   "keywords": [
     "angular2",
