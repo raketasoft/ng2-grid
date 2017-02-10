@@ -19,7 +19,7 @@ import DEMO_DATA from './data';
 import * as _ from 'lodash';
 
 @Component({
-  selector: 'my-demo',
+  selector: 'demo',
   templateUrl: './demo.component.html'
 })
 export class DemoComponent implements OnInit, AfterViewInit {
