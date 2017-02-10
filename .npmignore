@@ -1,23 +1,21 @@
-*.ts
-!*.d.ts
-/demo
-.npmignore
-bs-config.json
-gulpfile.*
-systemjs.config.js
-tsconfig.json
-tslint.json
-typings.json
-
-# type script artifacts
-/typings
-
-# webstorm project files
 .idea
-
-# netbeans project files
-/nbproject
-
-# sublime text project / workspace files
+nbproject
 *.sublime-project
 *.sublime-workspace
+.editorconfig
+typings
+jspm_packages
+link-checker-results.txt
+.npmignore
+demo
+e2e
+_test-output
+_temp
+*.ts
+bs-config.json
+gulpfile.*
+karma*.js
+protractor*.js
+systemjs.config.*
+tsconfig.json
+tslint.json

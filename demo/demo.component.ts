@@ -5,23 +5,22 @@ import {
   OnInit,
   AfterViewInit
 } from '@angular/core';
-import { Http, HTTP_PROVIDERS } from '@angular/http';
+import { Http } from '@angular/http';
+
 import {
   GridComponent,
   GridColumnComponent,
   GridEvent,
   GridOptions,
   GridDataProvider
-} from '../index';
+} from '../src/index';
+
 import DEMO_DATA from './data';
 import * as _ from 'lodash';
 
 @Component({
   selector: 'demo',
-  moduleId: module.id,
-  templateUrl: './demo.component.html',
-  providers: [HTTP_PROVIDERS],
-  directives: [GridComponent, GridColumnComponent]
+  templateUrl: './demo.component.html'
 })
 export class DemoComponent implements OnInit, AfterViewInit {
   basicOptions: GridOptions;
