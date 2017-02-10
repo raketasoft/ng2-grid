@@ -1,3 +1,12 @@
+<a name="1.0.0-beta.1"></a>
+# 1.0.0-beta.1 (2017-02-10)
+
+### Features
+
+* **grid:** Update grid component to work with Angular 2.4.0 and bumped related dependencies
+* **test:** Add support for unit and e2e tests (actual tests not yet implemented)
+
+
 <a name="1.0.0-alpha.17"></a>
 # 1.0.0-alpha.17 (2017-02-03)
 
