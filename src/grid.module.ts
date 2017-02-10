@@ -1,27 +1,27 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 
 import { GridComponent } from './grid.component';
 import { GridColumnComponent } from './grid-column.component';
 import { GridCellRendererComponent } from './grid-cell-renderer.component';
-import { GridDataProvider } from './grid-data-provider';
-import { GridEvent } from './grid-event';
-import { GridOptions } from './grid-options';
 
 @NgModule({
+  imports: [
+    CommonModule,
+    FormsModule,
+    HttpModule
+  ],
   declarations: [
     GridComponent,
     GridColumnComponent,
-    GridCellRendererComponent,
-    GridDataProvider,
-    GridEvent,
-    GridOptions
+    GridCellRendererComponent
   ],
   exports: [
     GridComponent,
     GridColumnComponent,
-    GridDataProvider,
-    GridEvent,
-    GridOptions
+    GridCellRendererComponent
   ]
 })
 export class GridModule { }

@@ -13,14 +13,13 @@ import {
   GridEvent,
   GridOptions,
   GridDataProvider
-} from '../index';
+} from '../src/index';
 
 import DEMO_DATA from './data';
 import * as _ from 'lodash';
 
 @Component({
-  selector: 'demo',
-  moduleId: module.id,
+  selector: 'my-demo',
   templateUrl: './demo.component.html'
 })
 export class DemoComponent implements OnInit, AfterViewInit {

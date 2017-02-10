@@ -1,0 +1,154 @@
+[1mdiff --git a/demo/demo.component.ts b/demo/demo.component.ts[m
+[1mindex e1f93e2..66ba37d 100644[m
+[1m--- a/demo/demo.component.ts[m
+[1m+++ b/demo/demo.component.ts[m
+[36m@@ -13,14 +13,13 @@[m [mimport {[m
+   GridEvent,[m
+   GridOptions,[m
+   GridDataProvider[m
+[31m-} from '../index';[m
+[32m+[m[32m} from '../src/index';[m
+ [m
+ import DEMO_DATA from './data';[m
+ import * as _ from 'lodash';[m
+ [m
+ @Component({[m
+[31m-  selector: 'demo',[m
+[31m-  moduleId: module.id,[m
+[32m+[m[32m  selector: 'my-demo',[m
+   templateUrl: './demo.component.html'[m
+ })[m
+ export class DemoComponent implements OnInit, AfterViewInit {[m
+[1mdiff --git a/index.ts b/index.ts[m
+[1mindex 7596fe8..cba1843 100644[m
+[1m--- a/index.ts[m
+[1m+++ b/index.ts[m
+[36m@@ -1 +1 @@[m
+[31m-export * from './src/grid.module';[m
+[32m+[m[32mexport * from './src/index';[m
+[1mdiff --git a/package.json b/package.json[m
+[1mindex f760246..181fc42 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -1,6 +1,6 @@[m
+ {[m
+   "name": "raketasoft-ng2-grid",[m
+[31m-  "version": "1.0.0-alpha.17",[m
+[32m+[m[32m  "version": "1.0.0-beta.1",[m
+   "description": "Lightweight data grid component for Angular 2",[m
+   "scripts": {[m
+     "clean": "gulp clean",[m
+[36m@@ -46,17 +46,20 @@[m
+     "core-js": "^2.4.1",[m
+     "reflect-metadata": "^0.1.8",[m
+     "rxjs": "5.0.1",[m
+[31m-    "zone.js": "^0.7.4"[m
+[32m+[m[32m    "zone.js": "^0.7.4",[m
+[32m+[m
+[32m+[m[32m    "lodash": "^4.17.4",[m
+[32m+[m
+[32m+[m[32m    "@types/lodash": "^4.14.52"[m
+   },[m
+   "devDependencies": {[m
+     "concurrently": "^3.1.0",[m
+     "lite-server": "^2.2.2",[m
+[31m-    "typescript": "~2.0.10",[m
+[32m+[m[32m    "typescript": "~2.1.6",[m
+ [m
+     "canonical-path": "0.0.2",[m
+     "http-server": "^0.9.0",[m
+     "tslint": "^3.15.1",[m
+[31m-    "lodash": "^4.16.4",[m
+     "jasmine-core": "~2.4.1",[m
+     "karma": "^1.3.0",[m
+     "karma-chrome-launcher": "^2.0.0",[m
+[1mdiff --git a/src/grid-data-provider.ts b/src/grid-data-provider.ts[m
+[1mindex 143fd6c..3b5355e 100644[m
+[1m--- a/src/grid-data-provider.ts[m
+[1m+++ b/src/grid-data-provider.ts[m
+[36m@@ -1,4 +1,5 @@[m
+ import { Http, Response, URLSearchParams } from '@angular/http';[m
+[32m+[m
+ import { Loadable } from './loadable';[m
+ import { Observable } from 'rxjs/Observable';[m
+ import * as _ from 'lodash';[m
+[1mdiff --git a/src/grid.module.ts b/src/grid.module.ts[m
+[1mindex 9118eea..b044bcf 100644[m
+[1m--- a/src/grid.module.ts[m
+[1m+++ b/src/grid.module.ts[m
+[36m@@ -1,27 +1,27 @@[m
+ import { NgModule } from '@angular/core';[m
+[32m+[m[32mimport { CommonModule } from '@angular/common';[m
+[32m+[m[32mimport { FormsModule } from '@angular/forms';[m
+[32m+[m[32mimport { HttpModule } from '@angular/http';[m
+ [m
+ import { GridComponent } from './grid.component';[m
+ import { GridColumnComponent } from './grid-column.component';[m
+ import { GridCellRendererComponent } from './grid-cell-renderer.component';[m
+[31m-import { GridDataProvider } from './grid-data-provider';[m
+[31m-import { GridEvent } from './grid-event';[m
+[31m-import { GridOptions } from './grid-options';[m
+ [m
+ @NgModule({[m
+[32m+[m[32m  imports: [[m
+[32m+[m[32m    CommonModule,[m
+[32m+[m[32m    FormsModule,[m
+[32m+[m[32m    HttpModule[m
+[32m+[m[32m  ],[m
+   declarations: [[m
+     GridComponent,[m
+     GridColumnComponent,[m
+[31m-    GridCellRendererComponent,[m
+[31m-    GridDataProvider,[m
+[31m-    GridEvent,[m
+[31m-    GridOptions[m
+[32m+[m[32m    GridCellRendererComponent[m
+   ],[m
+   exports: [[m
+     GridComponent,[m
+     GridColumnComponent,[m
+[31m-    GridDataProvider,[m
+[31m-    GridEvent,[m
+[31m-    GridOptions[m
+[32m+[m[32m    GridCellRendererComponent[m
+   ][m
+ })[m
+ export class GridModule { }[m
+[1mdiff --git a/src/index.ts b/src/index.ts[m
+[1mindex 7596fe8..91702d3 100644[m
+[1m--- a/src/index.ts[m
+[1m+++ b/src/index.ts[m
+[36m@@ -1 +1,6 @@[m
+[31m-export * from './src/grid.module';[m
+[32m+[m[32mexport * from './grid.component';[m
+[32m+[m[32mexport * from './grid-column.component';[m
+[32m+[m[32mexport * from './grid-data-provider';[m
+[32m+[m[32mexport * from './grid-event';[m
+[32m+[m[32mexport * from './grid-options';[m
+[32m+[m[32mexport * from './grid.module';[m
+[1mdiff --git a/systemjs.config.js b/systemjs.config.js[m
+[1mindex d17bf2e..6fecce8 100644[m
+[1m--- a/systemjs.config.js[m
+[1m+++ b/systemjs.config.js[m
+[36m@@ -26,7 +26,9 @@[m
+ [m
+       // other libraries[m
+       'rxjs':                      'npm:rxjs',[m
+[31m-      'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js'[m
+[32m+[m[32m      'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',[m
+[32m+[m
+[32m+[m[32m      'lodash': 'npm:lodash'[m
+     },[m
+     // packages tells the System loader how to load when no filename and/or no extension[m
+     packages: {[m
+[36m@@ -39,6 +41,10 @@[m
+       },[m
+       rxjs: {[m
+         defaultExtension: 'js'[m
+[32m+[m[32m      },[m
+[32m+[m[32m      lodash: {[m
+[32m+[m[32m        main: 'index.js',[m
+[32m+[m[32m        defaultExtension: 'js'[m
+       }[m
+     }[m
+   });[m
