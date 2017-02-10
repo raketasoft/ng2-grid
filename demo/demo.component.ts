@@ -15,8 +15,9 @@ import {
   GridDataProvider
 } from '../src/index';
 
-import DEMO_DATA from './data';
 import * as _ from 'lodash';
+
+import DEMO_DATA from './data';
 
 @Component({
   selector: 'demo',
