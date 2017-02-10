@@ -23,11 +23,12 @@ import 'rxjs/Rx';
 
 /**
  * Data grid component class.
- * Use as directive. Component configuration is done through the options property.
+ *
+ * Component configuration is done through the options property.
  * Supports sorting, filtering and paging.
  *
  * @author Branimir Borisov <branimir@raketasoft.com>
- * @since 1.0.0-alpha
+ * @since 1.0.0-alpha.1
  */
 @Component({
   selector: 'ng-grid',

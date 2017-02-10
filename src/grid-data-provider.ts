@@ -6,11 +6,12 @@ import * as _ from 'lodash';
 import 'rxjs/Rx';
 
 /**
- * Data provider for grid component.
+ * Data provider class for Grid component.
+ *
  * Works with static and remote data.
  *
  * @author Branimir Borisov <branimir@raketasoft.com>
- * @since 1.0.0-alpha
+ * @since 1.0.0-alpha.1
  */
 export class GridDataProvider extends Loadable {
   static DEFAULT_PAGE_PARAM_VALUE: string = 'page';

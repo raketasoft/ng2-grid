@@ -7,7 +7,7 @@ import {
 import { GridColumnComponent } from './grid-column.component';
 
 /**
- * GridCell component used to render grid cell template.
+ * GridCell component used to render Grid cell template.
  *
  * @author Branimir Borisov <branimir@raketasoft.com>
  * @since 1.0.0-alpha.4

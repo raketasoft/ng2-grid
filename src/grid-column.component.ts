@@ -9,11 +9,11 @@ import * as _ from 'lodash';
 
 /**
  * Grid column class.
- * Defines a single grid column with its properties and methods. Use to define
- * the 'columns' property in the grid options configuration.
+ *
+ * Defines a single Grid column with its properties inside the html template.
  *
  * @author Branimir Borisov <branimir@raketasoft.com>
- * @since 1.0.0-alpha
+ * @since 1.0.0-alpha.1
  */
 @Component({
   'selector': 'ng-grid-column',

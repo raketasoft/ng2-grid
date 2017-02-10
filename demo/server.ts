@@ -4,6 +4,14 @@ import * as _ from "lodash";
 
 import DEMO_DATA from './data';
 
+/**
+ * Node.js server file.
+ *
+ * Handles remote requests from Demo component.
+ *
+ * @author Branimir Borisov <branimir@raketasoft.com>
+ * @since 1.0.0-beta.2
+ */
 const HttpDispatcher = require("httpdispatcher");
 
 const hostname = '127.0.0.1';

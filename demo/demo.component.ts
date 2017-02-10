@@ -19,6 +19,14 @@ import * as _ from 'lodash';
 
 import DEMO_DATA from './data';
 
+/**
+ * Demo component class.
+ *
+ * Contains examples about component usage.
+ *
+ * @author Branimir Borisov <branimir@raketasoft.com>
+ * @since 1.0.0-alpha.1
+ */
 @Component({
   selector: 'demo',
   templateUrl: './demo.component.html'
