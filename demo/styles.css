@@ -37,9 +37,6 @@ button:disabled {
   color: #aaa;
   cursor: auto;
 }
-input {
-  padding: 5px;
-}
 
 /* Navigation link styles */
 nav a {
