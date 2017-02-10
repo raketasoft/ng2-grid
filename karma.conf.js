@@ -84,7 +84,11 @@ module.exports = function(config) {
       { pattern: testingSrcBase + '**/*.ts', included: false, watched: false },
       { pattern: testingBase + '**/*.js.map', included: false, watched: false},
       { pattern: componentSrcBase + '**/*.ts', included: false, watched: false },
-      { pattern: componentBase + '**/*.js.map', included: false, watched: false }
+      { pattern: componentBase + '**/*.js.map', included: false, watched: false },
+
+      // Lodash
+      { pattern: 'node_modules/lodash/**/*.js', included: false, watched: false },
+      { pattern: 'node_modules/lodash/**/*.js.map', included: false, watched: false }
     ],
 
     // Proxied base paths for loading assets
