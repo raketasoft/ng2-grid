@@ -27,7 +27,7 @@ dispatcher.onGet("/", function(request: any, result: any) {
     sortBy = query.orderBy.replace('-', '');
   }
 
-  var filters: string[] = [];
+  let filters: string[] = [];
   for (let filter in query) {
     if (filter !== 'page' && filter !== 'pageSize' && filter !== 'orderBy'
         && filter !== 'expand') {
@@ -39,9 +39,9 @@ dispatcher.onGet("/", function(request: any, result: any) {
 
   // apply filters
   data = _.filter(data, function(item: any) {
-    var match = true;
+    let match = true;
     for (let filter in filters) {
-      var value = _.get(item, filter).toString();
+      let value = _.get(item, filter).toString();
 
       match = match &&
         (value.match(new RegExp(filters[filter], 'i')) !== null);
