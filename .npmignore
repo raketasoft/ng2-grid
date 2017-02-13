@@ -12,6 +12,7 @@ e2e
 _test-output
 _temp
 *.ts
+!*.d.ts
 bs-config.json
 gulpfile.*
 karma*.js
