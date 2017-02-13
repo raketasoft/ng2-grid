@@ -9,7 +9,6 @@ import { Http } from '@angular/http';
 
 import {
   GridComponent,
-  GridColumnComponent,
   GridEvent,
   GridOptions,
   GridDataProvider

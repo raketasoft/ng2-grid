@@ -61,7 +61,7 @@ dispatcher.onGet("/", function(request: any, result: any) {
   result.writeHead(200, {
     'Content-Type': 'text/plain',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Expose-Headers': '',
+    'Access-Control-Expose-Headers': 'X-Pagination-Total-Count, X-Pagination-Page-Count, X-Pagination-Current-Page, X-Pagination-Per-Page',
     'X-Pagination-Total-Count': data.length,
     'X-Pagination-Page-Count': Math.ceil(data.length/pageSize),
     'X-Pagination-Current-Page': page,
