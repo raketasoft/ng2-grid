@@ -1,3 +1,17 @@
+<a name="1.0.0-beta.3"></a>
+# 1.0.0-beta.3 (2017-02-14)
+
+### Features
+
+* **demo:** Add node server for demo data
+
+### Bug Fixes
+
+* **grid:** Fix issue with change detector ref
+* **grid:** Add missing jsdoc
+* **test:** Fix demo component spec
+
+
 <a name="1.0.0-beta.2"></a>
 # 1.0.0-beta.2 (2017-02-13)
 
