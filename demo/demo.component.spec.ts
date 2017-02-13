@@ -1,5 +1,10 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+
 import { DemoComponent } from './demo.component';
-import { 
+
+import {
   GridComponent,
   GridColumnComponent,
   GridCellRendererComponent
@@ -9,8 +14,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By }           from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import * as _ from 'lodash';
-
 describe('DemoComponent', function () {
   let de: DebugElement;
   let comp: DemoComponent;
@@ -18,7 +21,12 @@ describe('DemoComponent', function () {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
+      imports: [
+        CommonModule,
+        FormsModule,
+        HttpModule
+      ],
+      declarations: [
         DemoComponent,
         GridComponent,
         GridColumnComponent,
