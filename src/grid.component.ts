@@ -11,7 +11,8 @@ import {
   QueryList,
   ViewChild,
   Output,
-  EventEmitter
+  EventEmitter,
+  ChangeDetectorRef
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { GridOptions, RowStyleCallback } from './grid-options';
@@ -176,7 +177,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   private errors: Array<any> = [];
   private filters: Array<any> = [];
   private dataProvider: GridDataProvider;
-  private pages: Array<number>;
+  private pages: Array<number> = [];
   private selectionMap: Array<any> = [];
   private selectedItems: Array<any> = [];
 
@@ -195,7 +196,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    *
    * @param {Http} http
    */
-  constructor(private http: Http, private renderer: Renderer) {
+  constructor(
+    private http: Http,
+    private renderer: Renderer,
+    private changeDetector: ChangeDetectorRef
+  ) {
     this.http = http;
   }
 
@@ -224,6 +229,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.render();
+    this.changeDetector.detectChanges();
   }
 
   /**
