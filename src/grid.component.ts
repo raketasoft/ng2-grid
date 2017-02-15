@@ -689,7 +689,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     this.dataProvider.sourceData = _.filter(this.data, function(item: any) {
       var match: boolean = true;
       for (let filter in self.filters) {
-        let value: string = _.get(item, filter).toString();
+        let value: string = _.get(item, filter, '').toString();
 
         if (self.getColumn(filter).type == GridColumnComponent.COLUMN_TYPE_NUMBER) {
           match = match && value == self.filters[filter];
