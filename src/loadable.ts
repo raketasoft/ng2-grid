@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 /**
- * Loadable is a base class that implements loading properties via constructor.
+ * Loadable is a class that implements loading properties via constructor.
  *
  * @author Branimir Borisov <branimir@raketasoft.com>
  * @since 1.0.0-alpha

@@ -1,3 +1,46 @@
+<a name="1.0.0-beta.3"></a>
+# 1.0.0-beta.3 (2017-02-14)
+
+### Features
+
+* **demo:** Add node server for demo data
+
+### Bug Fixes
+
+* **grid:** Fix issue with change detector ref
+* **grid:** Add missing jsdoc
+* **test:** Fix demo component spec
+
+
+<a name="1.0.0-beta.2"></a>
+# 1.0.0-beta.2 (2017-02-13)
+
+### Features
+
+* **build:** Add TypeScript definitions to build
+
+
+<a name="1.0.0-beta.1"></a>
+# 1.0.0-beta.1 (2017-02-10)
+
+### Features
+
+* **grid:** Update grid component to work with Angular 2.4.0 and bumped related dependencies
+* **test:** Add support for unit and e2e tests (actual tests not yet implemented)
+
+
+<a name="1.0.0-alpha.17"></a>
+# 1.0.0-alpha.17 (2017-02-03)
+
+### Features
+
+* **grid:** Allow filtering/sorting by columns that are not displayed in grid (issue #21). NOTE: This feature breaks backwards compatability with "type" property of grid columns. A new "filterType" property has been introduced to define how filter is displayed in UI and "type" property is now reserved only for filtering/sorting logic.
+
+### Bug Fixes
+
+* **grid:** Fix issue with full table width calculation
+
+
 <a name="1.0.0-alpha.16"></a>
 # 1.0.0-alpha.16 (2017-01-24)
 

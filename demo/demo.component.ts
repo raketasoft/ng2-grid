@@ -5,23 +5,30 @@ import {
   OnInit,
   AfterViewInit
 } from '@angular/core';
-import { Http, HTTP_PROVIDERS } from '@angular/http';
+import { Http } from '@angular/http';
+
 import {
   GridComponent,
-  GridColumnComponent,
   GridEvent,
   GridOptions,
   GridDataProvider
-} from '../index';
-import DEMO_DATA from './data';
+} from '../src/index';
+
 import * as _ from 'lodash';
 
+import DEMO_DATA from './data';
+
+/**
+ * Demo component class.
+ *
+ * Contains examples about component usage.
+ *
+ * @author Branimir Borisov <branimir@raketasoft.com>
+ * @since 1.0.0-alpha.1
+ */
 @Component({
   selector: 'demo',
-  moduleId: module.id,
-  templateUrl: './demo.component.html',
-  providers: [HTTP_PROVIDERS],
-  directives: [GridComponent, GridColumnComponent]
+  templateUrl: './demo.component.html'
 })
 export class DemoComponent implements OnInit, AfterViewInit {
   basicOptions: GridOptions;

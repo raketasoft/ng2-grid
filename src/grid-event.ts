@@ -3,6 +3,8 @@ import { Loadable } from './loadable';
 /**
  * Grid event class.
  *
+ * Encapsulates data about event emitted from Grid component.
+ *
  * @author Branimir Borisov <branimir@raketasoft.com>
  * @since 1.0.0-alpha.15
  */

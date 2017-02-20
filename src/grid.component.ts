@@ -11,12 +11,12 @@ import {
   QueryList,
   ViewChild,
   Output,
-  EventEmitter
+  EventEmitter,
+  ChangeDetectorRef
 } from '@angular/core';
-import { Http, HTTP_PROVIDERS, Response } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import { GridOptions, RowStyleCallback } from './grid-options';
 import { GridColumnComponent } from './grid-column.component';
-import { GridCellRendererComponent } from './grid-cell-renderer.component';
 import { GridDataProvider } from './grid-data-provider';
 import { GridEvent } from './grid-event';
 import * as _ from 'lodash';
@@ -24,11 +24,12 @@ import 'rxjs/Rx';
 
 /**
  * Data grid component class.
- * Use as directive. Component configuration is done through the options property.
+ *
+ * Component configuration is done through the options property.
  * Supports sorting, filtering and paging.
  *
  * @author Branimir Borisov <branimir@raketasoft.com>
- * @since 1.0.0-alpha
+ * @since 1.0.0-alpha.1
  */
 @Component({
   selector: 'ng-grid',
@@ -151,9 +152,7 @@ import 'rxjs/Rx';
       </select>
     </div>
   </div>
-</div>`,
-  providers: [HTTP_PROVIDERS],
-  directives: [GridCellRendererComponent]
+</div>`
 })
 export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   static ROW_ALT_CLASS: string = 'alt';
@@ -178,7 +177,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   private errors: Array<any> = [];
   private filters: Array<any> = [];
   private dataProvider: GridDataProvider;
-  private pages: Array<number>;
+  private pages: Array<number> = [];
   private selectionMap: Array<any> = [];
   private selectedItems: Array<any> = [];
 
@@ -197,7 +196,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    *
    * @param {Http} http
    */
-  constructor(private http: Http, private renderer: Renderer) {
+  constructor(
+    private http: Http,
+    private renderer: Renderer,
+    private changeDetector: ChangeDetectorRef
+  ) {
     this.http = http;
   }
 
@@ -226,6 +229,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.render();
+    this.changeDetector.detectChanges();
   }
 
   /**
@@ -582,8 +586,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     } else {
       this.setData([]);
     }
-
-
   }
 
   /**
@@ -680,6 +682,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected refresh() {
     this.paginate();
+    this.handleContentResize();
   }
 
   /**
@@ -691,7 +694,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     this.dataProvider.sourceData = _.filter(this.data, function(item: any) {
       var match: boolean = true;
       for (let filter in self.filters) {
-        let value: string = _.get(item, filter).toString();
+        let value: string = _.get(item, filter, '').toString();
 
         if (self.getColumn(filter).type == GridColumnComponent.COLUMN_TYPE_NUMBER) {
           match = match && value == self.filters[filter];

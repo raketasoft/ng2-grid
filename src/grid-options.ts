@@ -4,10 +4,11 @@ import * as _ from 'lodash';
 
 /**
  * Grid options class.
- * Defines all configuration options for the grid component.
+ *
+ * Defines all configuration options for the Grid component.
  *
  * @author Branimir Borisov <branimir@raketasoft.com>
- * @since 1.0.0-alpha
+ * @since 1.0.0-alpha.1
  */
 export class GridOptions extends Loadable {
   static DEFAULT_FILTERING_VALUE: boolean = true;
