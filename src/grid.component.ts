@@ -239,7 +239,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   setData(data: Array<any>) {
     this.data = this.dataProvider.sourceData = data;
-    this.render();
   }
 
   /**
@@ -558,10 +557,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     } else if (this.isResultsDisplayAllowed()) {
       this.dataProvider.fetch().subscribe(
         (res: Response) => {
-          if (_.isEmpty(res.json())) {
-            this.handleContentResize();
-          }
-
           this.setResults(res.json());
           this.refresh();
 
