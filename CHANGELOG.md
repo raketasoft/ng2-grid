@@ -1,3 +1,12 @@
+<a name="1.0.0-beta.4"></a>
+# 1.0.0-beta.4 (2017-02-22)
+
+### Bug Fixes
+
+* **grid:** Fix selection issue
+* **grid:** Fix static data filtering issue
+
+
 <a name="1.0.0-beta.3"></a>
 # 1.0.0-beta.3 (2017-02-14)
 
