@@ -1162,7 +1162,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
     if (selected && !this.isRowSelected(row)) {
       this.selectedItems.push(row);
-    } else {
+    } else if (!selected) {
       this.selectedItems.splice(this.selectedItems.indexOf(row), 1);
     }
 
