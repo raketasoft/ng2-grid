@@ -911,6 +911,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected onPageButtonClick(event: MouseEvent) {
     event.preventDefault();
+    event.stopPropagation();
 
     const element: HTMLSelectElement = event.target as HTMLSelectElement;
     const pageIndex: number = Number(element.getAttribute('data-page'));
