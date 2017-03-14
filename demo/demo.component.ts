@@ -108,6 +108,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.columnGrid.setData(_.cloneDeep(DEMO_DATA));
+    this.columnGrid.setFilter('country.id', '2');
     this.columnGrid.setSort('id');
     this.columnGrid.setPageSize(10);
     this.columnGrid.render();
