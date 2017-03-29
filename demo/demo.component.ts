@@ -16,6 +16,8 @@ import {
 
 import * as _ from 'lodash';
 
+import { Person } from './models/person';
+
 import DEMO_DATA from './data';
 
 /**
@@ -69,7 +71,10 @@ export class DemoComponent implements OnInit, AfterViewInit {
       },
       bodyCssClass: 'body-table',
       data: null,
-      defaultPageSize: 5,
+      dataItemCallback: function (row: any) {
+        return new Person(row);
+      },
+      defaultPageSize: 10,
       defaultSortColumn: 'name',
       defaultSortType: GridDataProvider.SORT_DESC,
       defaultFilteringColumn: 'country.id',

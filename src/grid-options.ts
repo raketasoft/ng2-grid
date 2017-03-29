@@ -33,6 +33,7 @@ export class GridOptions extends Loadable {
   protected additionalRequestParams: any;
   protected bodyCssClass: string;
   protected data: Array<any>;
+  protected dataItemCallback: DataItemCallback;
   protected defaultFilteringColumn: string;
   protected defaultFilteringColumnValue: string;
   protected defaultPageSize: any;
@@ -139,3 +140,5 @@ export class GridOptions extends Loadable {
 }
 
 export interface RowStyleCallback { (row: any): string; }
+
+export interface DataItemCallback { (row: any): any; }

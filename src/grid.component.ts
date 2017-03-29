@@ -15,12 +15,11 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { GridOptions, RowStyleCallback } from './grid-options';
+import { GridOptions, DataItemCallback, RowStyleCallback } from './grid-options';
 import { GridColumnComponent } from './grid-column.component';
 import { GridDataProvider } from './grid-data-provider';
 import { GridEvent } from './grid-event';
 import * as _ from 'lodash';
-import 'rxjs/Rx';
 
 /**
  * Data grid component class.
@@ -238,7 +237,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {Array<any>}
    */
   setData(data: Array<any>) {
-    this.data = this.dataProvider.sourceData = data;
+    this.data = this.dataProvider.sourceData = this.formatData(data);
   }
 
   /**
@@ -274,7 +273,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @params {Array<any>} results
    */
   setResults(results: Array<any>) {
-    this.dataProvider.setData(results);
+    this.dataProvider.setData(this.formatData(results));
   }
 
   /**
@@ -673,6 +672,19 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
+   * Format data using dataItemCallback if given.
+   *
+   * @param {Array<any>} data
+   *
+   * @returns {Array<any>}
+   */
+  protected formatData(data: Array<any>): Array<any> {
+    let callback: DataItemCallback = this.options.get('dataItemCallback');
+
+    return callback ? _.flatMap(data, callback) : data;
+  }
+
+  /**
    * Refresh grid component.
    */
   protected refresh() {
@@ -733,6 +745,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected getRowCssClass(index: number, row: any) {
     let cssClass: string = '';
+
     if (this.options.get('rowAlternateStyle') && index % 2 !== 0) {
       cssClass = this.concatCssClass(cssClass, GridComponent.ROW_ALT_CLASS);
     }
@@ -741,11 +754,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     }
 
     let callback: RowStyleCallback = this.options.get('rowStyleCallback');
-    if (!_.isUndefined(callback)) {
+
+    if (callback) {
       cssClass = this.concatCssClass(cssClass, callback(row));
     }
-
-    if (this.isRowSelected(row) && this.options.get('rowSelectionStyle')) {
+    if (this.isRowSelected(row) && callback) {
       cssClass = this.concatCssClass(cssClass, GridComponent.ROW_SELECT_CLASS);
     }
 

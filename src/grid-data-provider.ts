@@ -155,9 +155,9 @@ export class GridDataProvider extends Loadable {
    * @returns {Observable<Response>}
    */
   fetch(): Observable<Response> {
-    var params: URLSearchParams = this.buildRequestParams();
+    let params: URLSearchParams = this.buildRequestParams();
 
-    var response: Observable<Response> = this.http
+    let response: Observable<Response> = this.http
         .get(this.sourceUrl, {search: params})
         .share();
 
