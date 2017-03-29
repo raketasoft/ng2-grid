@@ -65,6 +65,7 @@ import * as _ from 'lodash';
           <td *ngIf="options.get('selection')" class="ng-grid-filter selection"></td>
           <td *ngFor="let column of columns" class="ng-grid-filter">
             <input type="text" *ngIf="isInputFilterEnabled(column)"
+                [ngModel]="getFilter(column.name)"
                 (keyup.enter)="onInputFilterEnter($event, column)"
                 (blur)="onInputFilterBlur($event, column)"
                 (change)="onInputFilterChange($event, column)" />
@@ -702,8 +703,9 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       var match: boolean = true;
       for (let filter in self.filters) {
         let value: string = _.get(item, filter, '').toString();
+        let column: GridColumnComponent = self.getColumn(filter);
 
-        if (self.getColumn(filter).type == GridColumnComponent.COLUMN_TYPE_NUMBER) {
+        if (column && column.type == GridColumnComponent.COLUMN_TYPE_NUMBER) {
           match = match && value == self.filters[filter];
         } else {
           match = match && !_.isEmpty(value.match(new RegExp(self.filters[filter], 'i')));
@@ -924,6 +926,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected onPageButtonClick(event: MouseEvent) {
     event.preventDefault();
+    event.stopPropagation();
 
     const element: HTMLSelectElement = event.target as HTMLSelectElement;
     const pageIndex: number = Number(element.getAttribute('data-page'));

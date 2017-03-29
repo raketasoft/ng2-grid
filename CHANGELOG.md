@@ -1,3 +1,12 @@
+<a name="1.0.0-beta.5"></a>
+# 1.0.0-beta.5 (2017-03-14)
+
+### Bug Fixes
+
+* **grid:** Fix issue #27
+* **grid:** Fix issue with page button event propagation
+
+
 <a name="1.0.0-beta.4"></a>
 # 1.0.0-beta.4 (2017-02-22)
 
