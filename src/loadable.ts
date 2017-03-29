@@ -22,7 +22,9 @@ export class Loadable {
   protected loadProperties() {
     if (!_.isEmpty(this.params)) {
       for (let param in this.params) {
-        this[param] = this.params[param];
+        if (this.params.hasOwnProperty(param)) {
+          this[param] = this.params[param];
+        }
       }
     }
   }

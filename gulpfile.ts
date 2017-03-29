@@ -3,6 +3,7 @@ import * as del from 'del';
 
 gulp.task('clean', () => {
   return del([
+    '**/*.d.ts',
     '**/*.js',
     '**/*.js.map',
     '!node_modules/**/*',

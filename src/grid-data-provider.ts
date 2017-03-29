@@ -181,7 +181,7 @@ export class GridDataProvider extends Loadable {
    * @returns {URLSearchParams}
    */
   protected buildRequestParams(): URLSearchParams {
-    var params: URLSearchParams = new URLSearchParams();
+    let params: URLSearchParams = new URLSearchParams();
 
     params.set(this.pageParam, this.pageIndex.toString());
 
@@ -196,7 +196,9 @@ export class GridDataProvider extends Loadable {
     }
 
     for (let key in this.requestParams) {
-      params.set(key, this.requestParams[key]);
+      if (this.requestParams.hasOwnProperty(key)) {
+        params.set(key, this.requestParams[key]);
+      }
     }
 
     return params;
@@ -207,7 +209,8 @@ export class GridDataProvider extends Loadable {
    * If pageSize is not specified all data would be returned.
    */
   protected slice() {
-    var data: Array<any> = [];
+    let data: Array<any> = [];
+
     if (this.pageSize !== false) {
       let start: number = (this.pageIndex - 1) * this.pageSize;
       let end: number = start + Number(this.pageSize);

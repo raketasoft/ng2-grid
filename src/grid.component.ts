@@ -371,7 +371,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       columnType = column ? column.type : GridColumnComponent.COLUMN_TYPE_STRING;
     }
 
-    if (columnType == GridColumnComponent.COLUMN_TYPE_NUMBER && value.length) {
+    if (columnType === GridColumnComponent.COLUMN_TYPE_NUMBER && value.length) {
       const expression: RegExp = new RegExp('^(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))$');
       const isValid: boolean = expression.test(value);
 
@@ -525,7 +525,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   getColumn(columnName: string): any {
     for (let column of this.columns) {
-      if (column.name == columnName) {
+      if (column.name === columnName) {
         return column;
       }
     }
@@ -535,11 +535,13 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Render grid.
    */
   render() {
-    let hasErrors: boolean = false;
+    let hasErrors = false;
 
     for (let error in this.errors) {
-      hasErrors = true;
-      alert(this.errors[error]);
+      if (this.errors.hasOwnProperty(error)) {
+        hasErrors = true;
+        alert(this.errors[error]);
+      }
     }
 
     if (hasErrors) {
@@ -700,15 +702,17 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     const self: GridComponent = this;
 
     this.dataProvider.sourceData = _.filter(this.data, function(item: any) {
-      var match: boolean = true;
+      let match = true;
       for (let filter in self.filters) {
-        let value: string = _.get(item, filter, '').toString();
-        let column: GridColumnComponent = self.getColumn(filter);
+        if (self.filters.hasOwnProperty(filter)) {
+          let value: string = _.get(item, filter, '').toString();
+          let column: GridColumnComponent = self.getColumn(filter);
 
-        if (column && column.type == GridColumnComponent.COLUMN_TYPE_NUMBER) {
-          match = match && value == self.filters[filter];
-        } else {
-          match = match && !_.isEmpty(value.match(new RegExp(self.filters[filter], 'i')));
+          if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
+            match = match && value === self.filters[filter];
+          } else {
+            match = match && !_.isEmpty(value.match(new RegExp(self.filters[filter], 'i')));
+          }
         }
       }
 
@@ -723,8 +727,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {boolean}
    */
   protected isInputFilterEnabled(column: GridColumnComponent) {
-    return (column.filterType == GridColumnComponent.FILTER_TYPE_INPUT
-        && column.filtering == true);
+    return (column.filterType === GridColumnComponent.FILTER_TYPE_INPUT
+        && column.filtering === true);
   }
 
   /**
@@ -734,8 +738,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {boolean}
    */
   protected isSelectFilterEnabled(column: GridColumnComponent) {
-    return (column.filterType == GridColumnComponent.FILTER_TYPE_SELECT
-        && column.filtering == true);
+    return (column.filterType === GridColumnComponent.FILTER_TYPE_SELECT
+        && column.filtering === true);
   }
 
   /**
@@ -746,7 +750,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string} Row color
    */
   protected getRowCssClass(index: number, row: any) {
-    let cssClass: string = '';
+    let cssClass = '';
 
     if (this.options.get('rowAlternateStyle') && index % 2 !== 0) {
       cssClass = this.concatCssClass(cssClass, GridComponent.ROW_ALT_CLASS);
@@ -1066,7 +1070,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {boolean}
    */
   protected isSortingAllowed(column: GridColumnComponent): boolean {
-    return this.options.get('sorting') && column.sorting == true;
+    return this.options.get('sorting') && column.sorting === true;
   }
 
   /**
