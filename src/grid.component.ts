@@ -760,7 +760,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     if (callback) {
       cssClass = this.concatCssClass(cssClass, callback(row));
     }
-    if (this.isRowSelected(row) && callback) {
+    if (this.isRowSelected(row) && this.options.get('rowSelectionStyle')) {
       cssClass = this.concatCssClass(cssClass, GridComponent.ROW_SELECT_CLASS);
     }
 
