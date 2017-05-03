@@ -1,0 +1,146 @@
+<h1>Demo</h1>
+
+<h2>Basic Example</h2>
+<ng-grid #basicGrid [options]="basicOptions">
+  <ng-grid-column name="name"></ng-grid-column>
+  <ng-grid-column name="age" type="number"></ng-grid-column>
+  <ng-grid-column name="address"></ng-grid-column>
+  <ng-grid-column name="country.name"></ng-grid-column>
+  <ng-grid-column name="isMarried"></ng-grid-column>
+</ng-grid>
+
+<h2>Column Definition Example</h2>
+<div class="mb-md">
+  <button (click)="onClearSelectionBtnClick()">Clear Selection</button>
+</div>
+<ng-grid #columnGrid [options]="columnOptions">
+  <ng-grid-column
+    heading="Name"
+    name="name"
+    textAlign="left"
+    width="150px">
+    <template let-column="column" let-data="data">
+      <a href="#" (click)="onItemClick($event, data)">
+        {{column.resolveCell(data)}}
+      </a>
+    </template>
+  </ng-grid-column>
+  <ng-grid-column
+    heading="Age"
+    textAlign="left"
+    type="number"
+    width="100px"
+    cssClass="cell_red"
+    [getCellCssClass]="getClassRed">
+    <template let-column="column" let-data="data">
+      {{data.age}}
+    </template>
+  </ng-grid-column>
+  <ng-grid-column
+    cssClass="adddress"
+    heading="Address"
+    name="address"
+    textAlign="left"
+    width="150px">
+  </ng-grid-column>
+  <ng-grid-column
+    cssClass="country"
+    heading="Country"
+    name="country.id"
+    filterType="select"
+    [items]="countryItems"
+    valueField="value"
+    textField="text"
+    textAlign="left"
+    type="number"
+    width="150px">
+    <template let-column="column" let-data="data">
+      {{data.country.name}}
+    </template>
+  </ng-grid-column>
+  <ng-grid-column
+    cssClass="is-married"
+    heading="Married"
+    name="isMarried"
+    filterType="select"
+    [items]="isMarriedItems"
+    valueField="value"
+    textField="text"
+    textAlign="left"
+    width="100px">
+    <template let-data="data">
+      {{data.isMarried ? 'Yes' : 'No'}}
+    </template>
+  </ng-grid-column>
+  <ng-grid-column
+    cssClass="actions"
+    textAlign="center"
+    width="100px"
+    sorting="false"
+    filtering="false">
+    <template let-data="data">
+      <button (click)="onItemClick($event, data)">Edit</button>
+      <button (click)="onItemClick($event, data)">Delete</button>
+    </template>
+  </ng-grid-column>
+</ng-grid>
+
+<h2>Remote Data Example</h2>
+<ng-grid [options]="remoteDataOptions">
+  <ng-grid-column heading="Name" name="name"></ng-grid-column>
+  <ng-grid-column heading="Age" name="age" type="number"></ng-grid-column>
+  <ng-grid-column heading="Address" name="address"></ng-grid-column>
+  <ng-grid-column heading="Country" name="country.name"></ng-grid-column>
+  <ng-grid-column heading="Married" name="isMarried"></ng-grid-column>
+</ng-grid>
+
+<h2>Full Configuration Example</h2>
+<ng-grid
+  (filterChange)="onGridEvent($event)"
+  (itemSelect)="onGridEvent($event)"
+  (pageChange)="onGridEvent($event)"
+  (pageSizeChange)="onGridEvent($event)"
+  (requestSend)="onGridEvent($event)"
+  (serverError)="onGridEvent($event)"
+  (sortChange)="onGridEvent($event)"
+  (update)="onGridEvent($event)"
+  [options]="fullConfigurationOptions">
+  <ng-grid-column heading="Name" name="name" width="140px"></ng-grid-column>
+  <ng-grid-column
+    heading="Age"
+    name="age"
+    type="number"
+    width="100px">
+    <template let-column="column" let-data="data">
+      {{data.age}} ({{data.isRetired ? 'Retired' : 'Working'}})
+    </template>
+  </ng-grid-column>
+  <ng-grid-column heading="Address" name="address" width="150px"></ng-grid-column>
+  <ng-grid-column
+    heading="Country"
+    name="country.id"
+    filterType="select"
+    [items]="countryItems"
+    valueField="value"
+    textField="text"
+    textAlign="left"
+    type="number"
+    width="150px">
+    <template let-column="column" let-data="data">
+      {{data.country.name}}
+    </template>
+  </ng-grid-column>
+  <ng-grid-column
+      heading="Married"
+      name="isMarried"
+      filterType="select"
+      [items]="isMarriedItems"
+      valueField="value"
+      textField="text"
+      textAlign="left"
+      width="100px">
+    <template let-data="data">
+      {{data.isMarried ? 'Yes' : 'No'}}
+    </template>
+  </ng-grid-column>
+</ng-grid>
