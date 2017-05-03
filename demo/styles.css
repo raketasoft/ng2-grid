@@ -153,3 +153,11 @@ nav a.router-link-active {
 .mb-md {
   margin-bottom: 15px;
 }
+
+.cell_red {
+  background-color: red;
+}
+
+.cell_green {
+  background-color: green;
+}

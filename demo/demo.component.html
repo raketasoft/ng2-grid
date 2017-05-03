@@ -15,7 +15,6 @@
 </div>
 <ng-grid #columnGrid [options]="columnOptions">
   <ng-grid-column
-    cssClass="name"
     heading="Name"
     name="name"
     textAlign="left"
@@ -27,12 +26,15 @@
     </template>
   </ng-grid-column>
   <ng-grid-column
-    cssClass="age"
     heading="Age"
-    name="age"
     textAlign="left"
     type="number"
-    width="100px">
+    width="100px"
+    cssClass="cell_red"
+    [getCellCssClass]="getClassRed">
+    <template let-column="column" let-data="data">
+      {{data.age}}
+    </template>
   </ng-grid-column>
   <ng-grid-column
     cssClass="adddress"

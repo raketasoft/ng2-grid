@@ -153,4 +153,12 @@ export class DemoComponent implements OnInit, AfterViewInit {
   onGridEvent(event: GridEvent) {
     console.log(event);
   }
+
+  getClassRed(data: any) {
+    if (data.age > 60) {
+      return 'cell_green';
+    }
+
+    return 'cell_red';
+  }
 }
