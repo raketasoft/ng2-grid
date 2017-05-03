@@ -42,6 +42,7 @@ export class GridColumnComponent implements OnInit {
   @Input() items: any;
   @Input() textField: string;
   @Input() valueField: string;
+  @Input() getCellCssClass: any;
   @ContentChild(TemplateRef) template: TemplateRef<any>;
 
   /**
@@ -62,6 +63,11 @@ export class GridColumnComponent implements OnInit {
     }
     if (_.isUndefined(this.type)) {
       this.type = GridColumnComponent.COLUMN_TYPE_STRING;
+    }
+    if (_.isUndefined(this.getCellCssClass)) {
+      this.getCellCssClass = () => {
+        return this.cssClass;
+      };
     }
   }
 
