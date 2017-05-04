@@ -107,7 +107,7 @@ import * as _ from 'lodash';
           <td *ngFor="let column of columns" class="ng-grid-cell"
               [style.width]="column.width"
               [style.text-align]="column.textAlign"
-              [ngClass]="column.cssClass">
+              [ngClass]="column.getCellCssClass(row)">
             <span *ngIf="column.template">
               <ng-grid-cell-renderer [column]="column" [data]="row">
               </ng-grid-cell-renderer>
