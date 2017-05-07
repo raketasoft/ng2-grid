@@ -42,7 +42,7 @@ export class GridColumnComponent implements OnInit {
   @Input() items: any;
   @Input() textField: string;
   @Input() valueField: string;
-  @Input() getCellCssClass: any;
+  @Input() cellStyleCallback: IStyleCallback;
   @ContentChild(TemplateRef) template: TemplateRef<any>;
 
   /**
@@ -64,9 +64,9 @@ export class GridColumnComponent implements OnInit {
     if (_.isUndefined(this.type)) {
       this.type = GridColumnComponent.COLUMN_TYPE_STRING;
     }
-    if (_.isUndefined(this.getCellCssClass)) {
-      this.getCellCssClass = () => {
-        return GridColumnComponent.DEFAULT_CSS_CLASS_VALUE;
+    if (_.isUndefined(this.cellStyleCallback)) {
+      this.cellStyleCallback = () => {
+        return this.cssClass;
       };
     }
   }
@@ -91,4 +91,8 @@ export class GridColumnComponent implements OnInit {
   resolveCell(data: any, columnName: string = this.name): string {
       return _.get(data, columnName) as string;
   }
+}
+
+export interface IStyleCallback {
+  (data: any): string;
 }

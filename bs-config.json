@@ -8,5 +8,6 @@
     "routes": {
         "/": ""
     }
-  }
+  },
+  "open": false
 }
