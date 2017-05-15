@@ -1,4 +1,5 @@
 # Ng2 Grid
+[![Build Status](https://travis-ci.org/raketasoft/ng2-grid.svg?branch=master)](https://travis-ci.org/raketasoft/ng2-grid)
 
 Lightweight data grid component for Angular 2.
 
