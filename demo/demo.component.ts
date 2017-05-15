@@ -61,7 +61,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
     });
 
     this.remoteDataOptions = new GridOptions({
-      url: 'http://localhost:3000/',
+      url: 'http://localhost:3030/',
       height: '300px'
     });
 
@@ -102,7 +102,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       sortParam: 'orderBy',
       sorting: true,
       totalCountHeader: 'X-Pagination-Total-Count',
-      url: 'http://localhost:3000/',
+      url: 'http://localhost:3030/',
       width: '100%',
       uniqueId: 'id'
     });
