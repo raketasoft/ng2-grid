@@ -34,7 +34,6 @@ import DEMO_DATA from './data';
 })
 export class DemoComponent implements OnInit, AfterViewInit {
   basicOptions: GridOptions;
-  columnOptions: GridOptions;
   remoteDataOptions: GridOptions;
   fullConfigurationOptions: GridOptions;
   @ViewChild('basicGrid') basicGrid: GridComponent;
@@ -51,13 +50,6 @@ export class DemoComponent implements OnInit, AfterViewInit {
     this.basicOptions = new GridOptions({
       data: _.cloneDeep(DEMO_DATA),
       height: '300px'
-    });
-
-    this.columnOptions = new GridOptions({
-      headingFixed: true,
-      selection: true,
-      defaultPageSize: 5,
-      pageSizeOptions: [5, 10, 20, 50],
     });
 
     this.remoteDataOptions = new GridOptions({
@@ -112,6 +104,12 @@ export class DemoComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.columnGrid.options = new GridOptions({
+      headingFixed: true,
+      selection: true,
+      defaultPageSize: 5,
+      pageSizeOptions: [5, 10, 20, 50],
+    });
     this.columnGrid.setData(_.cloneDeep(DEMO_DATA));
     this.columnGrid.setFilter('country.id', '2');
     this.columnGrid.setSort('id');

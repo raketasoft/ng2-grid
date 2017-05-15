@@ -159,7 +159,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   static ROW_HOVER_CLASS: string = 'hover';
   static ROW_SELECT_CLASS: string = 'select';
 
-  @Input() options: GridOptions;
   @ContentChildren(GridColumnComponent) columnList: QueryList<GridColumnComponent>;
   @Output() filterChange: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
   @Output() sortChange: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
@@ -172,7 +171,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   @ViewChild('header') headerRef: ElementRef;
   @ViewChild('body') bodyRef: ElementRef;
 
-  private columns: Array<GridColumnComponent>;
+  private _options: GridOptions;
+  private columns: Array<GridColumnComponent> = [];
   private data: Array<any>;
   private errors: Array<any> = [];
   private filters: Array<any> = [];
@@ -202,17 +202,36 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     private changeDetector: ChangeDetectorRef
   ) {
     this.http = http;
+    this.dataProvider = new GridDataProvider(this.http, this._options);
+  }
+
+  /**
+   * Setter for grid options.
+   *
+   * @param {GridOptions} value
+   */
+  @Input('options')
+  set options(value: GridOptions) {
+    this._options = value;
+    this.initDataProvider();
+  }
+
+  /**
+   * Getter for grid options.
+   */
+  get options(): GridOptions {
+    return this._options;
   }
 
   /**
    * Handle OnInit event.
    */
   ngOnInit() {
-    if (_.isUndefined(this.options)) {
-      this.options = new GridOptions();
+    if (_.isUndefined(this._options)) {
+      this._options = new GridOptions();
     }
-    if (!_.isUndefined(this.options.get('httpService'))) {
-      this.http = this.options.get('httpService');
+    if (!_.isUndefined(this._options.get('httpService'))) {
+      this.http = this._options.get('httpService');
     }
   }
 
@@ -221,7 +240,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   ngAfterContentInit() {
     this.columns = this.columnList.toArray();
-    this.initDataProvider();
   }
 
   /**
@@ -394,12 +412,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
     if (value) {
       this.filters[columnName] = value;
-      if (!_.isUndefined(this.options.get('url'))) {
+      if (!_.isUndefined(this._options.get('url'))) {
         this.dataProvider.requestParams[columnName] = value;
       }
     } else if (this.filters[columnName]) {
       delete this.filters[columnName];
-      if (!_.isUndefined(this.options.get('url'))) {
+      if (!_.isUndefined(this._options.get('url'))) {
         delete this.dataProvider.requestParams[columnName];
       }
     }
@@ -548,7 +566,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       return false;
     }
 
-    if (_.isUndefined(this.options.get('url'))) {
+    if (_.isUndefined(this._options.get('url'))) {
       this.filter();
       this.refresh();
 
@@ -598,7 +616,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   @HostListener('window:scroll', ['$event'])
   protected onWindowScroll(event: UIEvent) {
-    if (this.options.get('headingFixed')) {
+    if (this._options.get('headingFixed')) {
       this.headerRef.nativeElement.style.top = '0';
       this.headerOffsetTop = this.headerRef.nativeElement.offsetTop;
       this.headerOffsetHeight = this.headerRef.nativeElement.offsetHeight;
@@ -682,7 +700,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {Array<any>}
    */
   protected formatData(data: Array<any>): Array<any> {
-    let callback: DataItemCallback = this.options.get('dataItemCallback');
+    let callback: DataItemCallback = this._options.get('dataItemCallback');
 
     return callback ? _.flatMap(data, callback) : data;
   }
@@ -752,19 +770,19 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected getRowCssClass(index: number, row: any) {
     let cssClass = '';
 
-    if (this.options.get('rowAlternateStyle') && index % 2 !== 0) {
+    if (this._options.get('rowAlternateStyle') && index % 2 !== 0) {
       cssClass = this.concatCssClass(cssClass, GridComponent.ROW_ALT_CLASS);
     }
-    if (this.options.get('rowHoverStyle')) {
+    if (this._options.get('rowHoverStyle')) {
       cssClass = this.concatCssClass(cssClass, GridComponent.ROW_HOVER_CLASS);
     }
 
-    let callback: RowStyleCallback = this.options.get('rowStyleCallback');
+    let callback: RowStyleCallback = this._options.get('rowStyleCallback');
 
     if (callback) {
       cssClass = this.concatCssClass(cssClass, callback(row));
     }
-    if (this.isRowSelected(row) && this.options.get('rowSelectionStyle')) {
+    if (this.isRowSelected(row) && this._options.get('rowSelectionStyle')) {
       cssClass = this.concatCssClass(cssClass, GridComponent.ROW_SELECT_CLASS);
     }
 
@@ -777,11 +795,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string}
    */
   protected getHeadingCssClass(): string {
-    if (_.isUndefined(this.options.get('headingCssClass'))) {
+    if (_.isUndefined(this._options.get('headingCssClass'))) {
       return '';
     }
 
-    return this.options.get('headingCssClass');
+    return this._options.get('headingCssClass');
   }
 
   /**
@@ -790,11 +808,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string}
    */
   protected getBodyCssClass(): string {
-    if (_.isUndefined(this.options.get('bodyCssClass'))) {
+    if (_.isUndefined(this._options.get('bodyCssClass'))) {
       return '';
     }
 
-    return this.options.get('bodyCssClass');
+    return this._options.get('bodyCssClass');
   }
 
   /**
@@ -826,7 +844,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected onSelectItemCheckboxClick(event: MouseEvent, row: any) {
     event.stopPropagation();
-    if (this.options.get('selection')) {
+    if (this._options.get('selection')) {
       this.setRowSelection(row);
     }
   }
@@ -856,7 +874,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @param {any} row
    */
   protected onRowClick(row: any) {
-    if (this.options.get('selection')) {
+    if (this._options.get('selection')) {
       this.setRowSelection(row);
     }
   }
@@ -866,30 +884,30 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected initDataProvider() {
     this.dataProvider = new GridDataProvider(this.http, {
-      pageParam: this.options.get('pageParam'),
-      pageSizeParam: this.options.get('pageSizeParam'),
-      pageSize: this.options.get('defaultPageSize'),
-      requestParams: this.options.get('additionalRequestParams'),
-      sortParam: this.options.get('sortParam'),
-      sourceUrl: this.options.get('url'),
-      totalCountHeader: this.options.get('totalCountHeader')
+      pageParam: this._options.get('pageParam'),
+      pageSizeParam: this._options.get('pageSizeParam'),
+      pageSize: this._options.get('defaultPageSize'),
+      requestParams: this._options.get('additionalRequestParams'),
+      sortParam: this._options.get('sortParam'),
+      sourceUrl: this._options.get('url'),
+      totalCountHeader: this._options.get('totalCountHeader')
     });
 
-    if (!_.isUndefined(this.options.get('defaultSortColumn'))) {
+    if (!_.isUndefined(this._options.get('defaultSortColumn'))) {
       this.setSort(
-        this.options.get('defaultSortColumn'),
-        this.options.get('defaultSortType')
+        this._options.get('defaultSortColumn'),
+        this._options.get('defaultSortType')
       );
     }
 
-    if (!_.isUndefined(this.options.get('defaultFilteringColumn'))) {
+    if (!_.isUndefined(this._options.get('defaultFilteringColumn'))) {
       this.setFilter(
-        this.options.get('defaultFilteringColumn'),
-        this.options.get('defaultFilteringColumnValue')
+        this._options.get('defaultFilteringColumn'),
+        this._options.get('defaultFilteringColumnValue')
       );
     }
 
-    this.setData(this.options.get('data'));
+    this.setData(this._options.get('data'));
   }
 
   /**
@@ -897,9 +915,9 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * current page index and max button count.
    */
   protected paginate() {
-    if (this.options.get('paging')) {
+    if (this._options.get('paging')) {
       let pageButtonCount: number = Math.min(
-        this.options.get('pageButtonCount'),
+        this._options.get('pageButtonCount'),
         this.getTotalPages()
       );
       let offsetLeft: number = Math.floor(pageButtonCount / 2);
@@ -945,9 +963,9 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {boolean}
    */
   protected isPageSizeOptionsEnabled(): boolean {
-    return this.options.get('paging')
-      && (!_.isEmpty(this.options.get('pageSizeOptions'))
-        || this.options.get('pageSizeOptions') !== false);
+    return this._options.get('paging')
+      && (!_.isEmpty(this._options.get('pageSizeOptions'))
+        || this._options.get('pageSizeOptions') !== false);
   }
 
   /**
@@ -1070,7 +1088,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {boolean}
    */
   protected isSortingAllowed(column: GridColumnComponent): boolean {
-    return this.options.get('sorting') && column.sorting === true;
+    return this._options.get('sorting') && column.sorting === true;
   }
 
   /**
@@ -1095,7 +1113,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns boolean
    */
   protected isRowSelected(row: any): boolean {
-    let id: string = row[this.options.get('uniqueId')];
+    let id: string = row[this._options.get('uniqueId')];
 
     if (_.isUndefined(this.selectionMap[id])) {
       return false;
@@ -1110,7 +1128,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns boolean
    */
   protected isResultsDisplayAllowed(): boolean {
-    if (this.options.get('requireFilters')) {
+    if (this._options.get('requireFilters')) {
       if (!_.isUndefined(this.columns)) {
         for (let column of this.columns) {
           if (!_.isUndefined(this.getFilter(column.name))) {
@@ -1175,7 +1193,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @param {boolean} value
    */
   private setRowSelection(row: any, value?: boolean) {
-    let id: string = row[this.options.get('uniqueId')];
+    let id: string = row[this._options.get('uniqueId')];
 
     let selected: boolean = !_.isUndefined(value) ? value :
       (_.isUndefined(this.selectionMap[id]) || !this.selectionMap[id] ? true : false);
