@@ -19,6 +19,7 @@ import * as _ from 'lodash';
 import { Person } from './models/person';
 
 import DEMO_DATA from './data';
+import {StyleCallback} from "../src/style-callback.interface";
 
 /**
  * Demo component class.
@@ -154,11 +155,17 @@ export class DemoComponent implements OnInit, AfterViewInit {
     console.log(event);
   }
 
-  getCellCssClass(data: any) {
+  /**
+   * cell callback style method
+   *
+   * @param {any} data
+   * @return {string}
+   */
+  getCellCssClass(data: any): string {
     if (data.age > 60) {
-      return 'cell_green';
+      return 'cell-green';
     }
 
-    return 'cell_red';
+    return 'cell-red';
   }
 }

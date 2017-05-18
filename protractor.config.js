@@ -16,8 +16,6 @@ var _ = require('lodash');
 
 
 exports.config = {
-  allScriptsTimeout: 1100000,
-
   directConnect: true,
 
   // Capabilities to be passed to the webdriver instance.
@@ -50,10 +48,17 @@ exports.config = {
     // debugging
     // console.log('browser.params:' + JSON.stringify(browser.params));
     jasmine.getEnv().addReporter(new Reporter( browser.params )) ;
+
+    // Allow changing bootstrap mode to NG1 for upgrade tests
+    global.setProtractorToNg1Mode = function() {
+      browser.useAllAngular2AppRoots = false;
+      browser.rootEl = 'body';
+    };
   },
 
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 60000000,
+    // defaultTimeoutInterval: 60000,
+    defaultTimeoutInterval: 10000,
     showTiming: true,
     print: function() {}
   }

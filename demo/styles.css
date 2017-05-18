@@ -154,10 +154,10 @@ nav a.router-link-active {
   margin-bottom: 15px;
 }
 
-.cell_red {
+.cell-red {
   background-color: red;
 }
 
-.cell_green {
+.cell-green {
   background-color: green;
 }

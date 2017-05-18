@@ -1,6 +1,7 @@
 import { Http } from '@angular/http';
 import { Loadable } from './loadable';
 import * as _ from 'lodash';
+import { StyleCallback } from "./style-callback.interface";
 
 /**
  * Grid options class.
@@ -56,7 +57,7 @@ export class GridOptions extends Loadable {
   protected rowAlternateStyle: boolean;
   protected rowHoverStyle: boolean;
   protected rowSelectionStyle: boolean;
-  protected rowStyleCallback: RowStyleCallback;
+  protected rowStyleCallback: StyleCallback;
   protected filtering: boolean;
   protected selection: boolean;
   protected sortParam: string;
@@ -138,7 +139,5 @@ export class GridOptions extends Loadable {
     return this[param];
   }
 }
-
-export interface RowStyleCallback { (row: any): string; }
 
 export interface DataItemCallback { (row: any): any; }

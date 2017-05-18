@@ -1,13 +1,8 @@
 {
-  "port": 8080,
-  "files": [
-    "**/*.{html,htm,css,js}"
-  ],
   "server": {
     "baseDir": "demo",
     "routes": {
-        "/": ""
+      "/": ""
     }
-  },
-  "open": false
+  }
 }
