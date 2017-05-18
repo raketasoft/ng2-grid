@@ -4,11 +4,14 @@
 ### Features
 
 * **grid:** Add support for transforming json data to model classes (issue #2)
+* **grid:** Add getter/setter for grid options (issue #29)
+* **grid:** Add support for cell style callback
+* **build:** Configure test build and Travis CI
 
 ### Bug Fixes
 
-* **grid:** Fix issue #27
-* **grid:** Fix issue with page button event propagation
+* **grid:** Fix selection issue
+* **build:** Fix list rules/errors
 
 
 <a name="1.0.0-beta.5"></a>
