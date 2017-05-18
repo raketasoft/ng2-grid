@@ -88,7 +88,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       rowHoverStyle: false,
       rowSelectionStyle: true,
       rowStyleCallback: function (row: any) {
-        return row.isMarried ? 'married' : 'not-married';
+        return row.isMarried ? 'red' : 'green';
       },
       selection: true,
       sortParam: 'orderBy',
@@ -153,16 +153,17 @@ export class DemoComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * cell callback style method
+   * Cell callback style method.
    *
    * @param {any} data
+   *
    * @return {string}
    */
   getCellCssClass(data: any): string {
-    if (data.age > 60) {
-      return 'cell-green';
+    if (data.age >= 60) {
+      return 'red';
     }
 
-    return 'cell-red';
+    return 'green';
   }
 }

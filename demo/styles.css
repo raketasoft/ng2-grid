@@ -142,22 +142,14 @@ nav a.router-link-active {
 }
 
 /* custom */
-.married {
+.red {
   color: #fff;
   background: #db687d;
 }
-.not-married {
+.green {
   color: #fff;
   background: #4cae4c;
 }
 .mb-md {
   margin-bottom: 15px;
-}
-
-.cell-red {
-  background-color: red;
-}
-
-.cell-green {
-  background-color: green;
 }
