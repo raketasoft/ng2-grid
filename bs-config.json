@@ -2,7 +2,7 @@
   "server": {
     "baseDir": "demo",
     "routes": {
-      "/": ""
+       "/": ""
     }
   }
 }

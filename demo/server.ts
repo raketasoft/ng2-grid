@@ -15,7 +15,7 @@ import DEMO_DATA from './data';
 const HttpDispatcher = require('httpdispatcher');
 
 const hostname = '127.0.0.1';
-const port = 3000;
+const port = 3030;
 const dispatcher = new HttpDispatcher();
 
 dispatcher.onGet('/', function(request: any, result: any) {

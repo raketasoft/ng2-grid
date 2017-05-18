@@ -1,7 +1,7 @@
 import { Http } from '@angular/http';
 import { Loadable } from './loadable';
 import * as _ from 'lodash';
-import { StyleCallback } from "./style-callback.interface";
+import { StyleCallback } from './style-callback.interface';
 
 /**
  * Grid options class.

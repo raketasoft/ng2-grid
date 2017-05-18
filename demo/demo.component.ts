@@ -35,7 +35,6 @@ import {StyleCallback} from "../src/style-callback.interface";
 })
 export class DemoComponent implements OnInit, AfterViewInit {
   basicOptions: GridOptions;
-  columnOptions: GridOptions;
   remoteDataOptions: GridOptions;
   fullConfigurationOptions: GridOptions;
   @ViewChild('basicGrid') basicGrid: GridComponent;
@@ -54,15 +53,8 @@ export class DemoComponent implements OnInit, AfterViewInit {
       height: '300px'
     });
 
-    this.columnOptions = new GridOptions({
-      headingFixed: true,
-      selection: true,
-      defaultPageSize: 5,
-      pageSizeOptions: [5, 10, 20, 50],
-    });
-
     this.remoteDataOptions = new GridOptions({
-      url: 'http://localhost:3000/',
+      url: 'http://localhost:3030/',
       height: '300px'
     });
 
@@ -103,7 +95,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       sortParam: 'orderBy',
       sorting: true,
       totalCountHeader: 'X-Pagination-Total-Count',
-      url: 'http://localhost:3000/',
+      url: 'http://localhost:3030/',
       width: '100%',
       uniqueId: 'id'
     });
@@ -113,6 +105,12 @@ export class DemoComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.columnGrid.options = new GridOptions({
+      headingFixed: true,
+      selection: true,
+      defaultPageSize: 5,
+      pageSizeOptions: [5, 10, 20, 50],
+    });
     this.columnGrid.setData(_.cloneDeep(DEMO_DATA));
     this.columnGrid.setFilter('country.id', '2');
     this.columnGrid.setSort('id');
