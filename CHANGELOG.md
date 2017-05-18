@@ -1,3 +1,16 @@
+<a name="1.0.0-beta.6"></a>
+# 1.0.0-beta.6 (2017-05-18)
+
+### Features
+
+* **grid:** Add support for transforming json data to model classes (issue #2)
+
+### Bug Fixes
+
+* **grid:** Fix issue #27
+* **grid:** Fix issue with page button event propagation
+
+
 <a name="1.0.0-beta.5"></a>
 # 1.0.0-beta.5 (2017-03-14)
 

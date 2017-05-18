@@ -87,8 +87,8 @@ export class DemoComponent implements OnInit, AfterViewInit {
       rowAlternateStyle: false,
       rowHoverStyle: false,
       rowSelectionStyle: true,
-      rowStyleCallback: function (row: any) {
-        return row.isMarried ? 'red' : 'green';
+      rowStyleCallback: function (item: Person) {
+        return item.isRetired ? 'red' : 'green';
       },
       selection: true,
       sortParam: 'orderBy',
