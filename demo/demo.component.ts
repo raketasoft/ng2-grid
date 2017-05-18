@@ -151,4 +151,18 @@ export class DemoComponent implements OnInit, AfterViewInit {
   onGridEvent(event: GridEvent) {
     console.log(event);
   }
+
+  /**
+   * cell callback style method
+   *
+   * @param {any} data
+   * @return {string}
+   */
+  getCellCssClass(data: any): string {
+    if (data.age > 60) {
+      return 'cell-green';
+    }
+
+    return 'cell-red';
+  }
 }

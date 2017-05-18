@@ -6,6 +6,7 @@ import {
   OnInit
 } from '@angular/core';
 import * as _ from 'lodash';
+import { StyleCallback } from './style-callback.interface';
 
 /**
  * Grid column class.
@@ -30,6 +31,7 @@ export class GridColumnComponent implements OnInit {
   static DEFAULT_FILTERING_VALUE: boolean = true;
   static DEFAULT_SORTING_VALUE: boolean = true;
 
+  @Input() cellStyleCallback: StyleCallback;
   @Input() cssClass: string;
   @Input() heading: string;
   @Input() name: string;
@@ -62,6 +64,11 @@ export class GridColumnComponent implements OnInit {
     }
     if (_.isUndefined(this.type)) {
       this.type = GridColumnComponent.COLUMN_TYPE_STRING;
+    }
+    if (_.isUndefined(this.cellStyleCallback)) {
+      this.cellStyleCallback = () => {
+        return this.cssClass;
+      };
     }
   }
 

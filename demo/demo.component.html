@@ -27,7 +27,7 @@
     </template>
   </ng-grid-column>
   <ng-grid-column
-    cssClass="age"
+    [cellStyleCallback]="getCellCssClass"
     heading="Age"
     name="age"
     textAlign="left"

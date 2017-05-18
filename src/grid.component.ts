@@ -15,7 +15,8 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { GridOptions, DataItemCallback, RowStyleCallback } from './grid-options';
+import { GridOptions, DataItemCallback } from './grid-options';
+import { StyleCallback } from './style-callback.interface';
 import { GridColumnComponent } from './grid-column.component';
 import { GridDataProvider } from './grid-data-provider';
 import { GridEvent } from './grid-event';
@@ -107,7 +108,7 @@ import * as _ from 'lodash';
           <td *ngFor="let column of columns" class="ng-grid-cell"
               [style.width]="column.width"
               [style.text-align]="column.textAlign"
-              [ngClass]="column.cssClass">
+              [ngClass]="column.cellStyleCallback(row)">
             <span *ngIf="column.template">
               <ng-grid-cell-renderer [column]="column" [data]="row">
               </ng-grid-cell-renderer>
@@ -777,7 +778,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       cssClass = this.concatCssClass(cssClass, GridComponent.ROW_HOVER_CLASS);
     }
 
-    let callback: RowStyleCallback = this._options.get('rowStyleCallback');
+    let callback: StyleCallback = this.options.get('rowStyleCallback');
 
     if (callback) {
       cssClass = this.concatCssClass(cssClass, callback(row));
