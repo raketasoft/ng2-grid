@@ -19,7 +19,6 @@ import * as _ from 'lodash';
 import { Person } from './models/person';
 
 import DEMO_DATA from './data';
-import {StyleCallback} from "../src/style-callback.interface";
 
 /**
  * Demo component class.
