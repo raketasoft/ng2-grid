@@ -160,7 +160,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
    * @return {string}
    */
   getCellCssClass(data: any): string {
-    if (data.age >= 60) {
+    if (data.age > 60) {
       return 'red';
     }
 
