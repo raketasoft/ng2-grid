@@ -11,7 +11,7 @@
 ### Bug Fixes
 
 * **grid:** Fix selection issue
-* **build:** Fix list rules/errors
+* **build:** Fix lint rules/errors
 
 
 <a name="1.0.0-beta.5"></a>
