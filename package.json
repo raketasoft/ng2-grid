@@ -82,7 +82,7 @@
     "gulp-typescript": "~3.1.4",
     "httpdispatcher": "^2.0.1",
 
-    "@types/gulp": "^3.8.32",
+    "@types/gulp": "^4.0.0",
     "@types/del": "^2.2.32"
   }
 }
