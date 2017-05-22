@@ -58,7 +58,7 @@ export class MyComponent {
 Configuration examples could be found under the demo application:
 [Demo](https://github.com/raketasoft/ng2-grid/tree/master/demo)
 
-![Image of Ng2 Grid Demo](https://github.com/raketasoft/ng2-grid/tree/master/demo/assets/ng2-grid-demo.png)
+![Image of Ng2 Grid Demo](https://github.com/raketasoft/ng2-grid/blob/master/demo/assets/ng2-grid-demo.png)
 
 ## License
 
