@@ -1,3 +1,12 @@
+<a name="1.0.0-beta.7"></a>
+# 1.0.0-beta.7 (2017-06-19)
+
+### Features
+
+* **grid:** Add single selection support for grid items
+* **package:** Add package-lock.json file
+
+
 <a name="1.0.0-beta.6"></a>
 # 1.0.0-beta.6 (2017-05-18)
 
