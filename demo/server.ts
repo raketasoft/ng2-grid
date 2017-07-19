@@ -37,11 +37,9 @@ dispatcher.onGet('/', function(request: any, result: any) {
 
   let filters: string[] = [];
   for (let filter in query) {
-    if (query.hasOwnProperty(filter)) {
-      if (filter !== 'page' && filter !== 'pageSize' && filter !== 'orderBy'
-          && filter !== 'expand') {
-        filters[filter] = query[filter];
-      }
+    if (filter !== 'page' && filter !== 'pageSize' && filter !== 'orderBy'
+        && filter !== 'expand') {
+      filters[filter] = query[filter];
     }
   }
 

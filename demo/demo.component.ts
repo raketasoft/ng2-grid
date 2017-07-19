@@ -91,6 +91,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
         return item.isRetired ? 'red' : 'green';
       },
       selection: true,
+      selectionMultiple: false,
       sortParam: 'orderBy',
       sorting: true,
       totalCountHeader: 'X-Pagination-Total-Count',

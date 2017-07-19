@@ -44,23 +44,19 @@
     "@angular/platform-browser": "~2.4.0",
     "@angular/platform-browser-dynamic": "~2.4.0",
     "@angular/router": "~3.4.0",
-
     "angular-in-memory-web-api": "~0.2.1",
     "systemjs": "0.19.40",
     "core-js": "^2.4.1",
     "reflect-metadata": "^0.1.8",
     "rxjs": "5.0.1",
     "zone.js": "^0.7.4",
-
     "lodash": "^4.17.4",
-
     "@types/lodash": "4.14.52"
   },
   "devDependencies": {
     "concurrently": "^3.1.0",
     "lite-server": "^2.2.2",
     "typescript": "~2.1.6",
-
     "canonical-path": "0.0.2",
     "http-server": "^0.9.0",
     "tslint": "^3.15.1",
@@ -72,16 +68,13 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "protractor": "~4.0.13",
     "rimraf": "^2.5.4",
-
     "@types/node": "^6.0.46",
     "@types/jasmine": "2.5.36",
     "@types/selenium-webdriver": "2.53.33",
-
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-typescript": "~3.1.4",
     "httpdispatcher": "^2.0.1",
-
     "@types/gulp": "^4.0.0",
     "@types/del": "^2.2.32"
   }

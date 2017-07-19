@@ -46,6 +46,7 @@ import * as _ from 'lodash';
         <tr>
           <th *ngIf="options.get('selection')" class="ng-grid-heading selection">
             <input #selectAll type="checkbox"
+                *ngIf="options.get('selectionMultiple')"
                 [ngModel]="allResultsSelected()"
                 (click)="onSelectAllCheckboxClick(selectAll.checked)">
           </th>
@@ -832,8 +833,10 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @param {boolean} selected
    */
   protected onSelectAllCheckboxClick(selected: boolean) {
-    for (let row of this.getResults()) {
-      this.setRowSelection(row, selected);
+    if (this._options.get('selection') && this._options.get('selectionMultiple')) {
+      for (let row of this.getResults()) {
+        this.setRowSelection(row, selected);
+      }
     }
   }
 
@@ -1199,7 +1202,13 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     let selected: boolean = !_.isUndefined(value) ? value :
       (_.isUndefined(this.selectionMap[id]) || !this.selectionMap[id] ? true : false);
 
-    if (selected && !this.isRowSelected(row)) {
+    let isCurrentRowSelected: boolean = this.isRowSelected(row);
+
+    if (!this._options.get('selectionMultiple')) {
+      this.clearSelection();
+    }
+
+    if (selected && !isCurrentRowSelected) {
       this.selectedItems.push(row);
     } else if (!selected) {
       this.selectedItems.splice(this.selectedItems.indexOf(row), 1);
