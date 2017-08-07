@@ -1,4 +1,4 @@
-import { browser, element, by } from 'protractor';
+import { browser, by, element } from 'protractor';
 
 describe('Demo E2E Tests', function () {
 
@@ -8,8 +8,9 @@ describe('Demo E2E Tests', function () {
     browser.get('');
   });
 
-  it('should display: ' + expectedMsg, function () {
-    expect(element(by.css('h1')).getText()).toEqual(expectedMsg);
+  it('should display: ' + expectedMsg, async () => {
+    let headerText = await element(by.css('h1')).getText();
+    expect(headerText).toEqual(expectedMsg);
   });
 
 });
