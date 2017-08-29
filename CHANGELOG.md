@@ -1,3 +1,13 @@
+<a name="1.0.0-beta.8"></a>
+# 1.0.0-beta.8 (2017-08-29)
+
+### Features
+
+* **package:** Update Angular to 4.x along with related dependencies
+* **build:** Bump node version for CI to 6.x
+* **build:** Fix tslint rules
+
+
 <a name="1.0.0-beta.7"></a>
 # 1.0.0-beta.7 (2017-06-19)
 
