@@ -1,21 +1,21 @@
 import {
-  Component,
-  Input,
-  ElementRef,
-  Renderer,
-  HostListener,
-  OnInit,
   AfterContentInit,
   AfterViewInit,
+  ChangeDetectorRef,
+  Component,
   ContentChildren,
-  QueryList,
-  ViewChild,
-  Output,
+  ElementRef,
   EventEmitter,
-  ChangeDetectorRef
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+  QueryList,
+  Renderer,
+  ViewChild
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { GridOptions, DataItemCallback } from './grid-options';
+import { DataItemCallback, GridOptions } from './grid-options';
 import { StyleCallback } from './style-callback.interface';
 import { GridColumnComponent } from './grid-column.component';
 import { GridDataProvider } from './grid-data-provider';
@@ -130,11 +130,11 @@ import * as _ from 'lodash';
         (click)="onPageButtonClick($event)">First</a>
       <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="getPageIndex() - 1"
         (click)="onPageButtonClick($event)">Prev</a>
-      <template ngFor let-page [ngForOf]="pages">
+      <ng-template ngFor let-page [ngForOf]="pages">
         <a href="#" *ngIf="page != getPageIndex()" [attr.data-page]="page"
           (click)="onPageButtonClick($event)">{{page}}</a>
         <span *ngIf="page == getPageIndex()">{{page}}</span>
-      </template>
+      </ng-template>
       <a href="#" *ngIf="getPageIndex() < getTotalPages()"
         [attr.data-page]="getPageIndex() + 1"
         (click)="onPageButtonClick($event)">Next</a>
@@ -157,9 +157,9 @@ import * as _ from 'lodash';
 </div>`
 })
 export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
-  static ROW_ALT_CLASS: string = 'alt';
-  static ROW_HOVER_CLASS: string = 'hover';
-  static ROW_SELECT_CLASS: string = 'select';
+  static ROW_ALT_CLASS = 'alt';
+  static ROW_HOVER_CLASS = 'hover';
+  static ROW_SELECT_CLASS = 'select';
 
   @ContentChildren(GridColumnComponent) columnList: QueryList<GridColumnComponent>;
   @Output() filterChange: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();

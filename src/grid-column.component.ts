@@ -21,15 +21,15 @@ import { StyleCallback } from './style-callback.interface';
   'template': ''
 })
 export class GridColumnComponent implements OnInit {
-  static FILTER_TYPE_SELECT: string = 'select';
-  static FILTER_TYPE_INPUT: string = 'input';
+  static FILTER_TYPE_SELECT = 'select';
+  static FILTER_TYPE_INPUT = 'input';
 
-  static COLUMN_TYPE_STRING: string = 'string';
-  static COLUMN_TYPE_NUMBER: string = 'number';
+  static COLUMN_TYPE_STRING = 'string';
+  static COLUMN_TYPE_NUMBER = 'number';
 
-  static DEFAULT_CSS_CLASS_VALUE: string = '';
-  static DEFAULT_FILTERING_VALUE: boolean = true;
-  static DEFAULT_SORTING_VALUE: boolean = true;
+  static DEFAULT_CSS_CLASS_VALUE = '';
+  static DEFAULT_FILTERING_VALUE = true;
+  static DEFAULT_SORTING_VALUE = true;
 
   @Input() cellStyleCallback: StyleCallback;
   @Input() cssClass: string;

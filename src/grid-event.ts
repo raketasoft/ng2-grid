@@ -9,14 +9,14 @@ import { Loadable } from './loadable';
  * @since 1.0.0-alpha.15
  */
 export class GridEvent extends Loadable {
-  static FILTER_CHANGE_EVENT: string = 'filterChange';
-  static ITEM_SELECT_EVENT: string = 'itemSelect';
-  static PAGE_CHANGE_EVENT: string = 'pageChange';
-  static PAGE_SIZE_CHANGE_EVENT: string = 'pageSizeChange';
-  static REQUEST_SEND_EVENT: string = 'requestSend';
-  static SERVER_ERROR_EVENT: string = 'serverError';
-  static SORT_CHANGE_EVENT: string = 'sortChange';
-  static UPDATE_EVENT: string = 'update';
+  static FILTER_CHANGE_EVENT = 'filterChange';
+  static ITEM_SELECT_EVENT = 'itemSelect';
+  static PAGE_CHANGE_EVENT = 'pageChange';
+  static PAGE_SIZE_CHANGE_EVENT = 'pageSizeChange';
+  static REQUEST_SEND_EVENT = 'requestSend';
+  static SERVER_ERROR_EVENT = 'serverError';
+  static SORT_CHANGE_EVENT = 'sortChange';
+  static UPDATE_EVENT = 'update';
 
   data: any;
   target: any;

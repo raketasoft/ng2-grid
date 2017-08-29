@@ -14,18 +14,18 @@ import 'rxjs/Rx';
  * @since 1.0.0-alpha.1
  */
 export class GridDataProvider extends Loadable {
-  static DEFAULT_PAGE_PARAM_VALUE: string = 'page';
-  static DEFAULT_PAGE_SIZE_PARAM_VALUE: string = 'pageSize';
-  static DEFAULT_PAGE_SIZE_VALUE: number = 20;
-  static DEFAULT_SORT_PARAM_VALUE: string = 'orderBy';
-  static DEFAULT_TOTAL_COUNT_HEADER_VALUE: string = 'X-Pagination-Total-Count';
-  static SORT_ASC: string = 'asc';
-  static SORT_DESC: string = 'desc';
+  static DEFAULT_PAGE_PARAM_VALUE = 'page';
+  static DEFAULT_PAGE_SIZE_PARAM_VALUE = 'pageSize';
+  static DEFAULT_PAGE_SIZE_VALUE = 20;
+  static DEFAULT_SORT_PARAM_VALUE = 'orderBy';
+  static DEFAULT_TOTAL_COUNT_HEADER_VALUE = 'X-Pagination-Total-Count';
+  static SORT_ASC = 'asc';
+  static SORT_DESC = 'desc';
 
   pageParam: string;
   pageSizeParam: string;
   pageSize: any;
-  pageIndex: number = 1;
+  pageIndex = 1;
   requestParams: Array<any>;
   sortParam: string;
   sourceData: Array<any>;
