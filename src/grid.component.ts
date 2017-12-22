@@ -15,6 +15,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
+import { Subject } from "rxjs/Subject";
 import { DataItemCallback, GridOptions } from './grid-options';
 import { StyleCallback } from './style-callback.interface';
 import { GridColumnComponent } from './grid-column.component';
@@ -182,6 +183,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   private pages: Array<number> = [];
   private selectionMap: Array<any> = [];
   private selectedItems: Array<any> = [];
+  private dataIsLoaded: Subject<boolean> = new Subject<boolean>();
 
   private headerOffsetTop: number;
   private headerOffsetHeight: number;
@@ -235,6 +237,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     if (!_.isUndefined(this._options.get('httpService'))) {
       this.http = this._options.get('httpService');
     }
+    this.dataIsLoaded.subscribe(() => this.updateGrid());
   }
 
   /**
@@ -295,6 +298,10 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   setResults(results: Array<any>) {
     this.dataProvider.setData(this.formatData(results));
+
+    if (this._options.get('pageByPageLoading') && this.isResultsDisplayAllowed()) {
+      this.dataIsLoaded.next(true);
+    }
   }
 
   /**
@@ -414,12 +421,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
     if (value) {
       this.filters[columnName] = value;
-      if (!_.isUndefined(this._options.get('url'))) {
+      if (this.isDataSetAsync()) {
         this.dataProvider.requestParams[columnName] = value;
       }
     } else if (this.filters[columnName]) {
       delete this.filters[columnName];
-      if (!_.isUndefined(this._options.get('url'))) {
+      if (this.isDataSetAsync()) {
         delete this.dataProvider.requestParams[columnName];
       }
     }
@@ -568,24 +575,14 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       return false;
     }
 
-    if (_.isUndefined(this._options.get('url'))) {
+    if (!this.isDataSetAsync()) {
       this.filter();
-      this.refresh();
-
-      this.update.emit(new GridEvent({
-        data: this.getResults(),
-        type: GridEvent.UPDATE_EVENT
-      }));
+      this.updateGrid();
     } else if (this.isResultsDisplayAllowed()) {
       this.dataProvider.fetch().subscribe(
         (res: Response) => {
           this.setResults(res.json());
-          this.refresh();
-
-          this.update.emit(new GridEvent({
-            data: this.getResults(),
-            type: GridEvent.UPDATE_EVENT
-          }));
+          this.updateGrid();
         },
         (err: any) => {
           console.log(err);
@@ -603,6 +600,39 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     } else {
       this.setData([]);
     }
+  }
+
+  /**
+   * Update grid
+   */
+  updateGrid() {
+    this.refresh();
+
+    this.update.emit(new GridEvent({
+      data: this.getResults(),
+      type: GridEvent.UPDATE_EVENT
+    }));
+  }
+
+  /**
+   * Check if displaying results is allowed.
+   *
+   * @returns boolean
+   */
+  isResultsDisplayAllowed(): boolean {
+    if (this._options.get('requireFilters')) {
+      if (!_.isUndefined(this.columns)) {
+        for (let column of this.columns) {
+          if (!_.isUndefined(this.getFilter(column.name))) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -894,6 +924,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       requestParams: this._options.get('additionalRequestParams'),
       sortParam: this._options.get('sortParam'),
       sourceUrl: this._options.get('url'),
+      pageByPageLoading: this._options.get('pageByPageLoading'),
       totalCountHeader: this._options.get('totalCountHeader')
     });
 
@@ -1127,27 +1158,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
-   * Check if displaying results is allowed.
-   *
-   * @returns boolean
-   */
-  protected isResultsDisplayAllowed(): boolean {
-    if (this._options.get('requireFilters')) {
-      if (!_.isUndefined(this.columns)) {
-        for (let column of this.columns) {
-          if (!_.isUndefined(this.getFilter(column.name))) {
-            return true;
-          }
-        }
-      }
-
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
    * Start grid body drag.
    *
    * @param {MouseEvent} event
@@ -1242,5 +1252,14 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     }
 
     return firstKey;
+  }
+
+  /**
+   * Checks is data loaded asynchronously
+   *
+   * @returns {boolean}
+   */
+  private isDataSetAsync(): boolean {
+    return !_.isUndefined(this._options.get('url')) || this._options.get('pageByPageLoading');
   }
 }
