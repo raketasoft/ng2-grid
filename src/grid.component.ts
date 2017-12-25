@@ -578,7 +578,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     if (!this.isDataSetAsync()) {
       this.filter();
       this.updateGrid();
-    } else if (this.isResultsDisplayAllowed()) {
+    } else if (!this._options.get('pageByPageLoading')) {
       this.dataProvider.fetch().subscribe(
         (res: Response) => {
           this.setResults(res.json());
