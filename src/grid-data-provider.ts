@@ -31,6 +31,7 @@ export class GridDataProvider extends Loadable {
   sourceData: Array<any>;
   sourceUrl: string;
   totalCountHeader: string;
+  pageByPageLoading: boolean;
 
   private data: Array<any> = [];
   private sortColumn: string;
@@ -73,7 +74,7 @@ export class GridDataProvider extends Loadable {
    * @returns {Array<any>}
    */
   getData(): Array<any> {
-    if (_.isUndefined(this.sourceUrl)) {
+    if (!this.isDataSetAsync()) {
       this.sort();
       this.slice();
     }
@@ -105,7 +106,7 @@ export class GridDataProvider extends Loadable {
    * @returns {number}
    */
   getTotalCount(): number {
-    if (_.isUndefined(this.sourceUrl) && !_.isUndefined(this.sourceData)) {
+    if (!this.isDataSetAsync() && !_.isUndefined(this.sourceData)) {
       this.totalCount = this.sourceData.length;
     }
 
@@ -230,5 +231,14 @@ export class GridDataProvider extends Loadable {
     if (!_.isUndefined(this.sortColumn)) {
       this.sourceData = _.orderBy(this.sourceData, [this.sortColumn], [this.sortType]);
     }
+  }
+
+  /**
+   * Checks is data loaded asynchronously
+   *
+   * @returns {boolean}
+   */
+  private isDataSetAsync(): boolean {
+    return !_.isUndefined(this.sourceUrl) || this.pageByPageLoading;
   }
 }
