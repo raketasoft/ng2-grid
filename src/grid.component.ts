@@ -237,7 +237,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     if (!_.isUndefined(this._options.get('httpService'))) {
       this.http = this._options.get('httpService');
     }
-    this.dataIsLoaded.subscribe(() => this.updateGrid());
+    this.dataIsLoaded.subscribe(() => this.refresh());
   }
 
   /**
@@ -577,37 +577,41 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
     if (!this.isDataSetAsync()) {
       this.filter();
-      this.updateGrid();
-    } else if (!this._options.get('pageByPageLoading')) {
-      this.dataProvider.fetch().subscribe(
-        (res: Response) => {
-          this.setResults(res.json());
-          this.updateGrid();
-        },
-        (err: any) => {
-          console.log(err);
+      this.refresh();
+      this.emitUpdateEvent();
+    } else if (this.isResultsDisplayAllowed()) {
+      if (!this._options.get('pageByPageLoading')) {
+        this.dataProvider.fetch().subscribe(
+          (res: Response) => {
+            this.setResults(res.json());
+            this.refresh();
+            this.emitUpdateEvent();
+          },
+          (err: any) => {
+            console.log(err);
 
-          this.serverError.emit(new GridEvent({
-            data: err,
-            type: GridEvent.SERVER_ERROR_EVENT
-          }));
-        }
-      );
+            this.serverError.emit(new GridEvent({
+              data: err,
+              type: GridEvent.SERVER_ERROR_EVENT
+            }));
+          }
+        );
 
-      this.requestSend.emit(new GridEvent({
-        type: GridEvent.REQUEST_SEND_EVENT
-      }));
+        this.requestSend.emit(new GridEvent({
+          type: GridEvent.REQUEST_SEND_EVENT
+        }));
+      } else {
+        this.emitUpdateEvent();
+      }
     } else {
       this.setData([]);
     }
   }
 
   /**
-   * Update grid
+   * Emit grid update event
    */
-  updateGrid() {
-    this.refresh();
-
+  emitUpdateEvent() {
     this.update.emit(new GridEvent({
       data: this.getResults(),
       type: GridEvent.UPDATE_EVENT
