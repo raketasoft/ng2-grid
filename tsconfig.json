@@ -9,6 +9,7 @@
     "experimentalDecorators": true,
     "lib": [ "es2015", "dom" ],
     "noImplicitAny": true,
+    "noUnusedLocals": true,
     "suppressImplicitAnyIndexErrors": true
   }
 }
