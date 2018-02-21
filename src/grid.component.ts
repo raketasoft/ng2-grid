@@ -726,7 +726,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       let match = true;
       for (let filter in self.filters) {
         if (self.filters.hasOwnProperty(filter)) {
-          let value: string = _.get(item, filter, '').toString();
+          let result: any = _.get(item, filter, '');
+          let value: string = result !== null ? result.toString() : '';
           let column: GridColumnComponent = self.getColumn(filter);
 
           if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
