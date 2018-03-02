@@ -1,3 +1,17 @@
+<a name="1.0.0-beta.9"></a>
+# 1.0.0-beta.9 (2018-02-21)
+
+### Features
+
+* **build:** Bump node version for CI to latest
+* **build:** Fix tslint warnings
+
+### Bug Fixes
+
+* **grid:** Fix issue #37
+* **grid:** Fix issue with sticky header
+
+
 <a name="1.0.0-beta.8"></a>
 # 1.0.0-beta.8 (2017-08-29)
 

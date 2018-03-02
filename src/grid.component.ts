@@ -653,6 +653,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   @HostListener('window:scroll', ['$event'])
   protected onWindowScroll(event: UIEvent) {
     if (this._options.get('headingFixed')) {
+      let documentScrollTop: number = document.documentElement.scrollTop || document.body.scrollTop;
       this.headerRef.nativeElement.style.top = '0';
       this.headerOffsetTop = this.headerRef.nativeElement.offsetTop;
       this.headerOffsetHeight = this.headerRef.nativeElement.offsetHeight;
@@ -660,7 +661,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       this.bodyOffsetHeight = this.bodyRef.nativeElement.offsetHeight;
       this.headerTopLimit = this.bodyOffsetHeight + this.bodyOffsetTop
           - this.headerOffsetTop - this.headerOffsetHeight;
-      this.headerTop = document.body.scrollTop - this.headerOffsetTop;
+      this.headerTop = documentScrollTop - this.headerOffsetTop;
 
       if (!_.isNull(this.headerRef.nativeElement.offsetParent) &&
           !_.isNull(this.headerRef.nativeElement.offsetParent.offsetTop)) {
@@ -759,7 +760,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       let match = true;
       for (let filter in self.filters) {
         if (self.filters.hasOwnProperty(filter)) {
-          let value: string = _.get(item, filter, '').toString();
+          let result: any = _.get(item, filter, '');
+          let value: string = result !== null ? result.toString() : '';
           let column: GridColumnComponent = self.getColumn(filter);
 
           if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
