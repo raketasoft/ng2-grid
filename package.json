@@ -1,6 +1,6 @@
 {
   "name": "me-grid",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Lightweight data grid component for Angular 2",
   "scripts": {
     "clean": "gulp clean",
