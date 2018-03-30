@@ -1230,9 +1230,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       this.selectedItems.splice(this.selectedItems.indexOf(row), 1);
     }
 
+    const previousData = this.selectionMap[id];
     this.selectionMap[id] = selected;
 
     this.itemSelect.emit(new GridEvent({
+      previousData,
       data: selected,
       target: row,
       type: GridEvent.ITEM_SELECT_EVENT
