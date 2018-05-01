@@ -5,7 +5,7 @@ import {
   OnInit,
   AfterViewInit
 } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 import {
   GridComponent,
@@ -42,7 +42,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
   countryItems: Array<any>;
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private changeDetectorRef: ChangeDetectorRef
   ) { }
 
