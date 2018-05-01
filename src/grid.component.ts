@@ -14,13 +14,13 @@ import {
   Renderer,
   ViewChild
 } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import * as _ from 'lodash';
 import { DataItemCallback, GridOptions } from './grid-options';
 import { StyleCallback } from './style-callback.interface';
 import { GridColumnComponent } from './grid-column.component';
 import { GridDataProvider } from './grid-data-provider';
 import { GridEvent } from './grid-event';
-import * as _ from 'lodash';
 
 /**
  * Data grid component class.
@@ -34,127 +34,129 @@ import * as _ from 'lodash';
 @Component({
   selector: 'ng-grid',
   template: `
-<div class="ng-grid"
-  (mousedown)="onGridMouseDown($event)"
-  (mousemove)="onGridMouseMove($event)"
-  (dragstart)="onGridDragStart($event)">
-  <div #header class="ng-grid-header"
-      [class.scroll]="options.get('height')"
-      [style.width]="options.get('width')">
-    <table [class]="getHeadingCssClass()" [style.width]="options.get('width')">
-      <thead *ngIf="options.get('heading')">
-        <tr>
-          <th *ngIf="options.get('selection')" class="ng-grid-heading selection">
-            <input #selectAll type="checkbox"
-                *ngIf="options.get('selectionMultiple')"
-                [ngModel]="allResultsSelected()"
-                (click)="onSelectAllCheckboxClick(selectAll.checked)">
-          </th>
-          <th *ngFor="let column of columns" class="ng-grid-heading"
-              [style.width]="column.width"
-              [class.sort]="isSortedBy(column)"
-              [class.sort-asc]="isSortedBy(column, 'asc')"
-              [class.sort-desc]="isSortedBy(column, 'desc')"
-              [class.sort-disable]="!isSortingAllowed(column)"
-              [ngClass]="column.cssClass"
-              (click)="onHeadingClick(column)">
-            {{column.resolveHeading()}}
-          </th>
-        </tr>
-      </thead>
-      <tbody *ngIf="options.get('filtering')">
-        <tr>
-          <td *ngIf="options.get('selection')" class="ng-grid-filter selection"></td>
-          <td *ngFor="let column of columns" class="ng-grid-filter">
-            <input type="text" *ngIf="isInputFilterEnabled(column)"
-                [ngModel]="getFilter(column.name)"
-                (keyup.enter)="onInputFilterEnter($event, column)"
-                (blur)="onInputFilterBlur($event, column)"
-                (change)="onInputFilterChange($event, column)" />
-            <select *ngIf="isSelectFilterEnabled(column)"
-                [ngModel]="getFilter(column.name)"
-                (ngModelChange)="onSelectFilterChange($event, column)">
-              <option></option>
-              <option
-                *ngFor="let item of column.items"
-                [value]="item[column.valueField]">{{item[column.textField]}}</option>
-            </select>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div #body class="ng-grid-body"
-      [class.scroll]="options.get('height')"
-      (scroll)="onBodyScroll(body, header)"
-      [style.width]="options.get('width')"
-      [style.max-height]="options.get('height')">
-    <p *ngIf="!isResultsDisplayAllowed()" [style.width]="fullTableWidth">
-      To view results please add search filters
-    </p>
-    <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="fullTableWidth">
-      No results found
-    </p>
-    <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
-      *ngIf="isResultsDisplayAllowed()">
-      <tbody>
-        <tr *ngFor="let row of getResults(); let i = index"
-            [class]="getRowCssClass(i, row)"
-            (click)="onRowClick(row)">
-          <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
-            <input type="checkbox"
-                [ngModel]="isRowSelected(row)"
-                (click)="onSelectItemCheckboxClick($event, row)">
-          </td>
-          <td *ngFor="let column of columns" class="ng-grid-cell"
-              [style.width]="column.width"
-              [style.text-align]="column.textAlign"
-              [ngClass]="column.cellStyleCallback(row)">
+      <div class="ng-grid"
+           (mousedown)="onGridMouseDown($event)"
+           (mousemove)="onGridMouseMove($event)"
+           (dragstart)="onGridDragStart($event)">
+          <div #header class="ng-grid-header"
+               [class.scroll]="options.get('height')"
+               [style.width]="options.get('width')">
+              <table [class]="getHeadingCssClass()" [style.width]="options.get('width')">
+                  <thead *ngIf="options.get('heading')">
+                  <tr>
+                      <th *ngIf="options.get('selection')" class="ng-grid-heading selection">
+                          <input #selectAll type="checkbox"
+                                 *ngIf="options.get('selectionMultiple')"
+                                 [ngModel]="allResultsSelected()"
+                                 (click)="onSelectAllCheckboxClick(selectAll.checked)">
+                      </th>
+                      <th *ngFor="let column of columns" class="ng-grid-heading"
+                          [style.width]="column.width"
+                          [class.sort]="isSortedBy(column)"
+                          [class.sort-asc]="isSortedBy(column, 'asc')"
+                          [class.sort-desc]="isSortedBy(column, 'desc')"
+                          [class.sort-disable]="!isSortingAllowed(column)"
+                          [ngClass]="column.cssClass"
+                          (click)="onHeadingClick(column)">
+                          {{column.resolveHeading()}}
+                      </th>
+                  </tr>
+                  </thead>
+                  <tbody *ngIf="options.get('filtering')">
+                  <tr>
+                      <td *ngIf="options.get('selection')" class="ng-grid-filter selection"></td>
+                      <td *ngFor="let column of columns" class="ng-grid-filter">
+                          <input type="text" *ngIf="isInputFilterEnabled(column)"
+                                 [ngModel]="getFilter(column.name)"
+                                 (keyup.enter)="onInputFilterEnter($event, column)"
+                                 (blur)="onInputFilterBlur($event, column)"
+                                 (change)="onInputFilterChange($event, column)"/>
+                          <select *ngIf="isSelectFilterEnabled(column)"
+                                  [ngModel]="getFilter(column.name)"
+                                  (ngModelChange)="onSelectFilterChange($event, column)">
+                              <option></option>
+                              <option
+                                      *ngFor="let item of column.items"
+                                      [value]="item[column.valueField]">{{item[column.textField]}}
+                              </option>
+                          </select>
+                      </td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div #body class="ng-grid-body"
+               [class.scroll]="options.get('height')"
+               (scroll)="onBodyScroll(body, header)"
+               [style.width]="options.get('width')"
+               [style.max-height]="options.get('height')">
+              <p *ngIf="!isResultsDisplayAllowed()" [style.width]="fullTableWidth">
+                  To view results please add search filters
+              </p>
+              <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="fullTableWidth">
+                  No results found
+              </p>
+              <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
+                     *ngIf="isResultsDisplayAllowed()">
+                  <tbody>
+                  <tr *ngFor="let row of getResults(); let i = index"
+                      [class]="getRowCssClass(i, row)"
+                      (click)="onRowClick(row)">
+                      <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
+                          <input type="checkbox"
+                                 [ngModel]="isRowSelected(row)"
+                                 (click)="onSelectItemCheckboxClick($event, row)">
+                      </td>
+                      <td *ngFor="let column of columns" class="ng-grid-cell"
+                          [style.width]="column.width"
+                          [style.text-align]="column.textAlign"
+                          [ngClass]="column.cellStyleCallback(row)">
             <span *ngIf="column.template">
               <ng-grid-cell-renderer [column]="column" [data]="row">
               </ng-grid-cell-renderer>
             </span>
-            <span *ngIf="!column.template">
+                          <span *ngIf="!column.template">
               {{column.resolveCell(row)}}
             </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div #footer class="ng-grid-footer clearfix">
-    <div class="ng-grid-pager {{options.get('pageElementPosition')}}"
-      *ngIf="options.paging && isResultsDisplayAllowed()">
-      <span>Pages:</span>
-      <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="1"
-        (click)="onPageButtonClick($event)">First</a>
-      <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="getPageIndex() - 1"
-        (click)="onPageButtonClick($event)">Prev</a>
-      <ng-template ngFor let-page [ngForOf]="pages">
-        <a href="#" *ngIf="page != getPageIndex()" [attr.data-page]="page"
-          (click)="onPageButtonClick($event)">{{page}}</a>
-        <span *ngIf="page == getPageIndex()">{{page}}</span>
-      </ng-template>
-      <a href="#" *ngIf="getPageIndex() < getTotalPages()"
-        [attr.data-page]="getPageIndex() + 1"
-        (click)="onPageButtonClick($event)">Next</a>
-      <a href="#" *ngIf="getPageIndex() < getTotalPages()"
-        [attr.data-page]="getTotalPages()"
-        (click)="onPageButtonClick($event)">Last</a>
-      <span>{{getPageIndex()}} of {{getTotalPages()}}</span>
-    </div>
-    <div class="ng-grid-pager-size {{options.get('pageSizeElementPosition')}}"
-      *ngIf="isPageSizeOptionsEnabled()">
-      <span>Page size:</span>
-      <select [ngModel]="getPageSize()"
-        (ngModelChange)="onPageSizeDropDownChange($event)">
-        <option
-          *ngFor="let value of options.get('pageSizeOptions')"
-          [value]="value">{{value}}</option>
-      </select>
-    </div>
-  </div>
-</div>`
+                      </td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div #footer class="ng-grid-footer clearfix">
+              <div class="ng-grid-pager {{options.get('pageElementPosition')}}"
+                   *ngIf="options.paging && isResultsDisplayAllowed()">
+                  <span>Pages:</span>
+                  <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="1"
+                     (click)="onPageButtonClick($event)">First</a>
+                  <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="getPageIndex() - 1"
+                     (click)="onPageButtonClick($event)">Prev</a>
+                  <ng-template ngFor let-page [ngForOf]="pages">
+                      <a href="#" *ngIf="page != getPageIndex()" [attr.data-page]="page"
+                         (click)="onPageButtonClick($event)">{{page}}</a>
+                      <span *ngIf="page == getPageIndex()">{{page}}</span>
+                  </ng-template>
+                  <a href="#" *ngIf="getPageIndex() < getTotalPages()"
+                     [attr.data-page]="getPageIndex() + 1"
+                     (click)="onPageButtonClick($event)">Next</a>
+                  <a href="#" *ngIf="getPageIndex() < getTotalPages()"
+                     [attr.data-page]="getTotalPages()"
+                     (click)="onPageButtonClick($event)">Last</a>
+                  <span>{{getPageIndex()}} of {{getTotalPages()}}</span>
+              </div>
+              <div class="ng-grid-pager-size {{options.get('pageSizeElementPosition')}}"
+                   *ngIf="isPageSizeOptionsEnabled()">
+                  <span>Page size:</span>
+                  <select [ngModel]="getPageSize()"
+                          (ngModelChange)="onPageSizeDropDownChange($event)">
+                      <option
+                              *ngFor="let value of options.get('pageSizeOptions')"
+                              [value]="value">{{value}}
+                      </option>
+                  </select>
+              </div>
+          </div>
+      </div>`
 })
 export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   static ROW_ALT_CLASS = 'alt';
@@ -197,12 +199,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Class constructor.
    *
    * @param {Http} http
+   * @param {Renderer} renderer
+   * @param {ChangeDetectorRef} changeDetector
    */
-  constructor(
-    private http: Http,
-    private renderer: Renderer,
-    private changeDetector: ChangeDetectorRef
-  ) {
+  constructor(private http: HttpClient,
+              private renderer: Renderer,
+              private changeDetector: ChangeDetectorRef) {
     this.http = http;
     this.dataProvider = new GridDataProvider(this.http, this._options);
   }
@@ -578,8 +580,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       }));
     } else if (this.isResultsDisplayAllowed()) {
       this.dataProvider.fetch().subscribe(
-        (res: Response) => {
-          this.setResults(res.json());
+        (res: HttpResponse<any>) => {
+          this.setResults(res.body);
           this.refresh();
 
           this.update.emit(new GridEvent({
@@ -626,12 +628,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       this.bodyOffsetTop = this.bodyRef.nativeElement.offsetTop;
       this.bodyOffsetHeight = this.bodyRef.nativeElement.offsetHeight;
       this.headerTopLimit = this.bodyOffsetHeight + this.bodyOffsetTop
-          - this.headerOffsetTop - this.headerOffsetHeight;
+        - this.headerOffsetTop - this.headerOffsetHeight;
       this.headerTop = documentScrollTop - this.headerOffsetTop;
 
       if (!_.isNull(this.headerRef.nativeElement.offsetParent) &&
-          !_.isNull(this.headerRef.nativeElement.offsetParent.offsetTop)) {
-          this.headerTop -= this.headerRef.nativeElement.offsetParent.offsetTop;
+        !_.isNull(this.headerRef.nativeElement.offsetParent.offsetTop)) {
+        this.headerTop -= this.headerRef.nativeElement.offsetParent.offsetTop;
       }
 
       const banner: Element = document.body.querySelector('[role="banner"]');
@@ -722,7 +724,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected filter() {
     const self: GridComponent = this;
 
-    this.dataProvider.sourceData = _.filter(this.data, function(item: any) {
+    this.dataProvider.sourceData = _.filter(this.data, function (item: any) {
       let match = true;
       for (let filter in self.filters) {
         if (self.filters.hasOwnProperty(filter)) {
@@ -750,7 +752,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected isInputFilterEnabled(column: GridColumnComponent) {
     return (column.filterType === GridColumnComponent.FILTER_TYPE_INPUT
-        && column.filtering === true);
+    && column.filtering === true);
   }
 
   /**
@@ -761,7 +763,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected isSelectFilterEnabled(column: GridColumnComponent) {
     return (column.filterType === GridColumnComponent.FILTER_TYPE_SELECT
-        && column.filtering === true);
+    && column.filtering === true);
   }
 
   /**
@@ -971,7 +973,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected isPageSizeOptionsEnabled(): boolean {
     return this._options.get('paging')
       && (!_.isEmpty(this._options.get('pageSizeOptions'))
-        || this._options.get('pageSizeOptions') !== false);
+      || this._options.get('pageSizeOptions') !== false);
   }
 
   /**
@@ -1063,7 +1065,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     }
 
     let isOrderedByField: boolean =
-        column.name === this.dataProvider.getSortColumn();
+      column.name === this.dataProvider.getSortColumn();
 
     if (_.isUndefined(sortType)) {
       return isOrderedByField;
@@ -1083,8 +1085,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected getSortType(column: GridColumnComponent): string {
     return column.name !== this.dataProvider.getSortColumn() ?
       this.dataProvider.getSortType() :
-        (this.dataProvider.getSortType() === GridDataProvider.SORT_ASC ?
-          GridDataProvider.SORT_DESC : GridDataProvider.SORT_ASC);
+      (this.dataProvider.getSortType() === GridDataProvider.SORT_ASC ?
+        GridDataProvider.SORT_DESC : GridDataProvider.SORT_ASC);
   }
 
   /**
