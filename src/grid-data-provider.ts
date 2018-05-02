@@ -1,9 +1,8 @@
-import { Http, Response, URLSearchParams } from '@angular/http';
-
 import { Loadable } from './loadable';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 
 /**
  * Data provider class for Grid component.
@@ -40,8 +39,11 @@ export class GridDataProvider extends Loadable {
   /**
    * Class constructor.
    * Set default values for properties if not specified in params.
+   *
+   * @param {HttpClient} http
+   * @param {any} params
    */
-  constructor(private http: Http, params?: any) {
+  constructor(private http: HttpClient, params?: any) {
     super(params);
     if (_.isUndefined(this.sourceData)) {
       this.sourceData = [];
@@ -151,53 +153,44 @@ export class GridDataProvider extends Loadable {
   /**
    * Fetch data from remote service for current page.
    *
-   * @param {number} page
-   * @returns {Observable<Response>}
+   * @returns {Observable<HttpResponse<any>>}
    */
-  fetch(): Observable<Response> {
-    let params: URLSearchParams = this.buildRequestParams();
+  fetch(): Observable<HttpResponse<any>> {
+    let params: HttpParams = this.buildRequestParams();
 
-    let response: Observable<Response> = this.http
-        .get(this.sourceUrl, {search: params})
-        .share();
+    return this.http
+      .get(this.sourceUrl, {observe: 'response', params: params})
+      .map((res: HttpResponse<any>) => {
+        this.setTotalCount(Number(res.headers.get(this.totalCountHeader)));
+        this.setData(res.body);
 
-    response
-      .subscribe(
-        (res: Response) => {
-          this.setTotalCount(Number(res.headers.get(this.totalCountHeader)));
-          this.setData(res.json());
-        },
-        (err: any) => {
-          console.log(err);
-        }
-      );
-
-    return response;
+        return res;
+      }, (err: any) => console.log(err));
   }
 
   /**
    * Build request params.
    *
-   * @returns {URLSearchParams}
+   * @returns {HttpParams}
    */
-  protected buildRequestParams(): URLSearchParams {
-    let params: URLSearchParams = new URLSearchParams();
+  protected buildRequestParams(): HttpParams {
+    let params: HttpParams = new HttpParams();
 
-    params.set(this.pageParam, this.pageIndex.toString());
+    params = params.append(this.pageParam, this.pageIndex.toString());
 
     if (this.pageSize !== false) {
-      params.set(this.pageSizeParam, this.pageSize as string);
+      params = params.append(this.pageSizeParam, this.pageSize as string);
     }
 
     if (!_.isUndefined(this.sortColumn)) {
       let sortByValue: string = (this.sortType === GridDataProvider.SORT_ASC ? '' : '-')
         + this.sortColumn;
-      params.set(this.sortParam, sortByValue);
+      params = params.append(this.sortParam, sortByValue);
     }
 
     for (let key in this.requestParams) {
       if (this.requestParams.hasOwnProperty(key)) {
-        params.set(key, this.requestParams[key]);
+        params = params.append(key, this.requestParams[key]);
       }
     }
 

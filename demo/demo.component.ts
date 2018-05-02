@@ -1,24 +1,13 @@
-import {
-  Component,
-  ViewChild,
-  ChangeDetectorRef,
-  OnInit,
-  AfterViewInit
-} from '@angular/core';
-import { Http } from '@angular/http';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 
-import {
-  GridComponent,
-  GridEvent,
-  GridOptions,
-  GridDataProvider
-} from '../src/index';
+import { GridComponent, GridDataProvider, GridEvent, GridOptions } from '../src/index';
 
 import * as _ from 'lodash';
 
 import { Person } from './models/person';
 
 import DEMO_DATA from './data';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Demo component class.
@@ -41,10 +30,9 @@ export class DemoComponent implements OnInit, AfterViewInit {
   isMarriedItems: Array<any>;
   countryItems: Array<any>;
 
-  constructor(
-    private http: Http,
-    private changeDetectorRef: ChangeDetectorRef
-  ) { }
+  constructor(private http: HttpClient,
+              private changeDetectorRef: ChangeDetectorRef) {
+  }
 
   ngOnInit() {
     this.basicOptions = new GridOptions({
