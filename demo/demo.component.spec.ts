@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 
 import { DemoComponent } from './demo.component';
 
@@ -13,6 +12,7 @@ import {
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By }           from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('DemoComponent', function () {
   let de: DebugElement;
@@ -24,7 +24,7 @@ describe('DemoComponent', function () {
       imports: [
         CommonModule,
         FormsModule,
-        HttpModule
+        HttpClientModule
       ],
       declarations: [
         DemoComponent,
