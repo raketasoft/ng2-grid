@@ -16,8 +16,8 @@ import { GridCellRendererComponent } from './grid-cell-renderer.component';
 @NgModule({
   imports: [
     CommonModule,
+    HttpClientModule,
     FormsModule,
-    HttpClientModule
   ],
   declarations: [
     GridComponent,
