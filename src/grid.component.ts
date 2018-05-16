@@ -14,7 +14,7 @@ import {
   Renderer,
   ViewChild
 } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { DataItemCallback, GridOptions } from './grid-options';
 import { StyleCallback } from './style-callback.interface';
 import { GridColumnComponent } from './grid-column.component';
@@ -89,10 +89,10 @@ import * as _ from 'lodash';
       (scroll)="onBodyScroll(body, header)"
       [style.width]="options.get('width')"
       [style.max-height]="options.get('height')">
-    <p *ngIf="!isResultsDisplayAllowed()" [style.width]="fullTableWidth">
+    <p *ngIf="!isResultsDisplayAllowed()" [style.width]="getFullTableWidth()">
       To view results please add search filters
     </p>
-    <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="fullTableWidth">
+    <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="getFullTableWidth()">
       No results found
     </p>
     <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
@@ -197,9 +197,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Class constructor.
    *
    * @param {Http} http
+   * @param {Renderer} renderer
+   * @param {ChangeDetectorRef} changeDetector
    */
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private renderer: Renderer,
     private changeDetector: ChangeDetectorRef
   ) {
@@ -578,8 +580,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       }));
     } else if (this.isResultsDisplayAllowed()) {
       this.dataProvider.fetch().subscribe(
-        (res: Response) => {
-          this.setResults(res.json());
+        (res: HttpResponse<any>) => {
+          this.setResults(res.body);
           this.refresh();
 
           this.update.emit(new GridEvent({
@@ -666,6 +668,14 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected onWindowMouseUp(event: MouseEvent) {
     this.endBodyDrag();
   }
+
+  /**
+   * Return fullTableWidth value.
+   */
+  protected getFullTableWidth() {
+    return this.fullTableWidth;
+  }
+
 
   /**
    * Handle grid body mousedown event.
@@ -1202,7 +1212,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     let id: string = row[this._options.get('uniqueId')];
 
     let selected: boolean = !_.isUndefined(value) ? value :
-      (_.isUndefined(this.selectionMap[id]) || !this.selectionMap[id] ? true : false);
+      (_.isUndefined(this.selectionMap[id]) || !!this.selectionMap[id]);
 
     let isCurrentRowSelected: boolean = this.isRowSelected(row);
 

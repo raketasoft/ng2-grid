@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { GridComponent } from './grid.component';
 import { GridColumnComponent } from './grid-column.component';
@@ -17,7 +17,7 @@ import { GridCellRendererComponent } from './grid-cell-renderer.component';
   imports: [
     CommonModule,
     FormsModule,
-    HttpModule
+    HttpClientModule
   ],
   declarations: [
     GridComponent,
