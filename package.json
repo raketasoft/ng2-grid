@@ -1,7 +1,7 @@
 {
   "name": "raketasoft-ng2-grid",
-  "version": "1.0.0-beta.9",
-  "description": "Lightweight data grid component for Angular 2",
+  "version": "1.0.0",
+  "description": "Lightweight data grid component for Angular",
   "scripts": {
     "clean": "gulp clean",
     "serve": "lite-server -c=bs-config.json",
