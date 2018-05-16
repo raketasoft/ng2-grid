@@ -1,3 +1,16 @@
+<a name="1.0.0"></a>
+# 1.0.0 (2018-05-16)
+
+### Features
+
+* **grid:** Bump to Angular 5.x
+* **grid:** Migrate to HttpClientModule
+
+### Bug Fixes
+
+* **build:** Fix Chrome version in CI build
+
+
 <a name="1.0.0-beta.9"></a>
 # 1.0.0-beta.9 (2018-02-21)
 
