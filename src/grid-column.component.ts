@@ -44,6 +44,7 @@ export class GridColumnComponent implements OnInit {
   @Input() items: any;
   @Input() textField: string;
   @Input() valueField: string;
+  @Input() sortOptions: Array<number>;
   @ContentChild(TemplateRef) template: TemplateRef<any>;
 
   /**
