@@ -21,7 +21,6 @@ export class GridDataProvider extends Loadable {
   static DEFAULT_TOTAL_COUNT_HEADER_VALUE = 'X-Pagination-Total-Count';
   static SORT_ASC = 'asc';
   static SORT_DESC = 'desc';
-  static SORT_CASE_INSENSITIVE = 1;
 
   pageParam: string;
   pageSizeParam: string;
@@ -37,7 +36,7 @@ export class GridDataProvider extends Loadable {
   private data: Array<any> = [];
   private sortColumn: string;
   private sortType: string = GridDataProvider.SORT_ASC;
-  private sortOptions: Array<number>;
+  private caseInsensitiveSort: boolean;
   private totalCount: number;
 
   /**
@@ -129,14 +128,14 @@ export class GridDataProvider extends Loadable {
    *
    * @param {string} sortColumn Name of grid column to be used for sorting
    * @param {string} sortType Optional, values are 'asc' or 'desc'
-   * @param {Array<number>} sortOptions
+   * @param {boolean} caseInsensitiveSort
    */
-  setSort(sortColumn: string, sortType?: string, sortOptions?: Array<number>) {
+  setSort(sortColumn: string, sortType?: string, caseInsensitiveSort?: boolean) {
     if (!_.isUndefined(sortType)) {
       this.sortType = sortType;
     }
     this.sortColumn = sortColumn;
-    this.sortOptions = sortOptions;
+    this.caseInsensitiveSort = caseInsensitiveSort;
   }
 
   /**
@@ -235,7 +234,7 @@ export class GridDataProvider extends Loadable {
     if (!_.isUndefined(this.sortColumn)) {
       let iteratees: Array<any> = [];
 
-      if (!_.isNil(this.sortOptions) && _.includes(this.sortOptions, GridDataProvider.SORT_CASE_INSENSITIVE)) {
+      if (this.caseInsensitiveSort) {
         iteratees = [(item: any) => item[this.sortColumn].toLowerCase()];
       } else {
         iteratees = [this.sortColumn];
