@@ -30,6 +30,7 @@ export class GridColumnComponent implements OnInit {
   static DEFAULT_CSS_CLASS_VALUE = '';
   static DEFAULT_FILTERING_VALUE = true;
   static DEFAULT_SORTING_VALUE = true;
+  static DEFAULT_CASE_INSENSITIVE_VALUE = false;
 
   @Input() cellStyleCallback: StyleCallback;
   @Input() cssClass: string;
@@ -44,6 +45,7 @@ export class GridColumnComponent implements OnInit {
   @Input() items: any;
   @Input() textField: string;
   @Input() valueField: string;
+  @Input() caseInsensitiveSort: boolean;
   @ContentChild(TemplateRef) template: TemplateRef<any>;
 
   /**
@@ -69,6 +71,9 @@ export class GridColumnComponent implements OnInit {
       this.cellStyleCallback = () => {
         return this.cssClass;
       };
+    }
+    if (_.isUndefined(this.caseInsensitiveSort)) {
+      this.caseInsensitiveSort = GridColumnComponent.DEFAULT_CASE_INSENSITIVE_VALUE;
     }
   }
 

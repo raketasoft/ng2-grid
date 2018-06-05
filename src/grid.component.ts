@@ -514,11 +514,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    *
    * @param {string} columnName Name of grid column to be used for sorting
    * @param {string} sortType Optional, values are 'asc' or 'desc'
+   * @param {boolean} caseInsensitiveSort
    */
-  setSort(columnName: string, sortType?: string) {
+  setSort(columnName: string, sortType?: string, caseInsensitiveSort?: boolean) {
     const column: GridColumnComponent = this.getColumn(columnName);
 
-    this.dataProvider.setSort(columnName, sortType);
+    this.dataProvider.setSort(columnName, sortType, caseInsensitiveSort);
 
     this.sortChange.emit(new GridEvent({
       data: sortType,
@@ -1079,7 +1080,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected onHeadingClick(column: GridColumnComponent) {
     if (this.isSortingAllowed(column)) {
-      this.setSort(column.name, this.getSortType(column));
+      this.setSort(column.name, this.getSortType(column), column.caseInsensitiveSort);
       this.render();
     }
   }
