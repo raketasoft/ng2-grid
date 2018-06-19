@@ -1,7 +1,7 @@
-import { Http, Response, URLSearchParams } from '@angular/http';
+import {Http, Response, URLSearchParams} from '@angular/http';
 
-import { Loadable } from './loadable';
-import { Observable } from 'rxjs/Observable';
+import {Loadable} from './loadable';
+import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
 
@@ -235,13 +235,28 @@ export class GridDataProvider extends Loadable {
       let iteratees: Array<any> = [];
 
       if (this.caseInsensitiveSort) {
-        iteratees = [(item: any) => item[this.sortColumn].toLowerCase()];
+        iteratees = [(item: any) => {
+          const currentItem: any = this.getValue(item, this.sortColumn);
+
+          return currentItem ? currentItem.toLowerCase() : currentItem;
+        }];
       } else {
-        iteratees = [this.sortColumn];
+          iteratees = [(item: any) => this.getValue(item, this.sortColumn)];
       }
 
       this.sourceData = _.orderBy(this.sourceData, iteratees, [this.sortType]);
     }
+  }
+
+  /**
+   * @param item
+   * @param {string} key
+   *
+   * @returns {string}
+   */
+  private getValue(item: any, key: string): string {
+      const currentItem = _.get(item, this.sortColumn, '');
+      return currentItem === null ? '' : currentItem;
   }
 
   /**
