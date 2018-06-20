@@ -1,7 +1,6 @@
-import {Http, Response, URLSearchParams} from '@angular/http';
-
-import {Loadable} from './loadable';
-import {Observable} from 'rxjs/Observable';
+import { Http, Response, URLSearchParams } from '@angular/http';
+import { Loadable } from './loadable';
+import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import 'rxjs/Rx';
 
@@ -251,7 +250,8 @@ export class GridDataProvider extends Loadable {
    * @returns {string}
    */
   private getValueString(item: any, key: string): string {
-      const currentItem = _.get(item, this.sortColumn, '');
+      const currentItem = _.get(item, this.sortColumn, null);
+
       return currentItem === null ? '' : currentItem;
   }
 

@@ -1,8 +1,8 @@
-import {Http, HttpModule} from '@angular/http';
-import {TestBed} from '@angular/core/testing';
-import {map, shuffle} from 'lodash';
+import { Http, HttpModule } from '@angular/http';
+import { TestBed } from '@angular/core/testing';
+import { map, shuffle } from 'lodash';
 
-import {GridDataProvider} from './grid-data-provider';
+import { GridDataProvider } from './grid-data-provider';
 
 /**
  * @param {GridDataProvider} provider
@@ -22,7 +22,10 @@ function shuffleSortAndAssert(
     provider.setSort(key, sortType, caseInsensitiveSort);
     provider.getData();
 
-    expect(map(provider.sourceData, key)).toEqual(map(expectedSortedData, key));
+    const actualColumn: Array<any> = map(provider.sourceData, key);
+    const expectedColumn: Array<any> = map(provider.sourceData, key);
+
+    expect(actualColumn).toEqual(expectedColumn);
 }
 
 describe('GridDataProvider test', () => {
@@ -60,7 +63,6 @@ describe('GridDataProvider test', () => {
         ];
 
         shuffleSortAndAssert(provider, expectedSortedData, 'level1.level2.level3', 'desc');
-
     });
 
     it('should be sorted by level1.level2.level3 asc', () => {
