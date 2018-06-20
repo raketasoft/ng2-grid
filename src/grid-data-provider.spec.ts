@@ -4,32 +4,29 @@ import { map, shuffle } from 'lodash';
 
 import { GridDataProvider } from './grid-data-provider';
 
-/**
- * @param {GridDataProvider} provider
- * @param {Array<any>} expectedSortedData
- * @param {string} key
- * @param {string} sortType
- * @param {boolean} caseInsensitiveSort
- */
-function shuffleSortAndAssert(
-    provider: GridDataProvider,
-    expectedSortedData: Array<any>,
-    key: string,
-    sortType: string,
-    caseInsensitiveSort = false
-) {
-    provider.sourceData = shuffle(expectedSortedData);
-    provider.setSort(key, sortType, caseInsensitiveSort);
-    provider.getData();
-
-    const actualColumn: Array<any> = map(provider.sourceData, key);
-    const expectedColumn: Array<any> = map(provider.sourceData, key);
-
-    expect(actualColumn).toEqual(expectedColumn);
-}
-
 describe('GridDataProvider test', () => {
     let provider: GridDataProvider;
+    /**
+     * @param {Array<any>} expectedSortedData
+     * @param {string} key
+     * @param {string} sortType
+     * @param {boolean} caseInsensitiveSort
+     */
+    const shuffleSortAndAssert = (
+        expectedSortedData: Array<any>,
+        key: string,
+        sortType: string,
+        caseInsensitiveSort = false
+    ) => {
+        provider.sourceData = shuffle(expectedSortedData);
+        provider.setSort(key, sortType, caseInsensitiveSort);
+        provider.getData();
+
+        const actualColumn: Array<any> = map(provider.sourceData, key);
+        const expectedColumn: Array<any> = map(provider.sourceData, key);
+
+        expect(actualColumn).toEqual(expectedColumn);
+    };
 
      beforeEach(() => {
         TestBed.configureTestingModule({
@@ -62,7 +59,7 @@ describe('GridDataProvider test', () => {
             }
         ];
 
-        shuffleSortAndAssert(provider, expectedSortedData, 'level1.level2.level3', 'desc');
+        shuffleSortAndAssert(expectedSortedData, 'level1.level2.level3', 'desc');
     });
 
     it('should be sorted by level1.level2.level3 asc', () => {
@@ -86,7 +83,7 @@ describe('GridDataProvider test', () => {
             }
         ];
 
-        shuffleSortAndAssert(provider, expectedSortedData, 'level1.level2.level3', 'asc');
+        shuffleSortAndAssert(expectedSortedData, 'level1.level2.level3', 'asc');
     });
 
     it('should be sorted by name asc', () => {
@@ -102,7 +99,7 @@ describe('GridDataProvider test', () => {
             }
         ];
 
-        shuffleSortAndAssert(provider, expectedSortedData, 'name', 'asc');
+        shuffleSortAndAssert(expectedSortedData, 'name', 'asc');
     });
 
     it('should be sorted by name desc', () => {
@@ -118,7 +115,7 @@ describe('GridDataProvider test', () => {
             }
         ];
 
-        shuffleSortAndAssert(provider, expectedSortedData, 'name', 'desc');
+        shuffleSortAndAssert(expectedSortedData, 'name', 'desc');
     });
 
     it('should be sorted by name asc insensitive', () => {
@@ -134,7 +131,7 @@ describe('GridDataProvider test', () => {
             }
         ];
 
-        shuffleSortAndAssert(provider, expectedSortedData, 'name', 'asc', true);
+        shuffleSortAndAssert(expectedSortedData, 'name', 'asc', true);
     });
 
     it('should be sorted by name desc insensitive', () => {
@@ -150,7 +147,7 @@ describe('GridDataProvider test', () => {
             }
         ];
 
-        shuffleSortAndAssert(provider, expectedSortedData, 'name', 'desc', true);
+        shuffleSortAndAssert(expectedSortedData, 'name', 'desc', true);
     });
 
 });
