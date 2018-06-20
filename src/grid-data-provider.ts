@@ -235,13 +235,9 @@ export class GridDataProvider extends Loadable {
       let iteratees: Array<any> = [];
 
       if (this.caseInsensitiveSort) {
-        iteratees = [(item: any) => {
-          const currentItem: any = this.getValue(item, this.sortColumn);
-
-          return currentItem ? currentItem.toLowerCase() : currentItem;
-        }];
+        iteratees = [(item: any) => this.getValueString(item, this.sortColumn).toLowerCase()];
       } else {
-          iteratees = [(item: any) => this.getValue(item, this.sortColumn)];
+        iteratees = [(item: any) => this.getValueString(item, this.sortColumn)];
       }
 
       this.sourceData = _.orderBy(this.sourceData, iteratees, [this.sortType]);
@@ -254,7 +250,7 @@ export class GridDataProvider extends Loadable {
    *
    * @returns {string}
    */
-  private getValue(item: any, key: string): string {
+  private getValueString(item: any, key: string): string {
       const currentItem = _.get(item, this.sortColumn, '');
       return currentItem === null ? '' : currentItem;
   }
