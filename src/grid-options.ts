@@ -1,4 +1,4 @@
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Loadable } from './loadable';
 import * as _ from 'lodash';
 import { StyleCallback } from './style-callback.interface';
@@ -46,7 +46,7 @@ export class GridOptions extends Loadable {
   protected headingFixed: boolean;
   protected headingCssClass: string;
   protected height: string;
-  protected httpService: Http;
+  protected httpService: HttpClient;
   protected pageButtonCount: number;
   protected pageElementPosition: string;
   protected pageParam: string;
