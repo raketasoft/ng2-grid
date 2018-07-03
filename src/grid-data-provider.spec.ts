@@ -1,8 +1,8 @@
-import { Http, HttpModule } from '@angular/http';
 import { TestBed } from '@angular/core/testing';
 import { map, shuffle } from 'lodash';
 
 import { GridDataProvider } from './grid-data-provider';
+import {HttpClient, HttpHandler} from "@angular/common/http";
 
 describe('GridDataProvider test', () => {
     let provider: GridDataProvider;
@@ -30,12 +30,13 @@ describe('GridDataProvider test', () => {
 
      beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [
-                HttpModule
-            ]
+          providers: [
+            HttpClient,
+            HttpHandler,
+          ]
         });
 
-        provider = new GridDataProvider(TestBed.get(Http));
+        provider = new GridDataProvider(TestBed.get(HttpClient));
     });
 
     it('should be sorted by level1.level2.level3 desc', () => {
