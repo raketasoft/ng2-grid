@@ -11,7 +11,7 @@ import {
   OnInit,
   Output,
   QueryList,
-  Renderer,
+  Renderer2,
   ViewChild
 } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -199,12 +199,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Class constructor.
    *
    * @param {HttpClient} http
-   * @param {Renderer} renderer
+   * @param {Renderer2} renderer
    * @param {ChangeDetectorRef} changeDetector
    */
   constructor(
     private http: HttpClient,
-    private renderer: Renderer,
+    private renderer: Renderer2,
     private changeDetector: ChangeDetectorRef
   ) {
     this.http = http;
@@ -677,18 +677,10 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       }
 
       if (this.headerTop <= 0) {
-        this.renderer.setElementClass(
-          this.headerRef.nativeElement,
-          'fixed',
-          false
-        );
+        this.renderer.removeClass(this.headerRef.nativeElement, 'fixed');
         this.headerRef.nativeElement.style.top = '0';
       } else if (this.headerTop > 0 && this.headerTop < this.headerTopLimit) {
-        this.renderer.setElementClass(
-          this.headerRef.nativeElement,
-          'fixed',
-          true
-        );
+        this.renderer.addClass(this.headerRef.nativeElement, 'fixed');
         this.headerRef.nativeElement.style.top = this.headerTop + 'px';
       } else {
         this.headerRef.nativeElement.style.top = this.headerTopLimit + 'px';
