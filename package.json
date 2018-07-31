@@ -1,6 +1,6 @@
 {
   "name": "raketasoft-ng2-grid",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lightweight data grid component for Angular",
   "scripts": {
     "clean": "gulp clean",
