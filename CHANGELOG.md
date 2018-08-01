@@ -1,3 +1,11 @@
+<a name="1.0.1"></a>
+# 1.0.1 (2018-07-31)
+
+### Bug Fixes
+
+* **grid:** Fix issue with grid selection not working properly
+
+
 <a name="1.0.0"></a>
 # 1.0.0 (2018-05-16)
 
