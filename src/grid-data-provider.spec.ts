@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { map, shuffle } from 'lodash';
 
 import { GridDataProvider } from './grid-data-provider';
-import {HttpClient, HttpHandler} from "@angular/common/http";
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 describe('GridDataProvider test', () => {
     let provider: GridDataProvider;
