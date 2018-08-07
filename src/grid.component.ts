@@ -385,6 +385,16 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
+   * Prepare string filter for new RegExp(str)
+   * @param {string} str
+   *
+   * @returns {string}
+   */
+  escapeRegExp(str: string): string {
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+  }
+
+  /**
    * Add a filter value for specific column.
    *
    * @param {string} columnName Name of grid column or property of bound data item
@@ -406,11 +416,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
       if (!isValid) {
         if (!this.getError(columnName)) {
-          const columnHeading: string = column && column.heading
-            ? column.heading : columnName;
-
-          const message: string = 'Invalid filter value for "'
-            + columnHeading + '". Please enter valid Number.';
+          const columnHeading: string = column && column.heading ? column.heading : columnName;
+          const message = `Invalid filter value for "${columnHeading}". Please enter valid Number.`;
 
           this.setError(columnName, message);
         }
@@ -421,14 +428,17 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
     this.clearError(columnName);
 
+    const isDataSetAsync: boolean = this.isDataSetAsync();
+
     if (value) {
-      this.filters[columnName] = value;
-      if (this.isDataSetAsync()) {
+      if (isDataSetAsync) {
         this.dataProvider.requestParams[columnName] = value;
+      } else {
+        this.filters[columnName] = this.escapeRegExp(value);
       }
     } else if (this.filters[columnName]) {
       delete this.filters[columnName];
-      if (this.isDataSetAsync()) {
+      if (isDataSetAsync) {
         delete this.dataProvider.requestParams[columnName];
       }
     }
