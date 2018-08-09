@@ -52,9 +52,9 @@
     "angular-in-memory-web-api": "^0.6.1",
     "core-js": "^2.5.0",
     "lodash": "^4.17.10",
-    "reflect-metadata": "^0.1.8",
+    "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.2",
-    "systemjs": "0.20.17",
+    "systemjs": "^0.21.4",
     "zone.js": "^0.8.26",
     "rxjs-compat": "^6.0.0-rc.0"
   },

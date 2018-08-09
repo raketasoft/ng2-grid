@@ -26,6 +26,7 @@
 
       // other libraries
       'rxjs':                      'npm:rxjs',
+      'rxjs-compat':                      'npm:rxjs-compat',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
 
       'tslib': 'npm:tslib/tslib.js',
@@ -42,6 +43,31 @@
         defaultExtension: 'js'
       },
       rxjs: {
+        main: 'index.js',
+        defaultExtension: 'js'
+      },
+      'rxjs/operators': {
+        main: 'index.js',
+        defaultExtension: 'js'
+      },
+      'rxjs/ajax': {
+        main: 'index.js',
+        defaultExtension: 'js'
+      },
+      'rxjs/testing': {
+        main: 'index.js',
+        defaultExtension: 'js'
+      },
+      'rxjs/webSocket': {
+        main: 'index.js',
+        defaultExtension: 'js'
+      },
+      'rxjs-compat': {
+        main: 'index.js',
+        defaultExtension: 'js'
+      },
+      'rxjs/internal-compatibility': {
+        main: 'index.js',
         defaultExtension: 'js'
       },
       lodash: {
