@@ -1,6 +1,6 @@
 {
   "name": "me-grid",
-  "version": "1.0.10",
+  "version": "2.0.0",
   "description": "Lightweight data grid component for Angular",
   "scripts": {
     "clean": "gulp clean",
@@ -23,7 +23,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AlexanderZabenko/ng2-grid.git"
+    "url": "https://github.com/management-events/ng2-grid.git"
   },
   "keywords": [
     "angular2",
