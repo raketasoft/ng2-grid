@@ -3,5 +3,5 @@
  */
 export interface GridFilter {
   raw: string,
-  escaped?: string;
+  escaped: string;
 }

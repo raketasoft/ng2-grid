@@ -433,10 +433,9 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     const isDataSetAsync: boolean = this.isDataSetAsync();
 
     if (value) {
+      this.filters[columnName] = { raw: value, escaped: this.escapeRegExp(value) };
       if (isDataSetAsync) {
         this.dataProvider.requestParams[columnName] = value;
-      } else {
-        this.filters[columnName] = { raw: value, escaped: this.escapeRegExp(value) };
       }
     } else if (this.filters[columnName]) {
       delete this.filters[columnName];
@@ -462,7 +461,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string}
    */
   getFilter(columnName: string): string {
-    return get(this.filters, `${columnName}.raw`);
+    return this.filters[columnName] ? this.filters[columnName].raw : undefined;
   }
 
   /**
