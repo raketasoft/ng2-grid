@@ -22,6 +22,8 @@ import { GridColumnComponent } from './grid-column.component';
 import { GridDataProvider } from './grid-data-provider';
 import { GridEvent } from './grid-event';
 import * as _ from 'lodash';
+import { GridFilter } from './grid-filter.interface';
+import { Dictionary } from 'lodash';
 
 /**
  * Data grid component class.
@@ -178,7 +180,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   private columns: Array<GridColumnComponent> = [];
   private data: Array<any>;
   private errors: Array<any> = [];
-  private filters: Array<any> = [];
+  private filters: Dictionary<GridFilter> = {};
   private dataProvider: GridDataProvider;
   private pages: Array<number> = [];
   private selectionMap: Array<any> = [];
@@ -434,7 +436,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       if (isDataSetAsync) {
         this.dataProvider.requestParams[columnName] = value;
       } else {
-        this.filters[columnName] = this.escapeRegExp(value);
+        this.filters[columnName] = { raw: value, escaped: this.escapeRegExp(value) };
       }
     } else if (this.filters[columnName]) {
       delete this.filters[columnName];
@@ -457,10 +459,10 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Return filter value for given column.
    *
    * @param {string} columnName
-   * @returns {any}
+   * @returns {string}
    */
-  getFilter(columnName: string): any {
-    return this.filters[columnName];
+  getFilter(columnName: string): string {
+    return this.filters[columnName] ? this.filters[columnName].raw : undefined;
   }
 
   /**
@@ -778,9 +780,9 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
           let column: GridColumnComponent = self.getColumn(filter);
 
           if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
-            match = match && value === self.filters[filter];
+            match = match && value === self.filters[filter].raw;
           } else {
-            match = match && !_.isEmpty(value.match(new RegExp(self.filters[filter], 'i')));
+            match = match && !_.isEmpty(value.match(new RegExp(self.filters[filter].escaped, 'i')));
           }
         }
       }
