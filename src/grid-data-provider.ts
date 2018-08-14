@@ -2,7 +2,7 @@ import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 
 import { Loadable } from './loadable';
 import { Observable } from 'rxjs/Observable';
-import * as _ from 'lodash';
+import { isUndefined, slice, orderBy, get } from 'lodash';
 import 'rxjs/Rx';
 
 /**
@@ -45,25 +45,25 @@ export class GridDataProvider extends Loadable {
    */
   constructor(private http: HttpClient, params?: any) {
     super(params);
-    if (_.isUndefined(this.sourceData)) {
+    if (isUndefined(this.sourceData)) {
       this.sourceData = [];
     }
-    if (_.isUndefined(this.pageParam)) {
+    if (isUndefined(this.pageParam)) {
       this.pageParam = GridDataProvider.DEFAULT_PAGE_PARAM_VALUE;
     }
-    if (_.isUndefined(this.pageSizeParam)) {
+    if (isUndefined(this.pageSizeParam)) {
       this.pageSizeParam = GridDataProvider.DEFAULT_PAGE_SIZE_PARAM_VALUE;
     }
-    if (_.isUndefined(this.pageSize)) {
+    if (isUndefined(this.pageSize)) {
       this.pageSize = GridDataProvider.DEFAULT_PAGE_SIZE_VALUE;
     }
-    if (_.isUndefined(this.requestParams)) {
+    if (isUndefined(this.requestParams)) {
       this.requestParams = [];
     }
-    if (_.isUndefined(this.sortParam)) {
+    if (isUndefined(this.sortParam)) {
       this.sortParam = GridDataProvider.DEFAULT_SORT_PARAM_VALUE;
     }
-    if (_.isUndefined(this.totalCountHeader)) {
+    if (isUndefined(this.totalCountHeader)) {
       this.totalCountHeader = GridDataProvider.DEFAULT_TOTAL_COUNT_HEADER_VALUE;
     }
   }
@@ -107,7 +107,7 @@ export class GridDataProvider extends Loadable {
    * @returns {number}
    */
   getTotalCount(): number {
-    if (!this.isDataSetAsync() && !_.isUndefined(this.sourceData)) {
+    if (!this.isDataSetAsync() && !isUndefined(this.sourceData)) {
       this.totalCount = this.sourceData.length;
     }
 
@@ -131,7 +131,7 @@ export class GridDataProvider extends Loadable {
    * @param {boolean} caseInsensitiveSort
    */
   setSort(sortColumn: string, sortType?: string, caseInsensitiveSort?: boolean) {
-    if (!_.isUndefined(sortType)) {
+    if (!isUndefined(sortType)) {
       this.sortType = sortType;
     }
     this.sortColumn = sortColumn;
@@ -184,7 +184,7 @@ export class GridDataProvider extends Loadable {
       params.set(this.pageSizeParam, this.pageSize as string);
     }
 
-    if (!_.isUndefined(this.sortColumn)) {
+    if (!isUndefined(this.sortColumn)) {
       let sortByValue: string = (this.sortType === GridDataProvider.SORT_ASC ? '' : '-')
         + this.sortColumn;
       params = params.append(this.sortParam, sortByValue);
@@ -210,7 +210,7 @@ export class GridDataProvider extends Loadable {
       let start: number = (this.pageIndex - 1) * this.pageSize;
       let end: number = start + Number(this.pageSize);
 
-      data = _.slice(this.sourceData, start, end);
+      data = slice(this.sourceData, start, end);
     } else {
       data = this.sourceData;
     }
@@ -222,7 +222,7 @@ export class GridDataProvider extends Loadable {
    * Sort provided static data.
    */
   protected sort() {
-    if (!_.isUndefined(this.sortColumn)) {
+    if (!isUndefined(this.sortColumn)) {
       let iteratees: Array<any> = [];
 
       if (this.caseInsensitiveSort) {
@@ -231,7 +231,7 @@ export class GridDataProvider extends Loadable {
         iteratees = [(item: any) => this.getValueString(item, this.sortColumn)];
       }
 
-      this.sourceData = _.orderBy(this.sourceData, iteratees, [this.sortType]);
+      this.sourceData = orderBy(this.sourceData, iteratees, [this.sortType]);
     }
   }
 
@@ -242,7 +242,7 @@ export class GridDataProvider extends Loadable {
    * @returns {string}
    */
   private getValueString(item: any, key: string): string {
-      const currentItem = _.get(item, this.sortColumn, null);
+      const currentItem = get(item, this.sortColumn, null);
 
       return currentItem === null ? '' : currentItem;
   }
@@ -253,6 +253,6 @@ export class GridDataProvider extends Loadable {
    * @returns {boolean}
    */
   private isDataSetAsync(): boolean {
-    return !_.isUndefined(this.sourceUrl) || this.pageByPageLoading;
+    return !isUndefined(this.sourceUrl) || this.pageByPageLoading;
   }
 }
