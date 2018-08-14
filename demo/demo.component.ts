@@ -14,7 +14,7 @@ import {
   GridDataProvider
 } from '../src/index';
 
-import * as _ from 'lodash';
+import { cloneDeep } from 'lodash';
 
 import { Person } from './models/person';
 
@@ -48,7 +48,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.basicOptions = new GridOptions({
-      data: _.cloneDeep(DEMO_DATA),
+      data: cloneDeep(DEMO_DATA),
       height: '300px'
     });
 
@@ -111,7 +111,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       defaultPageSize: 5,
       pageSizeOptions: [5, 10, 20, 50],
     });
-    this.columnGrid.setData(_.cloneDeep(DEMO_DATA));
+    this.columnGrid.setData(cloneDeep(DEMO_DATA));
     this.columnGrid.setFilter('country.id', '2');
     this.columnGrid.setSort('id');
     this.columnGrid.setPageSize(10);

@@ -21,7 +21,7 @@ import { StyleCallback } from './style-callback.interface';
 import { GridColumnComponent } from './grid-column.component';
 import { GridDataProvider } from './grid-data-provider';
 import { GridEvent } from './grid-event';
-import * as _ from 'lodash';
+import { isUndefined, isNull, isObject, flatMap, filter, get, isEmpty, keys } from 'lodash';
 import { GridFilter } from './grid-filter.interface';
 import { Dictionary } from 'lodash';
 
@@ -235,10 +235,10 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Handle OnInit event.
    */
   ngOnInit() {
-    if (_.isUndefined(this._options)) {
+    if (isUndefined(this._options)) {
       this._options = new GridOptions();
     }
-    if (!_.isUndefined(this._options.get('httpService'))) {
+    if (!isUndefined(this._options.get('httpService'))) {
       this.http = this._options.get('httpService');
     }
     this.dataIsLoaded.subscribe(() => this.refresh());
@@ -640,9 +640,9 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   isResultsDisplayAllowed(): boolean {
     if (this._options.get('requireFilters')) {
-      if (!_.isUndefined(this.columns)) {
+      if (!isUndefined(this.columns)) {
         for (let column of this.columns) {
-          if (!_.isUndefined(this.getFilter(column.name))) {
+          if (!isUndefined(this.getFilter(column.name))) {
             return true;
           }
         }
@@ -678,13 +678,13 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
           - this.headerOffsetTop - this.headerOffsetHeight;
       this.headerTop = documentScrollTop - this.headerOffsetTop;
 
-      if (!_.isNull(this.headerRef.nativeElement.offsetParent) &&
-          !_.isNull(this.headerRef.nativeElement.offsetParent.offsetTop)) {
+      if (!isNull(this.headerRef.nativeElement.offsetParent) &&
+          !isNull(this.headerRef.nativeElement.offsetParent.offsetTop)) {
           this.headerTop -= this.headerRef.nativeElement.offsetParent.offsetTop;
       }
 
       const banner: Element = document.body.querySelector('[role="banner"]');
-      if (!_.isNull(banner)) {
+      if (!isNull(banner)) {
         this.headerTop += banner.clientHeight;
       }
 
@@ -754,7 +754,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected formatData(data: Array<any>): Array<any> {
     let callback: DataItemCallback = this._options.get('dataItemCallback');
 
-    return callback ? _.flatMap(data, callback) : data;
+    return callback ? flatMap(data, callback) : data;
   }
 
   /**
@@ -771,18 +771,18 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected filter() {
     const self: GridComponent = this;
 
-    this.dataProvider.sourceData = _.filter(this.data, function(item: any) {
+    this.dataProvider.sourceData = filter(this.data, function(item: any) {
       let match = true;
-      for (let filter in self.filters) {
-        if (self.filters.hasOwnProperty(filter)) {
-          let result: any = _.get(item, filter, '');
+      for (let filterColumn in self.filters) {
+        if (self.filters.hasOwnProperty(filterColumn)) {
+          let result: any = get(item, filterColumn, '');
           let value: string = result !== null ? result.toString() : '';
-          let column: GridColumnComponent = self.getColumn(filter);
+          let column: GridColumnComponent = self.getColumn(filterColumn);
 
           if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
-            match = match && value === self.filters[filter].raw;
+            match = match && value === self.filters[filterColumn].raw;
           } else {
-            match = match && !_.isEmpty(value.match(new RegExp(self.filters[filter].escaped, 'i')));
+            match = match && !isEmpty(value.match(new RegExp(self.filters[filterColumn].escaped, 'i')));
           }
         }
       }
@@ -848,7 +848,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string}
    */
   protected getHeadingCssClass(): string {
-    if (_.isUndefined(this._options.get('headingCssClass'))) {
+    if (isUndefined(this._options.get('headingCssClass'))) {
       return '';
     }
 
@@ -861,7 +861,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string}
    */
   protected getBodyCssClass(): string {
-    if (_.isUndefined(this._options.get('bodyCssClass'))) {
+    if (isUndefined(this._options.get('bodyCssClass'))) {
       return '';
     }
 
@@ -949,14 +949,14 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       totalCountHeader: this._options.get('totalCountHeader')
     });
 
-    if (!_.isUndefined(this._options.get('defaultSortColumn'))) {
+    if (!isUndefined(this._options.get('defaultSortColumn'))) {
       this.setSort(
         this._options.get('defaultSortColumn'),
         this._options.get('defaultSortType')
       );
     }
 
-    if (!_.isUndefined(this._options.get('defaultFilteringColumn'))) {
+    if (!isUndefined(this._options.get('defaultFilteringColumn'))) {
       this.setFilter(
         this._options.get('defaultFilteringColumn'),
         this._options.get('defaultFilteringColumnValue')
@@ -1020,7 +1020,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected isPageSizeOptionsEnabled(): boolean {
     return this._options.get('paging')
-      && (!_.isEmpty(this._options.get('pageSizeOptions'))
+      && (!isEmpty(this._options.get('pageSizeOptions'))
         || this._options.get('pageSizeOptions') !== false);
   }
 
@@ -1115,7 +1115,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     let isOrderedByField: boolean =
         column.name === this.dataProvider.getSortColumn();
 
-    if (_.isUndefined(sortType)) {
+    if (isUndefined(sortType)) {
       return isOrderedByField;
     }
 
@@ -1155,7 +1155,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string}
    */
   protected getColumnName(key: string, row: any): string {
-    if (_.isObject(row[key])) {
+    if (isObject(row[key])) {
       return key.concat('.', this.getNestedKey(row[key]));
     }
 
@@ -1171,7 +1171,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected isRowSelected(row: any): boolean {
     let id: string = row[this._options.get('uniqueId')];
 
-    if (_.isUndefined(this.selectionMap[id])) {
+    if (isUndefined(this.selectionMap[id])) {
       return false;
     }
 
@@ -1203,7 +1203,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @param {MouseEvent} event
    */
   private bodyDrag(event: MouseEvent) {
-    if (!_.isUndefined(this.bodyClientX) && !_.isUndefined(this.bodyScrollLeft)) {
+    if (!isUndefined(this.bodyClientX) && !isUndefined(this.bodyScrollLeft)) {
       this.bodyRef.nativeElement.style.cursor = 'move';
       this.bodyRef.nativeElement.scrollLeft = this.bodyScrollLeft
         - (event.clientX - this.bodyClientX);
@@ -1230,8 +1230,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   private setRowSelection(row: any, value?: boolean) {
     let id: string = row[this._options.get('uniqueId')];
 
-    let selected: boolean = !_.isUndefined(value) ? value :
-      (_.isUndefined(this.selectionMap[id]) || !(!!this.selectionMap[id]));
+    let selected: boolean = !isUndefined(value) ? value :
+      (isUndefined(this.selectionMap[id]) || !(!!this.selectionMap[id]));
 
     let isCurrentRowSelected: boolean = this.isRowSelected(row);
 
@@ -1267,10 +1267,10 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * console.log(nestedKey); // will output 'country.name.officialName'
    */
   private getNestedKey(object: any): string {
-    let firstKey: string = _.keys(object)[0];
+    let firstKey: string = keys(object)[0];
     let firstKeyValue: any = object[firstKey];
 
-    if (_.isObject(firstKeyValue)) {
+    if (isObject(firstKeyValue)) {
       firstKey.concat('.', this.getNestedKey(firstKeyValue));
     }
 
@@ -1283,6 +1283,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {boolean}
    */
   private isDataSetAsync(): boolean {
-    return !_.isUndefined(this._options.get('url')) || this._options.get('pageByPageLoading');
+    return !isUndefined(this._options.get('url')) || this._options.get('pageByPageLoading');
   }
 }
