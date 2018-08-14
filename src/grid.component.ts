@@ -462,7 +462,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string}
    */
   getFilter(columnName: string): string {
-    return this.filters[columnName] ? this.filters[columnName].raw : undefined;
+    return get(this.filters, `${columnName}.raw`);
   }
 
   /**
