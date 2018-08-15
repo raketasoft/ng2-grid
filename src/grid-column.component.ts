@@ -5,7 +5,7 @@ import {
   ContentChild,
   OnInit
 } from '@angular/core';
-import * as _ from 'lodash';
+import { isUndefined, get } from 'lodash';
 import { StyleCallback } from './style-callback.interface';
 
 /**
@@ -52,27 +52,27 @@ export class GridColumnComponent implements OnInit {
    * Handle OnInit event.
    */
   ngOnInit() {
-    if (_.isUndefined(this.cssClass)) {
+    if (isUndefined(this.cssClass)) {
       this.cssClass = GridColumnComponent.DEFAULT_CSS_CLASS_VALUE;
     }
-    if (_.isUndefined(this.filtering)) {
+    if (isUndefined(this.filtering)) {
       this.filtering = GridColumnComponent.DEFAULT_FILTERING_VALUE;
     }
-    if (_.isUndefined(this.filterType)) {
+    if (isUndefined(this.filterType)) {
       this.filterType = GridColumnComponent.FILTER_TYPE_INPUT;
     }
-    if (_.isUndefined(this.sorting)) {
+    if (isUndefined(this.sorting)) {
       this.sorting = GridColumnComponent.DEFAULT_SORTING_VALUE;
     }
-    if (_.isUndefined(this.type)) {
+    if (isUndefined(this.type)) {
       this.type = GridColumnComponent.COLUMN_TYPE_STRING;
     }
-    if (_.isUndefined(this.cellStyleCallback)) {
+    if (isUndefined(this.cellStyleCallback)) {
       this.cellStyleCallback = () => {
         return this.cssClass;
       };
     }
-    if (_.isUndefined(this.caseInsensitiveSort)) {
+    if (isUndefined(this.caseInsensitiveSort)) {
       this.caseInsensitiveSort = GridColumnComponent.DEFAULT_CASE_INSENSITIVE_VALUE;
     }
   }
@@ -95,6 +95,6 @@ export class GridColumnComponent implements OnInit {
    * @returns {string}
    */
   resolveCell(data: any, columnName: string = this.name): string {
-      return _.get(data, columnName) as string;
+      return get(data, columnName) as string;
   }
 }
