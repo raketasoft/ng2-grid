@@ -1230,7 +1230,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     let id: string = row[this._options.get('uniqueId')];
 
     let selected: boolean = !isUndefined(value) ? value :
-      (isUndefined(this.selectionMap[id]) || !(!!this.selectionMap[id]));
+      (isUndefined(this.selectionMap[id]) || !this.selectionMap[id]);
 
     let isCurrentRowSelected: boolean = this.isRowSelected(row);
 
