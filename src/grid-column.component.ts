@@ -6,6 +6,7 @@ import {
   OnInit
 } from '@angular/core';
 import { isUndefined, get } from 'lodash';
+
 import { StyleCallback } from './style-callback.interface';
 
 /**

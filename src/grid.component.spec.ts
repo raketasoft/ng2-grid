@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChangeDetectorRef, Renderer2, NO_ERRORS_SCHEMA, QueryList } from '@angular/core';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+
 import { GridComponent } from './grid.component';
 import { GridOptions } from './grid-options';
 import { GridColumnComponent } from './grid-column.component';

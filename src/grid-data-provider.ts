@@ -1,9 +1,9 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { isUndefined, slice, orderBy, get } from 'lodash';
 
 import { Loadable } from './loadable';
-import { Observable } from 'rxjs/Observable';
-import { isUndefined, slice, orderBy, get } from 'lodash';
-import 'rxjs/Rx';
 
 /**
  * Data provider class for Grid component.
@@ -162,12 +162,13 @@ export class GridDataProvider extends Loadable {
 
     return this.http
       .get(this.sourceUrl, {observe: 'response', params: params})
-      .map((res: HttpResponse<any>) => {
-        this.setTotalCount(Number(res.headers.get(this.totalCountHeader)));
-        this.setData(res.body);
+      .pipe(
+        map((res: HttpResponse<any>) => {
+          this.setTotalCount(Number(res.headers.get(this.totalCountHeader)));
+          this.setData(res.body);
 
-        return res;
-      }, (err: any) => console.log(err));
+          return res;
+        }, (err: any) => console.log(err)));
   }
 
   /**
