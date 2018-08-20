@@ -1,6 +1,6 @@
 {
   "name": "me-grid",
-  "version": "1.0.13",
+  "version": "2.0.0",
   "description": "Lightweight data grid component for Angular",
   "scripts": {
     "clean": "gulp clean",
@@ -23,7 +23,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AlexanderZabenko/ng2-grid.git"
+    "url": "https://github.com/management-events/ng2-grid.git"
   },
   "keywords": [
     "angular2",
@@ -36,20 +36,25 @@
     "ng2-datatable"
   ],
   "dependencies": {
-    "@angular/common": "~4.3.3",
-    "@angular/compiler": "~4.3.3",
-    "@angular/core": "~4.3.3",
-    "@angular/forms": "~4.3.3",
-    "@angular/platform-browser": "~4.3.3",
-    "@angular/platform-browser-dynamic": "~4.3.3",
-    "@angular/router": "~4.3.3",
-    "@types/lodash": "4.14.71",
-    "angular-in-memory-web-api": "~0.3.2",
+    "@angular/animations": "^6.1.3",
+    "@angular/cli": "^6.1.4",
+    "@angular/common": "^6.1.3",
+    "@angular/compiler": "^6.1.3",
+    "@angular/compiler-cli": "^6.1.3",
+    "@angular/core": "^6.1.3",
+    "@angular/forms": "^6.1.3",
+    "@angular/http": "^6.1.3",
+    "@angular/platform-browser": "^6.1.3",
+    "@angular/platform-browser-dynamic": "^6.1.3",
+    "@angular/platform-server": "^6.1.3",
+    "@angular/router": "^6.1.3",
+    "@types/lodash": "^4.14.116",
+    "angular-in-memory-web-api": "^0.6.1",
     "core-js": "^2.5.0",
     "lodash": "^4.17.10",
-    "reflect-metadata": "^0.1.8",
-    "rxjs": "5.4.2",
-    "systemjs": "0.20.17",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.2.2",
+    "systemjs": "^0.21.4",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
@@ -75,6 +80,6 @@
     "protractor": "~5.1.2",
     "rimraf": "^2.5.4",
     "tslint": "^5.5.0",
-    "typescript": "^2.4.2"
+    "typescript": "^2.9.2"
   }
 }

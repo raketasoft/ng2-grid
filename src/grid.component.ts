@@ -15,15 +15,16 @@ import {
   ViewChild
 } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
+import { isUndefined, isNull, isObject, flatMap, filter, get, isEmpty, keys } from 'lodash';
+import { Dictionary } from 'lodash';
+
 import { DataItemCallback, GridOptions } from './grid-options';
 import { StyleCallback } from './style-callback.interface';
 import { GridColumnComponent } from './grid-column.component';
 import { GridDataProvider } from './grid-data-provider';
 import { GridEvent } from './grid-event';
-import { isUndefined, isNull, isObject, flatMap, filter, get, isEmpty, keys } from 'lodash';
 import { GridFilter } from './grid-filter.interface';
-import { Dictionary } from 'lodash';
 
 /**
  * Data grid component class.

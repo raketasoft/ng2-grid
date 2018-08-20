@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Loadable } from './loadable';
 import { isUndefined } from 'lodash';
+
+import { Loadable } from './loadable';
 import { StyleCallback } from './style-callback.interface';
 
 /**

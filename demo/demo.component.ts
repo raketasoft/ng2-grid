@@ -70,7 +70,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       defaultSortColumn: 'name',
       defaultSortType: GridDataProvider.SORT_DESC,
       defaultFilteringColumn: 'country.id',
-      defaultFilteringColumnValue: 2,
+      defaultFilteringColumnValue: '2',
       filtering: true,
       heading: true,
       headingCssClass: 'heading-table',
