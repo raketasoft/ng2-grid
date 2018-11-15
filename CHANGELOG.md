@@ -1,3 +1,11 @@
+<a name="1.0.2"></a>
+# 1.0.2 (2018-11-15)
+
+### Bug Fixes
+
+* **grid:** Fix issue #43 pageSize param not passed correctly
+
+
 <a name="1.0.1"></a>
 # 1.0.1 (2018-07-31)
 
