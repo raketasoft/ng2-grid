@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "Lightweight data grid component for Angular",
   "scripts": {
+    "ng": "ng",
     "clean": "gulp clean",
     "serve": "lite-server -c=bs-config.json",
     "serve:e2e": "lite-server -c=bs-config.e2e.json",
@@ -36,25 +37,25 @@
     "ng2-datatable"
   ],
   "dependencies": {
-    "@angular/animations": "^6.1.3",
-    "@angular/cli": "^6.1.4",
-    "@angular/common": "^6.1.3",
-    "@angular/compiler": "^6.1.3",
-    "@angular/compiler-cli": "^6.1.3",
-    "@angular/core": "^6.1.3",
-    "@angular/forms": "^6.1.3",
-    "@angular/http": "^6.1.3",
-    "@angular/platform-browser": "^6.1.3",
-    "@angular/platform-browser-dynamic": "^6.1.3",
-    "@angular/platform-server": "^6.1.3",
-    "@angular/router": "^6.1.3",
-    "@types/lodash": "^4.14.116",
+    "@angular/animations": "^7.1.0",
+    "@angular/cli": "^7.1.0",
+    "@angular/common": "^7.1.0",
+    "@angular/compiler": "^7.1.0",
+    "@angular/compiler-cli": "^7.1.0",
+    "@angular/core": "^7.1.0",
+    "@angular/forms": "^7.1.0",
+    "@angular/http": "^7.1.0",
+    "@angular/platform-browser": "^7.1.0",
+    "@angular/platform-browser-dynamic": "^7.1.0",
+    "@angular/platform-server": "^7.1.0",
+    "@angular/router": "^7.1.0",
+    "@types/lodash": "^4.14.118",
     "angular-in-memory-web-api": "^0.6.1",
-    "core-js": "^2.5.0",
-    "lodash": "^4.17.10",
+    "core-js": "^2.5.7",
+    "lodash": "^4.17.11",
     "reflect-metadata": "^0.1.12",
-    "rxjs": "^6.2.2",
-    "systemjs": "^0.21.4",
+    "rxjs": "^6.3.3",
+    "systemjs": "^0.21.5",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
@@ -80,6 +81,6 @@
     "protractor": "~5.1.2",
     "rimraf": "^2.5.4",
     "tslint": "^5.5.0",
-    "typescript": "^2.9.2"
+    "typescript": "^3.1.6"
   }
 }
