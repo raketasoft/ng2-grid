@@ -27,7 +27,7 @@ dispatcher.onGet('/', function(request: any, result: any) {
   const start: number = (page - 1) * pageSize;
   const end: number = start + pageSize;
 
-  let sortType: string;
+  let sortType: any;
   let sortBy: string;
 
   if (!isUndefined(query.orderBy)) {

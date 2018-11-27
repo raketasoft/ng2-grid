@@ -35,7 +35,7 @@ export class GridDataProvider extends Loadable {
 
   private data: Array<any> = [];
   private sortColumn: string;
-  private sortType: string = GridDataProvider.SORT_ASC;
+  private sortType: any = GridDataProvider.SORT_ASC;
   private caseInsensitiveSort: boolean;
   private totalCount: number;
 
