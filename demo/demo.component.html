@@ -75,10 +75,18 @@
     textAlign="center"
     width="100px"
     sorting="false"
-    filtering="false">
+    type="template"
+    [filtering]="false">
     <ng-template let-data="data">
       <button (click)="onItemClick($event, data)">Edit</button>
       <button (click)="onItemClick($event, data)">Delete</button>
+    </ng-template>
+    <ng-template context="header">
+      <div style="text-align: center">
+        <button (click)="onClearAllFiltersClick()">
+          Clear all filters
+        </button>
+      </div>
     </ng-template>
   </ng-grid-column>
 </ng-grid>
