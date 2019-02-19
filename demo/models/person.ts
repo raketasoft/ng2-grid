@@ -1,5 +1,5 @@
 import { Country } from './country';
-import {Interest} from "./interest";
+import { Interest } from './interest';
 
 /**
  * Person model class.
