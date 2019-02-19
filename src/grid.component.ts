@@ -512,7 +512,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   setSort(columnName: string, sortType?: string) {
     const column: GridColumnComponent = this.getColumn(columnName);
-
     this.dataProvider.setSort(columnName, sortType);
 
     this.sortChange.emit(new GridEvent({
@@ -740,7 +739,9 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
           let value: string = result !== null ? result.toString() : '';
           let column: GridColumnComponent = self.getColumn(filter);
 
-          if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
+          if (column && _.isFunction(column.filterCallback)) {
+            match = match && column.filterCallback(item, self.filters[filter]);
+          } else if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
             match = match && value === self.filters[filter];
           } else {
             match = match && !_.isEmpty(value.match(new RegExp(self.filters[filter], 'i')));

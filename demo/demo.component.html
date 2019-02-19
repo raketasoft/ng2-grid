@@ -71,6 +71,24 @@
     </ng-template>
   </ng-grid-column>
   <ng-grid-column
+          heading="Interests"
+          name="interests.id"
+          filterType="select"
+          [items]="interestOptions"
+          textField="name"
+          valueField="id"
+          [filterCallback]="onFilterInterests"
+          textAlign="left"
+          width="100px">
+    <ng-template let-data="data">
+      <ul>
+        <li *ngFor="let interest of data.interests">
+          {{interest?.name}}
+        </li>
+      </ul>
+    </ng-template>
+  </ng-grid-column>
+  <ng-grid-column
     cssClass="actions"
     textAlign="center"
     width="100px"

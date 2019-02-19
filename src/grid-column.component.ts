@@ -35,6 +35,7 @@ export class GridColumnComponent implements OnInit {
   @Input() cssClass: string;
   @Input() heading: string;
   @Input() name: string;
+  @Input() filterCallback: (data: any, searchValue: any) => boolean;
   @Input() filtering: boolean;
   @Input() filterType: string;
   @Input() sorting: boolean;
