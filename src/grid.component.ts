@@ -95,7 +95,7 @@ import * as _ from 'lodash';
     <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="getFullTableWidth()">
       No results found
     </p>
-    <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
+    <table #table [class]="getBodyCssClass()" [style.width]="options.get('width')"
       *ngIf="isResultsDisplayAllowed()">
       <tbody>
         <tr *ngFor="let row of getResults(); let i = index"
@@ -154,6 +154,11 @@ import * as _ from 'lodash';
       </select>
     </div>
   </div>
+    <ng-grid-sticky-scroll
+            [scrollableElement]="tableRef"
+            *ngIf="options.get('stickyScroll')"
+    >
+    </ng-grid-sticky-scroll>
 </div>`
 })
 export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
@@ -172,6 +177,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   @Output() update: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
   @ViewChild('header') headerRef: ElementRef;
   @ViewChild('body') bodyRef: ElementRef;
+  @ViewChild('table') tableRef: ElementRef;
 
   private _options: GridOptions;
   private columns: Array<GridColumnComponent> = [];

@@ -31,6 +31,7 @@ export class GridOptions extends Loadable {
   static DEFAULT_SORTING_VALUE = true;
   static DEFAULT_WIDTH_VALUE = '100%';
   static DEFAULT_UNIQUE_ID_VALUE = 'id';
+  static DEFAULT_STICKY_SCROLL = false;
 
   protected additionalRequestParams: any;
   protected bodyCssClass: string;
@@ -64,6 +65,7 @@ export class GridOptions extends Loadable {
   protected selectionMultiple: boolean;
   protected sortParam: string;
   protected sorting: boolean;
+  protected stickyScroll: boolean;
   protected totalCountHeader: string;
   protected uniqueId: string;
   protected url: string;
@@ -131,6 +133,9 @@ export class GridOptions extends Loadable {
     }
     if (_.isUndefined(this.width)) {
       this.width = GridOptions.DEFAULT_WIDTH_VALUE;
+    }
+    if (_.isUndefined(this.stickyScroll)) {
+      this.stickyScroll = GridOptions.DEFAULT_STICKY_SCROLL;
     }
   }
 
