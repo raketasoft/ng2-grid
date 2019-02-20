@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import { Country } from './country';
 import { Interest } from './interest';
 
