@@ -55,13 +55,14 @@ export class GridStickyScrollComponent {
    * Handles onScroll event of the sticky scrollbar and modified scrollable
    * element scrollLeft property
    *
-   * @param {UiEvent} event
+   * @param {Event} event
    */
-  onScroll(event: UIEvent): void {
+  onScroll(event: Event): void {
+    console.log(event);
     const scrollableElementWidth: number = this.scrollableElement.nativeElement.scrollWidth;
     const stickyScrollWidth: number = this.areaCopy.nativeElement.scrollWidth;
     const scrollRatio: number = scrollableElementWidth / stickyScrollWidth;
-    this.scrollableElement.nativeElement.parentElement.scrollLeft = (event.target.scrollLeft * scrollRatio);
+    this.scrollableElement.nativeElement.parentElement.scrollLeft = (event.srcElement.scrollLeft * scrollRatio);
   }
 
   /**
