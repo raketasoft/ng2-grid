@@ -58,7 +58,6 @@ export class GridStickyScrollComponent {
    * @param {Event} event
    */
   onScroll(event: Event): void {
-    console.log(event);
     const scrollableElementWidth: number = this.scrollableElement.nativeElement.scrollWidth;
     const stickyScrollWidth: number = this.areaCopy.nativeElement.scrollWidth;
     const scrollRatio: number = scrollableElementWidth / stickyScrollWidth;
