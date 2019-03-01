@@ -251,6 +251,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.render();
+    this.handleContentResize();
     this.changeDetector.detectChanges();
   }
 
