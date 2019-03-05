@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
+import { isUndefined } from 'lodash';
+
 import { Loadable } from './loadable';
-import * as _ from 'lodash';
 import { StyleCallback } from './style-callback.interface';
 
 /**
@@ -31,6 +32,7 @@ export class GridOptions extends Loadable {
   static DEFAULT_SORTING_VALUE = true;
   static DEFAULT_WIDTH_VALUE = '100%';
   static DEFAULT_UNIQUE_ID_VALUE = 'id';
+  static DEFAULT_PAGE_BY_PAGE_LOADING = false;
 
   protected additionalRequestParams: any;
   protected bodyCssClass: string;
@@ -68,6 +70,7 @@ export class GridOptions extends Loadable {
   protected uniqueId: string;
   protected url: string;
   protected width: string;
+  protected pageByPageLoading: boolean;
 
   /**
    * Class constructor.
@@ -75,62 +78,65 @@ export class GridOptions extends Loadable {
    */
   constructor(params?: any) {
     super(params);
-    if (_.isUndefined(this.filtering)) {
+    if (isUndefined(this.filtering)) {
       this.filtering = GridOptions.DEFAULT_FILTERING_VALUE;
     }
-    if (_.isUndefined(this.heading)) {
+    if (isUndefined(this.heading)) {
       this.heading = GridOptions.DEFAULT_HEADING_VALUE;
     }
-    if (_.isUndefined(this.headingFixed)) {
+    if (isUndefined(this.headingFixed)) {
       this.headingFixed = GridOptions.DEFAULT_HEADING_FIXED_VALUE;
     }
-    if (_.isUndefined(this.defaultPageSize)) {
+    if (isUndefined(this.defaultPageSize)) {
       this.defaultPageSize = GridOptions.DEFAULT_PAGE_SIZE_VALUE;
     }
-    if (_.isUndefined(this.pageButtonCount)) {
+    if (isUndefined(this.pageButtonCount)) {
       this.pageButtonCount = GridOptions.DEFAULT_PAGE_BUTTON_COUNT_VALUE;
     }
-    if (_.isUndefined(this.pageElementPosition)) {
+    if (isUndefined(this.pageElementPosition)) {
       this.pageElementPosition = GridOptions.DEFAULT_PAGE_ELEMENT_POSITION_VALUE;
     }
-    if (_.isUndefined(this.pageSizeOptions)) {
+    if (isUndefined(this.pageSizeOptions)) {
       this.pageSizeOptions = GridOptions.DEFAULT_PAGE_SIZE_OPTIONS_VALUE;
     }
-    if (_.isUndefined(this.pageSizeElementPosition)) {
+    if (isUndefined(this.pageSizeElementPosition)) {
       this.pageSizeElementPosition = GridOptions.DEFAULT_PAGE_SIZE_ELEMENT_POSITION_VALUE;
     }
-    if (_.isUndefined(this.paging)) {
+    if (isUndefined(this.paging)) {
       this.paging = GridOptions.DEFAULT_PAGING_VALUE;
     }
-    if (_.isUndefined(this.preserveSelection)) {
+    if (isUndefined(this.preserveSelection)) {
       this.preserveSelection = GridOptions.DEFAULT_PRESERVE_SELECTION_VALUE;
     }
-    if (_.isUndefined(this.requireFilters)) {
+    if (isUndefined(this.requireFilters)) {
       this.requireFilters = GridOptions.DEFAULT_REQUIRE_FILTERS;
     }
-    if (_.isUndefined(this.rowAlternateStyle)) {
+    if (isUndefined(this.rowAlternateStyle)) {
       this.rowAlternateStyle = GridOptions.DEFAULT_ROW_ALTERNATE_STYLE_VALUE;
     }
-    if (_.isUndefined(this.rowHoverStyle)) {
+    if (isUndefined(this.rowHoverStyle)) {
       this.rowHoverStyle = GridOptions.DEFAULT_ROW_HOVER_STYLE_VALUE;
     }
-    if (_.isUndefined(this.rowSelectionStyle)) {
+    if (isUndefined(this.rowSelectionStyle)) {
       this.rowSelectionStyle = GridOptions.DEFAULT_ROW_SELECTION_STYLE_VALUE;
     }
-    if (_.isUndefined(this.selection)) {
+    if (isUndefined(this.selection)) {
       this.selection = GridOptions.DEFAULT_SELECTION_VALUE;
     }
-    if (_.isUndefined(this.selectionMultiple)) {
+    if (isUndefined(this.selectionMultiple)) {
       this.selectionMultiple = GridOptions.DEFAULT_SELECTION_MULTIPLE_VALUE;
     }
-    if (_.isUndefined(this.sorting)) {
+    if (isUndefined(this.sorting)) {
       this.sorting = GridOptions.DEFAULT_SORTING_VALUE;
     }
-    if (_.isUndefined(this.uniqueId)) {
+    if (isUndefined(this.uniqueId)) {
       this.uniqueId = GridOptions.DEFAULT_UNIQUE_ID_VALUE;
     }
-    if (_.isUndefined(this.width)) {
+    if (isUndefined(this.width)) {
       this.width = GridOptions.DEFAULT_WIDTH_VALUE;
+    }
+    if (isUndefined(this.pageByPageLoading)) {
+      this.pageByPageLoading = GridOptions.DEFAULT_PAGE_BY_PAGE_LOADING;
     }
   }
 

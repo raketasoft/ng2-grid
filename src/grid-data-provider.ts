@@ -1,9 +1,9 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { isUndefined, slice, orderBy, get } from 'lodash';
 
 import { Loadable } from './loadable';
-import { Observable } from 'rxjs/Observable';
-import * as _ from 'lodash';
-import 'rxjs/Rx';
 
 /**
  * Data provider class for Grid component.
@@ -31,10 +31,12 @@ export class GridDataProvider extends Loadable {
   sourceData: Array<any>;
   sourceUrl: string;
   totalCountHeader: string;
+  pageByPageLoading: boolean;
 
   private data: Array<any> = [];
   private sortColumn: string;
-  private sortType: string = GridDataProvider.SORT_ASC;
+  private sortType: any = GridDataProvider.SORT_ASC;
+  private caseInsensitiveSort: boolean;
   private totalCount: number;
 
   /**
@@ -43,25 +45,25 @@ export class GridDataProvider extends Loadable {
    */
   constructor(private http: HttpClient, params?: any) {
     super(params);
-    if (_.isUndefined(this.sourceData)) {
+    if (isUndefined(this.sourceData)) {
       this.sourceData = [];
     }
-    if (_.isUndefined(this.pageParam)) {
+    if (isUndefined(this.pageParam)) {
       this.pageParam = GridDataProvider.DEFAULT_PAGE_PARAM_VALUE;
     }
-    if (_.isUndefined(this.pageSizeParam)) {
+    if (isUndefined(this.pageSizeParam)) {
       this.pageSizeParam = GridDataProvider.DEFAULT_PAGE_SIZE_PARAM_VALUE;
     }
-    if (_.isUndefined(this.pageSize)) {
+    if (isUndefined(this.pageSize)) {
       this.pageSize = GridDataProvider.DEFAULT_PAGE_SIZE_VALUE;
     }
-    if (_.isUndefined(this.requestParams)) {
+    if (isUndefined(this.requestParams)) {
       this.requestParams = [];
     }
-    if (_.isUndefined(this.sortParam)) {
+    if (isUndefined(this.sortParam)) {
       this.sortParam = GridDataProvider.DEFAULT_SORT_PARAM_VALUE;
     }
-    if (_.isUndefined(this.totalCountHeader)) {
+    if (isUndefined(this.totalCountHeader)) {
       this.totalCountHeader = GridDataProvider.DEFAULT_TOTAL_COUNT_HEADER_VALUE;
     }
   }
@@ -73,7 +75,7 @@ export class GridDataProvider extends Loadable {
    * @returns {Array<any>}
    */
   getData(): Array<any> {
-    if (_.isUndefined(this.sourceUrl)) {
+    if (!this.isDataSetAsync()) {
       this.sort();
       this.slice();
     }
@@ -105,7 +107,7 @@ export class GridDataProvider extends Loadable {
    * @returns {number}
    */
   getTotalCount(): number {
-    if (_.isUndefined(this.sourceUrl) && !_.isUndefined(this.sourceData)) {
+    if (!this.isDataSetAsync() && !isUndefined(this.sourceData)) {
       this.totalCount = this.sourceData.length;
     }
 
@@ -126,12 +128,14 @@ export class GridDataProvider extends Loadable {
    *
    * @param {string} sortColumn Name of grid column to be used for sorting
    * @param {string} sortType Optional, values are 'asc' or 'desc'
+   * @param {boolean} caseInsensitiveSort
    */
-  setSort(sortColumn: string, sortType?: string) {
-    if (!_.isUndefined(sortType)) {
+  setSort(sortColumn: string, sortType?: string, caseInsensitiveSort?: boolean) {
+    if (!isUndefined(sortType)) {
       this.sortType = sortType;
     }
     this.sortColumn = sortColumn;
+    this.caseInsensitiveSort = caseInsensitiveSort;
   }
 
   /**
@@ -158,12 +162,13 @@ export class GridDataProvider extends Loadable {
 
     return this.http
       .get(this.sourceUrl, {observe: 'response', params: params})
-      .map((res: HttpResponse<any>) => {
-        this.setTotalCount(Number(res.headers.get(this.totalCountHeader)));
-        this.setData(res.body);
+      .pipe(
+        map((res: HttpResponse<any>) => {
+          this.setTotalCount(Number(res.headers.get(this.totalCountHeader)));
+          this.setData(res.body);
 
-        return res;
-      }, (err: any) => console.log(err));
+          return res;
+        }, (err: any) => console.log(err)));
   }
 
   /**
@@ -180,7 +185,7 @@ export class GridDataProvider extends Loadable {
       params = params.append(this.pageSizeParam, this.pageSize.toString());
     }
 
-    if (!_.isUndefined(this.sortColumn)) {
+    if (!isUndefined(this.sortColumn)) {
       let sortByValue: string = (this.sortType === GridDataProvider.SORT_ASC ? '' : '-')
         + this.sortColumn;
       params = params.append(this.sortParam, sortByValue);
@@ -206,7 +211,7 @@ export class GridDataProvider extends Loadable {
       let start: number = (this.pageIndex - 1) * this.pageSize;
       let end: number = start + Number(this.pageSize);
 
-      data = _.slice(this.sourceData, start, end);
+      data = slice(this.sourceData, start, end);
     } else {
       data = this.sourceData;
     }
@@ -218,8 +223,37 @@ export class GridDataProvider extends Loadable {
    * Sort provided static data.
    */
   protected sort() {
-    if (!_.isUndefined(this.sortColumn)) {
-      this.sourceData = _.orderBy(this.sourceData, [this.sortColumn], [this.sortType]);
+    if (!isUndefined(this.sortColumn)) {
+      let iteratees: Array<any> = [];
+
+      if (this.caseInsensitiveSort) {
+        iteratees = [(item: any) => this.getValueString(item, this.sortColumn).toLowerCase()];
+      } else {
+        iteratees = [(item: any) => this.getValueString(item, this.sortColumn)];
+      }
+
+      this.sourceData = orderBy(this.sourceData, iteratees, [this.sortType]);
     }
+  }
+
+  /**
+   * @param item
+   * @param {string} key
+   *
+   * @returns {string}
+   */
+  private getValueString(item: any, key: string): string {
+      const currentItem = get(item, this.sortColumn, null);
+
+      return currentItem === null ? '' : currentItem;
+  }
+
+  /**
+   * Checks is data loaded asynchronously
+   *
+   * @returns {boolean}
+   */
+  private isDataSetAsync(): boolean {
+    return !isUndefined(this.sourceUrl) || this.pageByPageLoading;
   }
 }

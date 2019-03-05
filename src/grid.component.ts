@@ -11,16 +11,20 @@ import {
   OnInit,
   Output,
   QueryList,
-  Renderer,
+  Renderer2,
   ViewChild
 } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Subject } from 'rxjs';
+import { isUndefined, isNull, isObject, flatMap, filter, get, isEmpty, keys } from 'lodash';
+import { Dictionary } from 'lodash';
+
 import { DataItemCallback, GridOptions } from './grid-options';
 import { StyleCallback } from './style-callback.interface';
 import { GridColumnComponent } from './grid-column.component';
 import { GridDataProvider } from './grid-data-provider';
 import { GridEvent } from './grid-event';
-import * as _ from 'lodash';
+import { GridFilter } from './grid-filter.interface';
 
 /**
  * Data grid component class.
@@ -177,11 +181,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   private columns: Array<GridColumnComponent> = [];
   private data: Array<any>;
   private errors: Array<any> = [];
-  private filters: Array<any> = [];
+  private filters: Dictionary<GridFilter> = {};
   private dataProvider: GridDataProvider;
   private pages: Array<number> = [];
   private selectionMap: Array<any> = [];
   private selectedItems: Array<any> = [];
+  private dataIsLoaded: Subject<boolean> = new Subject<boolean>();
 
   private headerOffsetTop: number;
   private headerOffsetHeight: number;
@@ -196,13 +201,13 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   /**
    * Class constructor.
    *
-   * @param {Http} http
-   * @param {Renderer} renderer
+   * @param {HttpClient} http
+   * @param {Renderer2} renderer
    * @param {ChangeDetectorRef} changeDetector
    */
   constructor(
     private http: HttpClient,
-    private renderer: Renderer,
+    private renderer: Renderer2,
     private changeDetector: ChangeDetectorRef
   ) {
     this.http = http;
@@ -231,12 +236,13 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Handle OnInit event.
    */
   ngOnInit() {
-    if (_.isUndefined(this._options)) {
+    if (isUndefined(this._options)) {
       this._options = new GridOptions();
     }
-    if (!_.isUndefined(this._options.get('httpService'))) {
+    if (!isUndefined(this._options.get('httpService'))) {
       this.http = this._options.get('httpService');
     }
+    this.dataIsLoaded.subscribe(() => this.refresh());
   }
 
   /**
@@ -298,6 +304,10 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   setResults(results: Array<any>) {
     this.dataProvider.setData(this.formatData(results));
+
+    if (this._options.get('pageByPageLoading') && this.isResultsDisplayAllowed()) {
+      this.dataIsLoaded.next(true);
+    }
   }
 
   /**
@@ -379,6 +389,16 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   }
 
   /**
+   * Prepare string filter for new RegExp(str)
+   * @param {string} str
+   *
+   * @returns {string}
+   */
+  escapeRegExp(str: string): string {
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+  }
+
+  /**
    * Add a filter value for specific column.
    *
    * @param {string} columnName Name of grid column or property of bound data item
@@ -400,11 +420,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
       if (!isValid) {
         if (!this.getError(columnName)) {
-          const columnHeading: string = column && column.heading
-            ? column.heading : columnName;
-
-          const message: string = 'Invalid filter value for "'
-            + columnHeading + '". Please enter valid Number.';
+          const columnHeading: string = column && column.heading ? column.heading : columnName;
+          const message = `Invalid filter value for "${columnHeading}". Please enter valid Number.`;
 
           this.setError(columnName, message);
         }
@@ -415,14 +432,16 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
 
     this.clearError(columnName);
 
+    const isDataSetAsync: boolean = this.isDataSetAsync();
+
     if (value) {
-      this.filters[columnName] = value;
-      if (!_.isUndefined(this._options.get('url'))) {
+      this.filters[columnName] = { raw: value, escaped: this.escapeRegExp(value) };
+      if (isDataSetAsync) {
         this.dataProvider.requestParams[columnName] = value;
       }
     } else if (this.filters[columnName]) {
       delete this.filters[columnName];
-      if (!_.isUndefined(this._options.get('url'))) {
+      if (isDataSetAsync) {
         delete this.dataProvider.requestParams[columnName];
       }
     }
@@ -441,10 +460,10 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * Return filter value for given column.
    *
    * @param {string} columnName
-   * @returns {any}
+   * @returns {string}
    */
-  getFilter(columnName: string): any {
-    return this.filters[columnName];
+  getFilter(columnName: string): string {
+    return this.filters[columnName] ? this.filters[columnName].raw : undefined;
   }
 
   /**
@@ -510,11 +529,12 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    *
    * @param {string} columnName Name of grid column to be used for sorting
    * @param {string} sortType Optional, values are 'asc' or 'desc'
+   * @param {boolean} caseInsensitiveSort
    */
-  setSort(columnName: string, sortType?: string) {
+  setSort(columnName: string, sortType?: string, caseInsensitiveSort?: boolean) {
     const column: GridColumnComponent = this.getColumn(columnName);
 
-    this.dataProvider.setSort(columnName, sortType);
+    this.dataProvider.setSort(columnName, sortType, caseInsensitiveSort);
 
     this.sortChange.emit(new GridEvent({
       data: sortType,
@@ -571,41 +591,68 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       return false;
     }
 
-    if (_.isUndefined(this._options.get('url'))) {
+    if (!this.isDataSetAsync()) {
       this.filter();
       this.refresh();
-
-      this.update.emit(new GridEvent({
-        data: this.getResults(),
-        type: GridEvent.UPDATE_EVENT
-      }));
+      this.emitUpdateEvent();
     } else if (this.isResultsDisplayAllowed()) {
-      this.dataProvider.fetch().subscribe(
-        (res: HttpResponse<any>) => {
-          this.setResults(res.body);
-          this.refresh();
+      if (!this._options.get('pageByPageLoading')) {
+        this.dataProvider.fetch().subscribe(
+          (res: HttpResponse<any>) => {
+            this.setResults(res.body);
+            this.refresh();
+            this.emitUpdateEvent();
+          },
+          (err: any) => {
+            console.log(err);
 
-          this.update.emit(new GridEvent({
-            data: this.getResults(),
-            type: GridEvent.UPDATE_EVENT
-          }));
-        },
-        (err: any) => {
-          console.log(err);
+            this.serverError.emit(new GridEvent({
+              data: err,
+              type: GridEvent.SERVER_ERROR_EVENT
+            }));
+          }
+        );
 
-          this.serverError.emit(new GridEvent({
-            data: err,
-            type: GridEvent.SERVER_ERROR_EVENT
-          }));
-        }
-      );
-
-      this.requestSend.emit(new GridEvent({
-        type: GridEvent.REQUEST_SEND_EVENT
-      }));
+        this.requestSend.emit(new GridEvent({
+          type: GridEvent.REQUEST_SEND_EVENT
+        }));
+      } else {
+        this.emitUpdateEvent();
+      }
     } else {
       this.setData([]);
     }
+  }
+
+  /**
+   * Emit grid update event
+   */
+  emitUpdateEvent() {
+    this.update.emit(new GridEvent({
+      data: this.getResults(),
+      type: GridEvent.UPDATE_EVENT
+    }));
+  }
+
+  /**
+   * Check if displaying results is allowed.
+   *
+   * @returns boolean
+   */
+  isResultsDisplayAllowed(): boolean {
+    if (this._options.get('requireFilters')) {
+      if (!isUndefined(this.columns)) {
+        for (let column of this.columns) {
+          if (!isUndefined(this.getFilter(column.name))) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -632,29 +679,21 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
           - this.headerOffsetTop - this.headerOffsetHeight;
       this.headerTop = documentScrollTop - this.headerOffsetTop;
 
-      if (!_.isNull(this.headerRef.nativeElement.offsetParent) &&
-          !_.isNull(this.headerRef.nativeElement.offsetParent.offsetTop)) {
+      if (!isNull(this.headerRef.nativeElement.offsetParent) &&
+          !isNull(this.headerRef.nativeElement.offsetParent.offsetTop)) {
           this.headerTop -= this.headerRef.nativeElement.offsetParent.offsetTop;
       }
 
       const banner: Element = document.body.querySelector('[role="banner"]');
-      if (!_.isNull(banner)) {
+      if (!isNull(banner)) {
         this.headerTop += banner.clientHeight;
       }
 
       if (this.headerTop <= 0) {
-        this.renderer.setElementClass(
-          this.headerRef.nativeElement,
-          'fixed',
-          false
-        );
+        this.renderer.removeClass(this.headerRef.nativeElement, 'fixed');
         this.headerRef.nativeElement.style.top = '0';
       } else if (this.headerTop > 0 && this.headerTop < this.headerTopLimit) {
-        this.renderer.setElementClass(
-          this.headerRef.nativeElement,
-          'fixed',
-          true
-        );
+        this.renderer.addClass(this.headerRef.nativeElement, 'fixed');
         this.headerRef.nativeElement.style.top = this.headerTop + 'px';
       } else {
         this.headerRef.nativeElement.style.top = this.headerTopLimit + 'px';
@@ -716,7 +755,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected formatData(data: Array<any>): Array<any> {
     let callback: DataItemCallback = this._options.get('dataItemCallback');
 
-    return callback ? _.flatMap(data, callback) : data;
+    return callback ? flatMap(data, callback) : data;
   }
 
   /**
@@ -733,18 +772,18 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected filter() {
     const self: GridComponent = this;
 
-    this.dataProvider.sourceData = _.filter(this.data, function(item: any) {
+    this.dataProvider.sourceData = filter(this.data, function(item: any) {
       let match = true;
-      for (let filter in self.filters) {
-        if (self.filters.hasOwnProperty(filter)) {
-          let result: any = _.get(item, filter, '');
+      for (let filterColumn in self.filters) {
+        if (self.filters.hasOwnProperty(filterColumn)) {
+          let result: any = get(item, filterColumn, '');
           let value: string = result !== null ? result.toString() : '';
-          let column: GridColumnComponent = self.getColumn(filter);
+          let column: GridColumnComponent = self.getColumn(filterColumn);
 
           if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
-            match = match && value === self.filters[filter];
+            match = match && value === self.filters[filterColumn].raw;
           } else {
-            match = match && !_.isEmpty(value.match(new RegExp(self.filters[filter], 'i')));
+            match = match && !isEmpty(value.match(new RegExp(self.filters[filterColumn].escaped, 'i')));
           }
         }
       }
@@ -810,7 +849,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string}
    */
   protected getHeadingCssClass(): string {
-    if (_.isUndefined(this._options.get('headingCssClass'))) {
+    if (isUndefined(this._options.get('headingCssClass'))) {
       return '';
     }
 
@@ -823,7 +862,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string}
    */
   protected getBodyCssClass(): string {
-    if (_.isUndefined(this._options.get('bodyCssClass'))) {
+    if (isUndefined(this._options.get('bodyCssClass'))) {
       return '';
     }
 
@@ -907,17 +946,18 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       requestParams: this._options.get('additionalRequestParams'),
       sortParam: this._options.get('sortParam'),
       sourceUrl: this._options.get('url'),
+      pageByPageLoading: this._options.get('pageByPageLoading'),
       totalCountHeader: this._options.get('totalCountHeader')
     });
 
-    if (!_.isUndefined(this._options.get('defaultSortColumn'))) {
+    if (!isUndefined(this._options.get('defaultSortColumn'))) {
       this.setSort(
         this._options.get('defaultSortColumn'),
         this._options.get('defaultSortType')
       );
     }
 
-    if (!_.isUndefined(this._options.get('defaultFilteringColumn'))) {
+    if (!isUndefined(this._options.get('defaultFilteringColumn'))) {
       this.setFilter(
         this._options.get('defaultFilteringColumn'),
         this._options.get('defaultFilteringColumnValue')
@@ -981,7 +1021,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected isPageSizeOptionsEnabled(): boolean {
     return this._options.get('paging')
-      && (!_.isEmpty(this._options.get('pageSizeOptions'))
+      && (!isEmpty(this._options.get('pageSizeOptions'))
         || this._options.get('pageSizeOptions') !== false);
   }
 
@@ -1055,7 +1095,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   protected onHeadingClick(column: GridColumnComponent) {
     if (this.isSortingAllowed(column)) {
-      this.setSort(column.name, this.getSortType(column));
+      this.setSort(column.name, this.getSortType(column), column.caseInsensitiveSort);
       this.render();
     }
   }
@@ -1076,7 +1116,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     let isOrderedByField: boolean =
         column.name === this.dataProvider.getSortColumn();
 
-    if (_.isUndefined(sortType)) {
+    if (isUndefined(sortType)) {
       return isOrderedByField;
     }
 
@@ -1116,7 +1156,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {string}
    */
   protected getColumnName(key: string, row: any): string {
-    if (_.isObject(row[key])) {
+    if (isObject(row[key])) {
       return key.concat('.', this.getNestedKey(row[key]));
     }
 
@@ -1132,32 +1172,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected isRowSelected(row: any): boolean {
     let id: string = row[this._options.get('uniqueId')];
 
-    if (_.isUndefined(this.selectionMap[id])) {
+    if (isUndefined(this.selectionMap[id])) {
       return false;
     }
 
     return this.selectionMap[id];
-  }
-
-  /**
-   * Check if displaying results is allowed.
-   *
-   * @returns boolean
-   */
-  protected isResultsDisplayAllowed(): boolean {
-    if (this._options.get('requireFilters')) {
-      if (!_.isUndefined(this.columns)) {
-        for (let column of this.columns) {
-          if (!_.isUndefined(this.getFilter(column.name))) {
-            return true;
-          }
-        }
-      }
-
-      return false;
-    }
-
-    return true;
   }
 
   /**
@@ -1185,7 +1204,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @param {MouseEvent} event
    */
   private bodyDrag(event: MouseEvent) {
-    if (!_.isUndefined(this.bodyClientX) && !_.isUndefined(this.bodyScrollLeft)) {
+    if (!isUndefined(this.bodyClientX) && !isUndefined(this.bodyScrollLeft)) {
       this.bodyRef.nativeElement.style.cursor = 'move';
       this.bodyRef.nativeElement.scrollLeft = this.bodyScrollLeft
         - (event.clientX - this.bodyClientX);
@@ -1212,8 +1231,8 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   private setRowSelection(row: any, value?: boolean) {
     let id: string = row[this._options.get('uniqueId')];
 
-    let selected: boolean = !_.isUndefined(value) ? value :
-      (_.isUndefined(this.selectionMap[id]) || !(!!this.selectionMap[id]));
+    let selected: boolean = !isUndefined(value) ? value :
+      (isUndefined(this.selectionMap[id]) || !this.selectionMap[id]);
 
     let isCurrentRowSelected: boolean = this.isRowSelected(row);
 
@@ -1227,9 +1246,11 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
       this.selectedItems.splice(this.selectedItems.indexOf(row), 1);
     }
 
+    const previousData = this.selectionMap[id];
     this.selectionMap[id] = selected;
 
     this.itemSelect.emit(new GridEvent({
+      previousData,
       data: selected,
       target: row,
       type: GridEvent.ITEM_SELECT_EVENT
@@ -1247,13 +1268,22 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * console.log(nestedKey); // will output 'country.name.officialName'
    */
   private getNestedKey(object: any): string {
-    let firstKey: string = _.keys(object)[0];
+    let firstKey: string = keys(object)[0];
     let firstKeyValue: any = object[firstKey];
 
-    if (_.isObject(firstKeyValue)) {
+    if (isObject(firstKeyValue)) {
       firstKey.concat('.', this.getNestedKey(firstKeyValue));
     }
 
     return firstKey;
+  }
+
+  /**
+   * Checks is data loaded asynchronously
+   *
+   * @returns {boolean}
+   */
+  private isDataSetAsync(): boolean {
+    return !isUndefined(this._options.get('url')) || this._options.get('pageByPageLoading');
   }
 }
