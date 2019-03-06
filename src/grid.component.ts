@@ -107,7 +107,7 @@ import { GridFilter } from './grid-filter.interface';
               <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="getFullTableWidth()">
                   No results found
               </p>
-              <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
+              <table #table [class]="getBodyCssClass()" [style.width]="options.get('width')"
                      *ngIf="isResultsDisplayAllowed()">
                   <tbody>
                   <tr *ngFor="let row of getResults(); let i = index"
@@ -167,6 +167,11 @@ import { GridFilter } from './grid-filter.interface';
                   </select>
               </div>
           </div>
+          <ng-grid-sticky-scroll
+                  *ngIf="options.get('stickyScroll')"
+                  [scrollableElement]="tableRef"
+          >
+          </ng-grid-sticky-scroll>
       </div>`
 })
 export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
@@ -790,7 +795,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
           let column: GridColumnComponent = self.getColumn(filterColumn);
 
           if (column && isFunction(column.filterCallback)) {
-            match = match && column.filterCallback(item, self.filters[filter]);
+            match = match && column.filterCallback(item, self.filters[filterColumn].raw);
           } else if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
             match = match && value === self.filters[filterColumn].raw;
           } else {

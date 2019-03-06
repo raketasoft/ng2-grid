@@ -14,7 +14,7 @@ import {
   GridDataProvider
 } from '../src/index';
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep, some } from 'lodash';
 
 import { Person } from './models/person';
 
@@ -160,7 +160,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
   }
 
   onFilterInterests(data: Person, searchValue: any): boolean {
-    return _.some(data.interests, {id: Number(searchValue)});
+    return some(data.interests, {id: Number(searchValue)});
   }
 
   onClearSelectionBtnClick() {

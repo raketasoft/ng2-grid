@@ -140,7 +140,7 @@ export class GridOptions extends Loadable {
     if (isUndefined(this.pageByPageLoading)) {
       this.pageByPageLoading = GridOptions.DEFAULT_PAGE_BY_PAGE_LOADING;
     }
-    if (_.isUndefined(this.stickyScroll)) {
+    if (isUndefined(this.stickyScroll)) {
       this.stickyScroll = GridOptions.DEFAULT_STICKY_SCROLL;
     }
   }

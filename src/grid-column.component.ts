@@ -4,7 +4,7 @@ import {
   Input,
   OnInit, ContentChild, ContentChildren, QueryList
 } from '@angular/core';
-import { isUndefined, get } from 'lodash';
+import { isUndefined, get, find } from 'lodash';
 
 import { StyleCallback } from './style-callback.interface';
 import { ContextTemplateDirective } from './context-template.directive';
@@ -89,7 +89,7 @@ export class GridColumnComponent implements OnInit {
    * @returns {TemplateRef}
    */
   get headerTemplate(): TemplateRef<any> {
-    return _.get(_.find(this.contextTemplates.toArray(), { context: GridColumnComponent.TEMPLATE_CONTEXT_HEADER}), 'templateRef', null);
+    return get(find(this.contextTemplates.toArray(), { context: GridColumnComponent.TEMPLATE_CONTEXT_HEADER}), 'templateRef', null);
   }
 
   /**
