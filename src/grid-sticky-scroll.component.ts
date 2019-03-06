@@ -66,7 +66,13 @@ export class GridStickyScrollComponent implements OnInit {
     }
   }
 
-  attachScrollListener(element: any, callback: any): void {
+  /**
+   * Attaches scroll listener to given dom element
+   *
+   * @param element
+   * @param callback
+   */
+  attachScrollListener(element: any, callback: (event: Event) => void): () => void {
     return this.renderer.listen(
       element,
       'scroll',
