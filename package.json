@@ -1,6 +1,6 @@
 {
   "name": "me-grid",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Lightweight data grid component for Angular",
   "scripts": {
     "ng": "ng",
@@ -12,7 +12,7 @@
     "e2e": "tsc && concurrently \"npm run serve:e2e\" \"protractor protractor.config.js\" --kill-others --success first",
     "lint": "tslint ./src/**/*[^.d$].ts ./demo/**/*[^.d$].ts -t verbose",
     "lite": "lite-server",
-    "pree2e": "webdriver-manager update",
+    "pree2e": "webdriver-manager update --gecko=false",
     "test": "tsc && concurrently \"tsc -w\" \"karma start karma.conf.js\"",
     "test:once": "tsc && karma start karma.conf.js --single-run",
     "tsc": "tsc",

@@ -257,6 +257,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.render();
+    this.handleContentResize();
     this.changeDetector.detectChanges();
   }
 
@@ -353,18 +354,18 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   /**
    * Return current page size.
    *
-   * @returns {number|false}
+   * @returns {number}
    */
-  getPageSize(): any {
+  getPageSize(): number {
     return this.dataProvider.pageSize;
   }
 
   /**
    * Change page size to given value and render data.
    *
-   * @param {number|false} pageSize
+   * @param {number} pageSize
    */
-  setPageSize(pageSize: any) {
+  setPageSize(pageSize: number) {
     this.dataProvider.pageSize = pageSize;
     this.setPageIndex(1);
 
@@ -380,7 +381,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
    * @returns {number}
    */
   getTotalPages(): number {
-    if (this.getPageSize() === false || this.getPageSize() > this.getTotalCount()) {
+    if (!this.getPageSize() || this.getPageSize() > this.getTotalCount()) {
       return 1;
     }
 

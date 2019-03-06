@@ -24,7 +24,7 @@ export class GridDataProvider extends Loadable {
 
   pageParam: string;
   pageSizeParam: string;
-  pageSize: any;
+  pageSize: number;
   pageIndex = 1;
   requestParams: Array<any>;
   sortParam: string;
@@ -181,8 +181,8 @@ export class GridDataProvider extends Loadable {
 
     params = params.append(this.pageParam, this.pageIndex.toString());
 
-    if (this.pageSize !== false) {
-      params.set(this.pageSizeParam, this.pageSize as string);
+    if (!_.isUndefined(this.pageSize)) {
+      params = params.append(this.pageSizeParam, this.pageSize.toString());
     }
 
     if (!isUndefined(this.sortColumn)) {
@@ -207,7 +207,7 @@ export class GridDataProvider extends Loadable {
   protected slice() {
     let data: Array<any> = [];
 
-    if (this.pageSize !== false) {
+    if (!_.isUndefined(this.pageSize)) {
       let start: number = (this.pageIndex - 1) * this.pageSize;
       let end: number = start + Number(this.pageSize);
 
