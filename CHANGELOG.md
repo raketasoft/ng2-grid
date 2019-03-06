@@ -1,3 +1,12 @@
+<a name="2.2.0"></a>
+# 2.2.0 (2019-03-07)
+
+### Features
+
+* **grid:** Added callback for custom filtering
+* **grid:** Added option for sticky scrollbar when grid has horizontal scroll
+* **grid:** Added option for custom templates in the column headers
+
 <a name="1.0.2"></a>
 # 1.0.2 (2018-11-15)
 
