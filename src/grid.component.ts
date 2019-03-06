@@ -155,7 +155,7 @@ import * as _ from 'lodash';
     </div>
   </div>
     <ng-grid-sticky-scroll
-        *ngIf="options.get('stickyScroll')"
+        *ngIf="options.get('stickyScroll') && tableRef"
         [scrollableElement]="tableRef"
     >
     </ng-grid-sticky-scroll>
