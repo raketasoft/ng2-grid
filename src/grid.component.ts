@@ -122,13 +122,13 @@ import { GridFilter } from './grid-filter.interface';
                           [style.width]="column.width"
                           [style.text-align]="column.textAlign"
                           [ngClass]="column.cellStyleCallback(row)">
-            <span *ngIf="column.cellTemplate">
-              <ng-grid-column-template-renderer [template]="column.cellTemplate" [column]="column" [data]="row">
-              </ng-grid-column-template-renderer>
-            </span>
+                          <span *ngIf="column.cellTemplate">
+                              <ng-grid-column-template-renderer [template]="column.cellTemplate" [column]="column" [data]="row">
+                              </ng-grid-column-template-renderer>
+                          </span>
                           <span *ngIf="!column.cellTemplate">
-              {{column.resolveCell(row)}}
-            </span>
+                              {{column.resolveCell(row)}}
+                          </span>
                       </td>
                   </tr>
                   </tbody>
@@ -185,6 +185,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   @Output() update: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
   @ViewChild('header') headerRef: ElementRef;
   @ViewChild('body') bodyRef: ElementRef;
+  @ViewChild('table') tableRef: ElementRef;
 
   private _options: GridOptions;
   private columns: Array<GridColumnComponent> = [];

@@ -7,6 +7,7 @@ import { GridComponent } from './grid.component';
 import { GridColumnComponent } from './grid-column.component';
 import { ContextTemplateDirective } from './context-template.directive';
 import { GridColumnTemplateRenderComponent } from './grid-column-template-renderer';
+import { GridStickyScrollComponent } from './grid-sticky-scroll.component';
 
 /**
  * Grid module class.
@@ -24,7 +25,8 @@ import { GridColumnTemplateRenderComponent } from './grid-column-template-render
     GridComponent,
     GridColumnComponent,
     GridColumnTemplateRenderComponent,
-    ContextTemplateDirective
+    ContextTemplateDirective,
+    GridStickyScrollComponent
   ],
   exports: [
     GridComponent,
