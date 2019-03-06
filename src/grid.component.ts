@@ -16,7 +16,7 @@ import {
 } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Subject } from 'rxjs';
-import { isUndefined, isNull, isObject, flatMap, filter, get, isEmpty, keys } from 'lodash';
+import { isFunction, isUndefined, isNull, isObject, flatMap, filter, get, isEmpty, keys } from 'lodash';
 import { Dictionary } from 'lodash';
 
 import { DataItemCallback, GridOptions } from './grid-options';
@@ -544,7 +544,6 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
     const column: GridColumnComponent = this.getColumn(columnName);
 
     this.dataProvider.setSort(columnName, sortType, caseInsensitiveSort);
-
     this.sortChange.emit(new GridEvent({
       data: sortType,
       target: column ? column : columnName,
@@ -789,7 +788,9 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
           let value: string = result !== null ? result.toString() : '';
           let column: GridColumnComponent = self.getColumn(filterColumn);
 
-          if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
+          if (column && isFunction(column.filterCallback)) {
+            match = match && column.filterCallback(item, self.filters[filter]);
+          } else if (column && column.type === GridColumnComponent.COLUMN_TYPE_NUMBER) {
             match = match && value === self.filters[filterColumn].raw;
           } else {
             match = match && !isEmpty(value.match(new RegExp(self.filters[filterColumn].escaped, 'i')));

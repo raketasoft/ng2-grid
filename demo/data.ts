@@ -5,7 +5,21 @@ export default [
     age: 61,
     country: { name: 'China', id: 3 },
     address: 'Ap #897-1459 Quam Avenue',
-    isMarried: false
+    isMarried: false,
+    interests: [
+      {
+        id: 4,
+        name: 'Sports'
+      },
+      {
+        id: 3,
+        name: 'Painting'
+      },
+      {
+        id: 1,
+        name: 'Dancing'
+      },
+    ]
   },
   {
     id: 2,
@@ -37,7 +51,21 @@ export default [
     age: 43,
     country: { name: 'Brazil', id: 1 },
     address: 'Ap #614-689 Vehicula Street',
-    isMarried: true
+    isMarried: true,
+    interests: [
+      {
+        id: 2,
+        name: 'Photography'
+      },
+      {
+        id: 3,
+        name: 'Painting'
+      },
+      {
+        id: 6,
+        name: 'Fashion'
+      },
+    ]
   },
   {
     id: 6,
@@ -85,7 +113,21 @@ export default [
     age: 28,
     country: { name: 'Brazil', id: 1 },
     address: 'P.O. Box 939, 9310 A Ave',
-    isMarried: false
+    isMarried: false,
+    interests: [
+      {
+        id: 2,
+        name: 'Photography'
+      },
+      {
+        id: 5,
+        name: 'Traveling'
+      },
+      {
+        id: 6,
+        name: 'Fashion'
+      },
+    ]
   },
   {
     id: 12,

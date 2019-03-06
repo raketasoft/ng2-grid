@@ -40,6 +40,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
   @ViewChild('columnGrid') columnGrid: GridComponent;
   isMarriedItems: Array<any>;
   countryItems: Array<any>;
+  interestOptions: Array<any>;
 
   constructor(
     private http: HttpClient,
@@ -102,6 +103,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
     this.isMarriedItems = this.getIsMarriedItems();
     this.countryItems = this.getCountryItems();
+    this.interestOptions = this.getInterestOptions();
   }
 
   ngAfterViewInit() {
@@ -112,7 +114,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       pageSizeOptions: [5, 10, 20, 50],
     });
     this.columnGrid.setData(cloneDeep(DEMO_DATA));
-    this.columnGrid.setFilter('country.id', '2');
+    this.columnGrid.setFilter('country.id', '1');
     this.columnGrid.setSort('id');
     this.columnGrid.setPageSize(10);
     this.columnGrid.render();
@@ -143,6 +145,21 @@ export class DemoComponent implements OnInit, AfterViewInit {
       {value: 6, text: 'United Kingdom'},
       {value: 7, text: 'United States'},
     ];
+  }
+
+  getInterestOptions(): Array<any> {
+    return [
+      { id: 1, name: 'Dancing'},
+      { id: 2, name: 'Photography'},
+      { id: 3, name: 'Painting'},
+      { id: 4, name: 'Sports'},
+      { id: 5, name: 'Traveling'},
+      { id: 6, name: 'Fashion'}
+    ];
+  }
+
+  onFilterInterests(data: Person, searchValue: any): boolean {
+    return _.some(data.interests, {id: Number(searchValue)});
   }
 
   onClearSelectionBtnClick() {
