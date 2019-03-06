@@ -1,6 +1,6 @@
 import * as http from 'http';
 import * as url from 'url';
-import * as _ from 'lodash';
+import { isUndefined, filter, get, orderBy } from 'lodash';
 
 import DEMO_DATA from './data';
 
@@ -21,39 +21,39 @@ const dispatcher = new HttpDispatcher();
 dispatcher.onGet('/', function(request: any, result: any) {
   const query: any = url.parse(request.url, true).query;
 
-  const page: number = _.isUndefined(query.page) ? 1 : query.page;
+  const page: number = isUndefined(query.page) ? 1 : query.page;
   const pageSize: number = query.pageSize;
 
   const start: number = (page - 1) * pageSize;
   const end: number = start + pageSize;
 
-  let sortType: string;
+  let sortType: any;
   let sortBy: string;
 
-  if (!_.isUndefined(query.orderBy)) {
+  if (!isUndefined(query.orderBy)) {
     sortType = query.orderBy.indexOf('-') === 0 ? 'desc' : 'asc';
     sortBy = query.orderBy.replace('-', '');
   }
 
   let filters: string[] = [];
-  for (let filter in query) {
-    if (filter !== 'page' && filter !== 'pageSize' && filter !== 'orderBy'
-        && filter !== 'expand') {
-      filters[filter] = query[filter];
+  for (let filterName in query) {
+    if (filterName !== 'page' && filterName !== 'pageSize' && filterName !== 'orderBy'
+        && filterName !== 'expand') {
+      filters[filterName] = query[filterName];
     }
   }
 
   let data: any[] = DEMO_DATA;
 
   // apply filters
-  data = _.filter(data, function(item: any) {
+  data = filter(data, function(item: any) {
     let match = true;
-    for (let filter in filters) {
-      if (filters.hasOwnProperty(filter)) {
-        let value = _.get(item, filter).toString();
+    for (let filterName in filters) {
+      if (filters.hasOwnProperty(filterName)) {
+        let value = get(item, filterName).toString();
 
         match = match &&
-          (value.match(new RegExp(filters[filter], 'i')) !== null);
+          (value.match(new RegExp(filters[filterName], 'i')) !== null);
       }
     }
 
@@ -67,16 +67,16 @@ dispatcher.onGet('/', function(request: any, result: any) {
     'X-Pagination-Total-Count': data.length,
     'X-Pagination-Page-Count': Math.ceil(data.length / pageSize),
     'X-Pagination-Current-Page': page,
-    'X-Pagination-Per-Page': !_.isUndefined(pageSize) ? pageSize : ''
+    'X-Pagination-Per-Page': !isUndefined(pageSize) ? pageSize : ''
   });
 
   // sort data
-  if (!_.isUndefined(sortBy)) {
-    data = _.orderBy(data, [sortBy], [sortType]);
+  if (!isUndefined(sortBy)) {
+    data = orderBy(data, [sortBy], [sortType]);
   }
 
   // slice page
-  if (!_.isUndefined(pageSize)) {
+  if (!isUndefined(pageSize)) {
     data = data.slice(start, end);
   }
 

@@ -4,6 +4,7 @@ import {
   Input,
   OnInit
 } from '@angular/core';
+
 import { GridColumnComponent } from './grid-column.component';
 
 /**

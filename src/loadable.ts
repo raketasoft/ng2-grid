@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash';
 
 /**
  * Loadable is a class that implements loading properties via constructor.
@@ -20,7 +20,7 @@ export class Loadable {
    * Load param values to object properties.
    */
   protected loadProperties() {
-    if (!_.isEmpty(this.params)) {
+    if (!isEmpty(this.params)) {
       for (let param in this.params) {
         if (this.params.hasOwnProperty(param)) {
           this[param] = this.params[param];

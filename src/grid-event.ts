@@ -19,6 +19,7 @@ export class GridEvent extends Loadable {
   static UPDATE_EVENT = 'update';
 
   data: any;
+  previousData: any;
   target: any;
   type: string;
 }
