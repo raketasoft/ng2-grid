@@ -7,8 +7,8 @@ import { DemoComponent } from './demo.component';
 import {
   GridComponent,
   GridColumnComponent,
-  GridCellRendererComponent,
-  GridStickyScrollComponent
+  GridStickyScrollComponent,
+  GridColumnTemplateRenderComponent
 } from '../src/index';
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -31,8 +31,8 @@ describe('DemoComponent', function () {
         DemoComponent,
         GridComponent,
         GridColumnComponent,
-        GridCellRendererComponent,
-        GridStickyScrollComponent
+        GridStickyScrollComponent,
+        GridColumnTemplateRenderComponent
       ]
     })
     .compileComponents();

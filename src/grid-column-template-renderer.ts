@@ -2,23 +2,24 @@ import {
   Component,
   ViewContainerRef,
   Input,
-  OnInit
+  OnInit, TemplateRef
 } from '@angular/core';
 import { GridColumnComponent } from './grid-column.component';
 
 /**
- * GridCell component used to render Grid cell template.
+ * GridColumnTemplateRenderComponent component used to render Grid column templates.
  *
  * @author Branimir Borisov <branimir@raketasoft.com>
  * @since 1.0.0-alpha.4
  */
 @Component({
-  selector: 'ng-grid-cell-renderer',
+  selector: 'ng-grid-column-template-renderer',
   template: ''
 })
-export class GridCellRendererComponent implements OnInit {
+export class GridColumnTemplateRenderComponent implements OnInit {
   @Input() data: any;
   @Input() column: GridColumnComponent;
+  @Input() template: TemplateRef<any>;
 
   /**
    * Class constructor.
@@ -31,7 +32,7 @@ export class GridCellRendererComponent implements OnInit {
    * Handle onInit event.
    */
   ngOnInit() {
-    this.viewContainerRef.createEmbeddedView(this.column.template, {
+    this.viewContainerRef.createEmbeddedView(this.template, {
       'column': this.column,
       'data': this.data
     });
