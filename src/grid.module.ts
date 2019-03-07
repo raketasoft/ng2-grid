@@ -5,7 +5,9 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { GridComponent } from './grid.component';
 import { GridColumnComponent } from './grid-column.component';
-import { GridCellRendererComponent } from './grid-cell-renderer.component';
+import { ContextTemplateDirective } from './context-template.directive';
+import { GridColumnTemplateRenderComponent } from './grid-column-template-renderer';
+import { GridStickyScrollComponent } from './grid-sticky-scroll.component';
 
 /**
  * Grid module class.
@@ -22,12 +24,14 @@ import { GridCellRendererComponent } from './grid-cell-renderer.component';
   declarations: [
     GridComponent,
     GridColumnComponent,
-    GridCellRendererComponent
+    GridColumnTemplateRenderComponent,
+    ContextTemplateDirective,
+    GridStickyScrollComponent
   ],
   exports: [
     GridComponent,
     GridColumnComponent,
-    GridCellRendererComponent
+    ContextTemplateDirective
   ]
 })
 export class GridModule { }

@@ -181,7 +181,7 @@ export class GridDataProvider extends Loadable {
 
     params = params.append(this.pageParam, this.pageIndex.toString());
 
-    if (!_.isUndefined(this.pageSize)) {
+    if (!isUndefined(this.pageSize)) {
       params = params.append(this.pageSizeParam, this.pageSize.toString());
     }
 
@@ -207,7 +207,7 @@ export class GridDataProvider extends Loadable {
   protected slice() {
     let data: Array<any> = [];
 
-    if (!_.isUndefined(this.pageSize)) {
+    if (!isUndefined(this.pageSize)) {
       let start: number = (this.pageIndex - 1) * this.pageSize;
       let end: number = start + Number(this.pageSize);
 

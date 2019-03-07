@@ -14,7 +14,7 @@ import {
   GridDataProvider
 } from '../src/index';
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep, some } from 'lodash';
 
 import { Person } from './models/person';
 
@@ -40,6 +40,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
   @ViewChild('columnGrid') columnGrid: GridComponent;
   isMarriedItems: Array<any>;
   countryItems: Array<any>;
+  interestOptions: Array<any>;
 
   constructor(
     private http: HttpClient,
@@ -102,6 +103,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
     this.isMarriedItems = this.getIsMarriedItems();
     this.countryItems = this.getCountryItems();
+    this.interestOptions = this.getInterestOptions();
   }
 
   ngAfterViewInit() {
@@ -110,9 +112,10 @@ export class DemoComponent implements OnInit, AfterViewInit {
       selection: true,
       defaultPageSize: 5,
       pageSizeOptions: [5, 10, 20, 50],
+      stickyScroll: true
     });
     this.columnGrid.setData(cloneDeep(DEMO_DATA));
-    this.columnGrid.setFilter('country.id', '2');
+    this.columnGrid.setFilter('country.id', '1');
     this.columnGrid.setSort('id');
     this.columnGrid.setPageSize(10);
     this.columnGrid.render();
@@ -145,6 +148,21 @@ export class DemoComponent implements OnInit, AfterViewInit {
     ];
   }
 
+  getInterestOptions(): Array<any> {
+    return [
+      { id: 1, name: 'Dancing'},
+      { id: 2, name: 'Photography'},
+      { id: 3, name: 'Painting'},
+      { id: 4, name: 'Sports'},
+      { id: 5, name: 'Traveling'},
+      { id: 6, name: 'Fashion'}
+    ];
+  }
+
+  onFilterInterests(data: Person, searchValue: any): boolean {
+    return some(data.interests, {id: Number(searchValue)});
+  }
+
   onClearSelectionBtnClick() {
     this.columnGrid.clearSelection();
   }
@@ -166,5 +184,10 @@ export class DemoComponent implements OnInit, AfterViewInit {
     }
 
     return 'green';
+  }
+
+  onClearAllFiltersClick(): void {
+    this.columnGrid.clearAllFilters();
+    this.columnGrid.render();
   }
 }

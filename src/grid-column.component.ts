@@ -2,12 +2,12 @@ import {
   Component,
   TemplateRef,
   Input,
-  ContentChild,
-  OnInit
+  OnInit, ContentChild, ContentChildren, QueryList
 } from '@angular/core';
-import { isUndefined, get } from 'lodash';
+import { isUndefined, get, find } from 'lodash';
 
 import { StyleCallback } from './style-callback.interface';
+import { ContextTemplateDirective } from './context-template.directive';
 
 /**
  * Grid column class.
@@ -27,16 +27,20 @@ export class GridColumnComponent implements OnInit {
 
   static COLUMN_TYPE_STRING = 'string';
   static COLUMN_TYPE_NUMBER = 'number';
+  static COLUMN_TYPE_TEMPLATE = 'template';
 
   static DEFAULT_CSS_CLASS_VALUE = '';
   static DEFAULT_FILTERING_VALUE = true;
   static DEFAULT_SORTING_VALUE = true;
   static DEFAULT_CASE_INSENSITIVE_VALUE = false;
 
+  private static TEMPLATE_CONTEXT_HEADER = 'header';
+
   @Input() cellStyleCallback: StyleCallback;
   @Input() cssClass: string;
   @Input() heading: string;
   @Input() name: string;
+  @Input() filterCallback: (data: any, searchValue: any) => boolean;
   @Input() filtering: boolean;
   @Input() filterType: string;
   @Input() sorting: boolean;
@@ -47,7 +51,8 @@ export class GridColumnComponent implements OnInit {
   @Input() textField: string;
   @Input() valueField: string;
   @Input() caseInsensitiveSort: boolean;
-  @ContentChild(TemplateRef) template: TemplateRef<any>;
+  @ContentChild(TemplateRef) cellTemplate: TemplateRef<any>;
+  @ContentChildren(ContextTemplateDirective) contextTemplates: QueryList<ContextTemplateDirective>;
 
   /**
    * Handle OnInit event.
@@ -76,6 +81,15 @@ export class GridColumnComponent implements OnInit {
     if (isUndefined(this.caseInsensitiveSort)) {
       this.caseInsensitiveSort = GridColumnComponent.DEFAULT_CASE_INSENSITIVE_VALUE;
     }
+  }
+
+  /**
+   * Returns template reference to the header of the column
+   *
+   * @returns {TemplateRef}
+   */
+  get headerTemplate(): TemplateRef<any> {
+    return get(find(this.contextTemplates.toArray(), { context: GridColumnComponent.TEMPLATE_CONTEXT_HEADER}), 'templateRef', null);
   }
 
   /**
