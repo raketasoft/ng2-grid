@@ -184,4 +184,9 @@ export class DemoComponent implements OnInit, AfterViewInit {
 
     return 'green';
   }
+
+  onClearAllFiltersClick(): void {
+    this.columnGrid.clearAllFilters();
+    this.columnGrid.render();
+  }
 }
