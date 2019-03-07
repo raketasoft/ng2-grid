@@ -188,7 +188,6 @@
 .sticky-scroll {
     width: 33%;
     left:33%;
-    height: 15px;
     position: fixed;
     bottom: -30px;
     display: block;
@@ -212,7 +211,6 @@
 }
 
 .sticky-scroll > .horizontal-scrollbar > .horizontal-scrollbar-copy {
-    width: 2000px;
     height:1px;
 }
 

@@ -37,7 +37,7 @@ import { GridFilter } from './grid-filter.interface';
  */
 @Component({
   selector: 'ng-grid',
-  template: `
+  template: `    
       <div class="ng-grid"
            (mousedown)="onGridMouseDown($event)"
            (mousemove)="onGridMouseMove($event)"
@@ -168,7 +168,7 @@ import { GridFilter } from './grid-filter.interface';
               </div>
           </div>
           <ng-grid-sticky-scroll
-                  *ngIf="options.get('stickyScroll')"
+                  *ngIf="options.get('stickyScroll') && tableRef"
                   [scrollableElement]="tableRef"
           >
           </ng-grid-sticky-scroll>
