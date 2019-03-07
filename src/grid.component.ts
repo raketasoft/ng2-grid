@@ -34,127 +34,136 @@ import * as _ from 'lodash';
 @Component({
   selector: 'ng-grid',
   template: `
-<div class="ng-grid"
-  (mousedown)="onGridMouseDown($event)"
-  (mousemove)="onGridMouseMove($event)"
-  (dragstart)="onGridDragStart($event)">
-  <div #header class="ng-grid-header"
-      [class.scroll]="options.get('height')"
-      [style.width]="options.get('width')">
-    <table [class]="getHeadingCssClass()" [style.width]="options.get('width')">
-      <thead *ngIf="options.get('heading')">
-        <tr>
-          <th *ngIf="options.get('selection')" class="ng-grid-heading selection">
-            <input #selectAll type="checkbox"
-                *ngIf="options.get('selectionMultiple')"
-                [ngModel]="allResultsSelected()"
-                (click)="onSelectAllCheckboxClick(selectAll.checked)">
-          </th>
-          <th *ngFor="let column of columns" class="ng-grid-heading"
-              [style.width]="column.width"
-              [class.sort]="isSortedBy(column)"
-              [class.sort-asc]="isSortedBy(column, 'asc')"
-              [class.sort-desc]="isSortedBy(column, 'desc')"
-              [class.sort-disable]="!isSortingAllowed(column)"
-              [ngClass]="column.cssClass"
-              (click)="onHeadingClick(column)">
-            {{column.resolveHeading()}}
-          </th>
-        </tr>
-      </thead>
-      <tbody *ngIf="options.get('filtering')">
-        <tr>
-          <td *ngIf="options.get('selection')" class="ng-grid-filter selection"></td>
-          <td *ngFor="let column of columns" class="ng-grid-filter">
-            <input type="text" *ngIf="isInputFilterEnabled(column)"
-                [ngModel]="getFilter(column.name)"
-                (keyup.enter)="onInputFilterEnter($event, column)"
-                (blur)="onInputFilterBlur($event, column)"
-                (change)="onInputFilterChange($event, column)" />
-            <select *ngIf="isSelectFilterEnabled(column)"
-                [ngModel]="getFilter(column.name)"
-                (ngModelChange)="onSelectFilterChange($event, column)">
-              <option></option>
-              <option
-                *ngFor="let item of column.items"
-                [value]="item[column.valueField]">{{item[column.textField]}}</option>
-            </select>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div #body class="ng-grid-body"
-      [class.scroll]="options.get('height')"
-      (scroll)="onBodyScroll(body, header)"
-      [style.width]="options.get('width')"
-      [style.max-height]="options.get('height')">
-    <p *ngIf="!isResultsDisplayAllowed()" [style.width]="getFullTableWidth()">
-      To view results please add search filters
-    </p>
-    <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="getFullTableWidth()">
-      No results found
-    </p>
-    <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
-      *ngIf="isResultsDisplayAllowed()">
-      <tbody>
-        <tr *ngFor="let row of getResults(); let i = index"
-            [class]="getRowCssClass(i, row)"
-            (click)="onRowClick(row)">
-          <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
-            <input type="checkbox"
-                [ngModel]="isRowSelected(row)"
-                (click)="onSelectItemCheckboxClick($event, row)">
-          </td>
-          <td *ngFor="let column of columns" class="ng-grid-cell"
-              [style.width]="column.width"
-              [style.text-align]="column.textAlign"
-              [ngClass]="column.cellStyleCallback(row)">
-            <span *ngIf="column.template">
-              <ng-grid-cell-renderer [column]="column" [data]="row">
-              </ng-grid-cell-renderer>
+      <div class="ng-grid"
+           (mousedown)="onGridMouseDown($event)"
+           (mousemove)="onGridMouseMove($event)"
+           (dragstart)="onGridDragStart($event)">
+          <div #header class="ng-grid-header"
+               [class.scroll]="options.get('height')"
+               [style.width]="options.get('width')">
+              <table [class]="getHeadingCssClass()" [style.width]="options.get('width')">
+                  <thead *ngIf="options.get('heading')">
+                  <tr>
+                      <th *ngIf="options.get('selection')" class="ng-grid-heading selection">
+                          <input #selectAll type="checkbox"
+                                 *ngIf="options.get('selectionMultiple')"
+                                 [ngModel]="allResultsSelected()"
+                                 (click)="onSelectAllCheckboxClick(selectAll.checked)">
+                      </th>
+                      <th *ngFor="let column of columns" class="ng-grid-heading"
+                          [style.width]="column.width"
+                          [class.sort]="isSortedBy(column)"
+                          [class.sort-asc]="isSortedBy(column, 'asc')"
+                          [class.sort-desc]="isSortedBy(column, 'desc')"
+                          [class.sort-disable]="!isSortingAllowed(column)"
+                          [ngClass]="column.cssClass"
+                          (click)="onHeadingClick(column)">
+                          {{column.resolveHeading()}}
+                      </th>
+                  </tr>
+                  </thead>
+                  <tbody *ngIf="options.get('filtering')">
+                  <tr>
+                      <td *ngIf="options.get('selection')" class="ng-grid-filter selection"></td>
+                      <td *ngFor="let column of columns" class="ng-grid-filter">
+                          <input type="text" *ngIf="isInputFilterEnabled(column)"
+                                 [ngModel]="getFilter(column.name)"
+                                 (keyup.enter)="onInputFilterEnter($event, column)"
+                                 (blur)="onInputFilterBlur($event, column)"
+                                 (change)="onInputFilterChange($event, column)"/>
+                          <select *ngIf="isSelectFilterEnabled(column)"
+                                  [ngModel]="getFilter(column.name)"
+                                  (ngModelChange)="onSelectFilterChange($event, column)">
+                              <option></option>
+                              <option
+                                      *ngFor="let item of column.items"
+                                      [value]="item[column.valueField]">{{item[column.textField]}}
+                              </option>
+                          </select>
+                          <ng-grid-column-template-renderer
+                                  *ngIf="isTemplateColumn(column) && column.headerTemplate"
+                                  [template]="column.headerTemplate"
+                                  [column]="column"
+                                  [data]="row"
+                          >
+                          </ng-grid-column-template-renderer>
+                      </td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div #body class="ng-grid-body"
+               [class.scroll]="options.get('height')"
+               (scroll)="onBodyScroll(body, header)"
+               [style.width]="options.get('width')"
+               [style.max-height]="options.get('height')">
+              <p *ngIf="!isResultsDisplayAllowed()" [style.width]="getFullTableWidth()">
+                  To view results please add search filters
+              </p>
+              <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="getFullTableWidth()">
+                  No results found
+              </p>
+              <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
+                     *ngIf="isResultsDisplayAllowed()">
+                  <tbody>
+                  <tr *ngFor="let row of getResults(); let i = index"
+                      [class]="getRowCssClass(i, row)"
+                      (click)="onRowClick(row)">
+                      <td *ngIf="options.get('selection')" class="ng-grid-cell selection">
+                          <input type="checkbox"
+                                 [ngModel]="isRowSelected(row)"
+                                 (click)="onSelectItemCheckboxClick($event, row)">
+                      </td>
+                      <td *ngFor="let column of columns" class="ng-grid-cell"
+                          [style.width]="column.width"
+                          [style.text-align]="column.textAlign"
+                          [ngClass]="column.cellStyleCallback(row)">
+            <span *ngIf="column.cellTemplate">
+              <ng-grid-column-template-renderer [template]="column.cellTemplate" [column]="column" [data]="row">
+              </ng-grid-column-template-renderer>
             </span>
-            <span *ngIf="!column.template">
+                          <span *ngIf="!column.cellTemplate">
               {{column.resolveCell(row)}}
             </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div #footer class="ng-grid-footer clearfix">
-    <div class="ng-grid-pager {{options.get('pageElementPosition')}}"
-      *ngIf="options.paging && isResultsDisplayAllowed()">
-      <span>Pages:</span>
-      <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="1"
-        (click)="onPageButtonClick($event)">First</a>
-      <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="getPageIndex() - 1"
-        (click)="onPageButtonClick($event)">Prev</a>
-      <ng-template ngFor let-page [ngForOf]="pages">
-        <a href="#" *ngIf="page != getPageIndex()" [attr.data-page]="page"
-          (click)="onPageButtonClick($event)">{{page}}</a>
-        <span *ngIf="page == getPageIndex()">{{page}}</span>
-      </ng-template>
-      <a href="#" *ngIf="getPageIndex() < getTotalPages()"
-        [attr.data-page]="getPageIndex() + 1"
-        (click)="onPageButtonClick($event)">Next</a>
-      <a href="#" *ngIf="getPageIndex() < getTotalPages()"
-        [attr.data-page]="getTotalPages()"
-        (click)="onPageButtonClick($event)">Last</a>
-      <span>{{getPageIndex()}} of {{getTotalPages()}}</span>
-    </div>
-    <div class="ng-grid-pager-size {{options.get('pageSizeElementPosition')}}"
-      *ngIf="isPageSizeOptionsEnabled()">
-      <span>Page size:</span>
-      <select [ngModel]="getPageSize()"
-        (ngModelChange)="onPageSizeDropDownChange($event)">
-        <option
-          *ngFor="let value of options.get('pageSizeOptions')"
-          [value]="value">{{value}}</option>
-      </select>
-    </div>
-  </div>
-</div>`
+                      </td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div #footer class="ng-grid-footer clearfix">
+              <div class="ng-grid-pager {{options.get('pageElementPosition')}}"
+                   *ngIf="options.paging && isResultsDisplayAllowed()">
+                  <span>Pages:</span>
+                  <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="1"
+                     (click)="onPageButtonClick($event)">First</a>
+                  <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="getPageIndex() - 1"
+                     (click)="onPageButtonClick($event)">Prev</a>
+                  <ng-template ngFor let-page [ngForOf]="pages">
+                      <a href="#" *ngIf="page != getPageIndex()" [attr.data-page]="page"
+                         (click)="onPageButtonClick($event)">{{page}}</a>
+                      <span *ngIf="page == getPageIndex()">{{page}}</span>
+                  </ng-template>
+                  <a href="#" *ngIf="getPageIndex() < getTotalPages()"
+                     [attr.data-page]="getPageIndex() + 1"
+                     (click)="onPageButtonClick($event)">Next</a>
+                  <a href="#" *ngIf="getPageIndex() < getTotalPages()"
+                     [attr.data-page]="getTotalPages()"
+                     (click)="onPageButtonClick($event)">Last</a>
+                  <span>{{getPageIndex()}} of {{getTotalPages()}}</span>
+              </div>
+              <div class="ng-grid-pager-size {{options.get('pageSizeElementPosition')}}"
+                   *ngIf="isPageSizeOptionsEnabled()">
+                  <span>Page size:</span>
+                  <select [ngModel]="getPageSize()"
+                          (ngModelChange)="onPageSizeDropDownChange($event)">
+                      <option
+                              *ngFor="let value of options.get('pageSizeOptions')"
+                              [value]="value">{{value}}
+                      </option>
+                  </select>
+              </div>
+          </div>
+      </div>`
 })
 export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   static ROW_ALT_CLASS = 'alt';
@@ -773,6 +782,16 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   protected isSelectFilterEnabled(column: GridColumnComponent) {
     return (column.filterType === GridColumnComponent.FILTER_TYPE_SELECT
         && column.filtering === true);
+  }
+
+  /**
+   * Checks if given column contains specific component for rendering
+   *
+   * @param column
+   * @returns {boolean}
+   */
+  protected isTemplateColumn(column: GridColumnComponent): boolean {
+    return column.filtering === false && column.type === GridColumnComponent.COLUMN_TYPE_TEMPLATE;
   }
 
   /**
