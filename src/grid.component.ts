@@ -81,8 +81,7 @@ import { GridFilter } from './grid-filter.interface';
                               <option></option>
                               <option
                                       *ngFor="let item of column.items"
-                                      [value]="item[column.valueField]">{{item[column.textField]}}
-                              </option>
+                                      [value]="item[column.valueField]">{{item[column.textField]}}</option>
                           </select>
                           <ng-grid-column-template-renderer
                                   *ngIf="isTemplateColumn(column) && column.headerTemplate"
