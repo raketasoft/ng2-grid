@@ -103,7 +103,7 @@ import * as _ from 'lodash';
               <p *ngIf="isResultsDisplayAllowed() && getResults().length === 0" [style.width]="getFullTableWidth()">
                   No results found
               </p>
-              <table [class]="getBodyCssClass()" [style.width]="options.get('width')"
+              <table #table [class]="getBodyCssClass()" [style.width]="options.get('width')"
                      *ngIf="isResultsDisplayAllowed()">
                   <tbody>
                   <tr *ngFor="let row of getResults(); let i = index"
@@ -122,48 +122,52 @@ import * as _ from 'lodash';
               <ng-grid-column-template-renderer [template]="column.cellTemplate" [column]="column" [data]="row">
               </ng-grid-column-template-renderer>
             </span>
-                          <span *ngIf="!column.cellTemplate">
+            <span *ngIf="!column.cellTemplate">
               {{column.resolveCell(row)}}
             </span>
-                      </td>
-                  </tr>
-                  </tbody>
-              </table>
-          </div>
-          <div #footer class="ng-grid-footer clearfix">
-              <div class="ng-grid-pager {{options.get('pageElementPosition')}}"
-                   *ngIf="options.paging && isResultsDisplayAllowed()">
-                  <span>Pages:</span>
-                  <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="1"
-                     (click)="onPageButtonClick($event)">First</a>
-                  <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="getPageIndex() - 1"
-                     (click)="onPageButtonClick($event)">Prev</a>
-                  <ng-template ngFor let-page [ngForOf]="pages">
-                      <a href="#" *ngIf="page != getPageIndex()" [attr.data-page]="page"
-                         (click)="onPageButtonClick($event)">{{page}}</a>
-                      <span *ngIf="page == getPageIndex()">{{page}}</span>
-                  </ng-template>
-                  <a href="#" *ngIf="getPageIndex() < getTotalPages()"
-                     [attr.data-page]="getPageIndex() + 1"
-                     (click)="onPageButtonClick($event)">Next</a>
-                  <a href="#" *ngIf="getPageIndex() < getTotalPages()"
-                     [attr.data-page]="getTotalPages()"
-                     (click)="onPageButtonClick($event)">Last</a>
-                  <span>{{getPageIndex()}} of {{getTotalPages()}}</span>
-              </div>
-              <div class="ng-grid-pager-size {{options.get('pageSizeElementPosition')}}"
-                   *ngIf="isPageSizeOptionsEnabled()">
-                  <span>Page size:</span>
-                  <select [ngModel]="getPageSize()"
-                          (ngModelChange)="onPageSizeDropDownChange($event)">
-                      <option
-                              *ngFor="let value of options.get('pageSizeOptions')"
-                              [value]="value">{{value}}
-                      </option>
-                  </select>
-              </div>
-          </div>
-      </div>`
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div #footer class="ng-grid-footer clearfix">
+    <div class="ng-grid-pager {{options.get('pageElementPosition')}}"
+      *ngIf="options.paging && isResultsDisplayAllowed()">
+      <span>Pages:</span>
+      <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="1"
+        (click)="onPageButtonClick($event)">First</a>
+      <a href="#" *ngIf="getPageIndex() > 1" [attr.data-page]="getPageIndex() - 1"
+        (click)="onPageButtonClick($event)">Prev</a>
+      <ng-template ngFor let-page [ngForOf]="pages">
+        <a href="#" *ngIf="page != getPageIndex()" [attr.data-page]="page"
+          (click)="onPageButtonClick($event)">{{page}}</a>
+        <span *ngIf="page == getPageIndex()">{{page}}</span>
+      </ng-template>
+      <a href="#" *ngIf="getPageIndex() < getTotalPages()"
+        [attr.data-page]="getPageIndex() + 1"
+        (click)="onPageButtonClick($event)">Next</a>
+      <a href="#" *ngIf="getPageIndex() < getTotalPages()"
+        [attr.data-page]="getTotalPages()"
+        (click)="onPageButtonClick($event)">Last</a>
+      <span>{{getPageIndex()}} of {{getTotalPages()}}</span>
+    </div>
+    <div class="ng-grid-pager-size {{options.get('pageSizeElementPosition')}}"
+      *ngIf="isPageSizeOptionsEnabled()">
+      <span>Page size:</span>
+      <select [ngModel]="getPageSize()"
+        (ngModelChange)="onPageSizeDropDownChange($event)">
+        <option
+          *ngFor="let value of options.get('pageSizeOptions')"
+          [value]="value">{{value}}</option>
+      </select>
+    </div>
+  </div>
+    <ng-grid-sticky-scroll
+        *ngIf="options.get('stickyScroll') && tableRef"
+        [scrollableElement]="tableRef"
+    >
+    </ng-grid-sticky-scroll>
+</div>`
 })
 export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   static ROW_ALT_CLASS = 'alt';
@@ -181,6 +185,7 @@ export class GridComponent implements OnInit, AfterContentInit, AfterViewInit {
   @Output() update: EventEmitter<GridEvent> = new EventEmitter<GridEvent>();
   @ViewChild('header') headerRef: ElementRef;
   @ViewChild('body') bodyRef: ElementRef;
+  @ViewChild('table') tableRef: ElementRef;
 
   private _options: GridOptions;
   private columns: Array<GridColumnComponent> = [];

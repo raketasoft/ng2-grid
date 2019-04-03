@@ -112,6 +112,7 @@ export class DemoComponent implements OnInit, AfterViewInit {
       selection: true,
       defaultPageSize: 5,
       pageSizeOptions: [5, 10, 20, 50],
+      stickyScroll: true
     });
     this.columnGrid.setData(_.cloneDeep(DEMO_DATA));
     this.columnGrid.setFilter('country.id', '1');

@@ -184,3 +184,33 @@
     display:block;
     clear:both;
 }
+
+.sticky-scroll {
+    width: 33%;
+    left:33%;
+    position: fixed;
+    bottom: -30px;
+    display: block;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid lightgray;
+    border-radius: 3px;
+    padding: 5px;
+    border-bottom: 0;
+    z-index: 1000;
+}
+
+.sticky-scrollbar-visible {
+    bottom: 0;
+}
+
+.sticky-scroll > .horizontal-scrollbar {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.sticky-scroll > .horizontal-scrollbar > .horizontal-scrollbar-copy {
+    height:1px;
+}
+

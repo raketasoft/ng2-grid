@@ -7,6 +7,7 @@ import { DemoComponent } from './demo.component';
 import {
   GridComponent,
   GridColumnComponent,
+  GridStickyScrollComponent,
   GridColumnTemplateRenderComponent
 } from '../src/index';
 
@@ -30,6 +31,7 @@ describe('DemoComponent', function () {
         DemoComponent,
         GridComponent,
         GridColumnComponent,
+        GridStickyScrollComponent,
         GridColumnTemplateRenderComponent
       ]
     })
